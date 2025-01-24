@@ -32,6 +32,8 @@ typedef struct
 } Carte;
 
 typedef struct {
-    
+    Carte* main;
+    int tailleMain;
+    int idSocket;
 } Joueur;
 
