@@ -1,47 +1,13 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include "struct.h"
-#include "enhanceTerminal.h"
+#include "generateCards.h"
 
-void afficherCarte(Carte c);
-Carte *genererCartes(int *nbCartes);
-void melangerCartes(Carte *cartes, int nbCartes);
-
-int main() {
-    int nbCartes = 0;
-
-    // Générer les cartes
-    Carte *cartes = genererCartes(&nbCartes);
-
-    // Initialiser la graine pour l'aléatoire
-    srand(time(NULL));
-
-    // Mélanger les cartes
-    melangerCartes(cartes, nbCartes);
-
-    // Afficher les cartes mélangées
-    printf("Cartes mélangées :\n");
-    for (int i = 0; i < nbCartes; i++) {
-        afficherCarte(cartes[i]);
-    }
-
-    // Libérer la mémoire
-    free(cartes);
-    return 0;
-}
 
 /**
  * Génère toutes les cartes possibles dans un tableau alloué dynamiquement.
- * @param nbCartes Un pointeur pour stocker le nombre total de cartes générées.
  * @return Un pointeur vers le tableau alloué contenant toutes les cartes.
  */
-Carte *genererCartes(int *nbCartes) {
-    Carte *cartes = malloc(TOTAL_CARTES * sizeof(Carte)); // Allouer de la mémoire pour le tableau
+Carte *genererCartes() {
+    // Allouer de la mémoire pour le tableau de cartes
+    Carte *cartes = malloc(TOTAL_CARTES * sizeof(Carte)); 
     if (!cartes) {
         perror("Erreur d'allocation mémoire");
         exit(EXIT_FAILURE);
@@ -68,9 +34,9 @@ Carte *genererCartes(int *nbCartes) {
         cartes[index++] = (Carte){NOIR, CHANGEMENT_COULEUR};
     }
 
-    *nbCartes = index; // Stocker le total des cartes générées
     return cartes; // Retourner le tableau
 }
+
 
 /**
  * Affiche une carte donnée.
@@ -83,10 +49,45 @@ void afficherCarte(Carte c) {
         "PLUS_DEUX", "PASSE_TOUR", "CHANGEMENT_SENS", "CHANGEMENT_COULEUR", "PLUS_QUATRE"
     };
 
-    printf("[%s, %s]\n", couleurs[c.Couleur], valeurs[c.Valeur]);
+    if(!isCarteVide(c)){
+        switch (c.Couleur)
+        {
+        case ROUGE:
+            setTerm(RED);
+            break;
+        case BLEU:
+            setTerm(BLUE);
+            break;
+        case JAUNE:
+            setTerm(YELLOW);
+            break;
+        case VERT:
+            setTerm(GREEN);
+            break;
+        case NOIR:
+            setTerm(BLACK);
+            break;
+
+        default:
+            break;
+        }
+        
+        printf("[%s, %s]\n", couleurs[c.Couleur], valeurs[c.Valeur]);
+        resetTerm();
+    }else{
+        printf("Carte vide\n");
+    }
+    
+}
+
+void afficherCarteMain(Carte c, int index){
+    printf("%d - ", index);
+    afficherCarte(c);
 }
 
 void melangerCartes(Carte *cartes, int nbCartes) {
+    srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
+
     for (int i = nbCartes - 1; i > 0; i--) {
         int j = rand() % (i + 1); // Choisir un index aléatoire
         Carte temp = cartes[i];
@@ -94,3 +95,45 @@ void melangerCartes(Carte *cartes, int nbCartes) {
         cartes[j] = temp;
     }
 }
+
+/**
+ * Fonction pour piocher une carte et l'ajouter à la main d'un joueur.
+ * @param partie La partie contenant la pioche et les joueurs.
+ * @param idJoueur L'index du joueur qui pioche.
+ */
+void piocherCarte(Partie *partie, int idJoueur) {
+    if (partie->pioche == NULL || partie->nbCartesPioche == 0) {
+        printf("Erreur : La pioche est vide ou n'existe pas.\n");
+        return;
+    }
+
+    // Vérifier qu'il y a encore des cartes dans la pioche
+    if (partie->nbCartesPioche == 0) {
+        printf("Pioche vide\n");
+        return;
+    }
+
+    // Ajouter la première carte de la pioche à la main du joueur
+    Joueur *joueur = &partie->joueurs[idJoueur];
+    if (joueur->tailleMain < TAILLE_MAIN_MAX) {  // Assure-toi que la main ne dépasse pas 5 cartes
+        joueur->main[joueur->tailleMain] = partie->pioche[0];  // Pioche la carte
+        joueur->tailleMain++;  // Augmente la taille de la main
+    }
+
+    // Décaler les cartes restantes dans la pioche
+    for (int i = 1; i < partie->nbCartesPioche; i++) {
+        partie->pioche[i - 1] = partie->pioche[i];
+    }
+
+    // Mettre la dernière carte à -1 pour signifier qu'elle est vide
+    partie->pioche[partie->nbCartesPioche - 1] = (Carte){-1, -1};  // Représente une carte vide
+    partie->nbCartesPioche--;  // Réduit le nombre de cartes dans la pioche
+}
+
+int isCarteVide(Carte c){
+    if(c.Couleur == -1 && c.Valeur == -1){
+        return 1;
+    }
+    return 0;
+}
+

@@ -1,5 +1,5 @@
 # Nom de l'exécutable final
-EXEC = generateCards
+EXEC = game
 
 # Compilateur
 CC = gcc
@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -O2
 
 # Fichiers source
-SRCS = generateCards.c
+SRCS = game.c generateCards.c   # Ajouter generateCards.c
 
 # Fichiers objets générés
 OBJS = $(SRCS:.c=.o)
@@ -21,7 +21,7 @@ $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Compilation des fichiers objets
-%.o: %.c enhanceTerminal.h struct.h
+%.o: %.c generateCards.h enhanceTerminal.h struct.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Nettoyage des fichiers générés
