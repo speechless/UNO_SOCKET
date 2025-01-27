@@ -60,7 +60,6 @@ typedef struct
     int nbCartesPioche;
     Carte* pioche;
     
-    
     int estFinie;
     int nbTours;
 } Partie;

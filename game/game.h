@@ -10,6 +10,7 @@
 #include "generateCards.h"
 #include "affichage.h"
 #include "serialize.h"
+#include "requetes.h"
 
 
 

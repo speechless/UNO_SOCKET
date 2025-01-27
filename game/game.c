@@ -23,19 +23,9 @@ int main() {
     int input = 0;
 
     Partie partie = initPartie(4);
-    if(TEST){ 
-        char* chaine = malloc(10000 * sizeof(char));
+    reqEnvoiPartie(/*partie.joueurs[0].idSocket,*/ partie);
 
-        serialiserPartie(partie, chaine);
-        
-        printf("\n.\n");
-        deserialiserPartie(chaine, &partie);
-
-        serialiserPartie(partie, chaine);
-
-        free(chaine);
-
-    }
+    if(TEST){;}
     if(REAL){
         for(int i=0; i<partie.nbJoueurs; i++){
             printf("\nJoueur %d\n",i);
@@ -49,6 +39,16 @@ int main() {
             if (input == partie.joueurs[partie.currentPlayer].tailleMain) {
                 piocherCarte(&partie, partie.currentPlayer);
                 prochainTour(&partie);
+
+                // char* chaine = malloc(1000 * sizeof(char));
+                // serialiserCoup(partie, chaine);
+                // deserialiserCoup(chaine, &partie);
+                // serialiserCoup(partie, chaine);
+                // free(chaine);
+
+                reqEnvoiCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
+
+
             } else if (input < 0 || input >= partie.joueurs[partie.currentPlayer].tailleMain) {
                 printf("Erreur : Entrée invalide.\n");
             } else{
@@ -59,7 +59,7 @@ int main() {
                     }else{
                         prochainTour(&partie);
                     }
-                    
+                    reqEnvoiCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
                 }
             }
             
@@ -117,6 +117,7 @@ Partie initPartie(int nbJoueurs) {
 
 // Fonction pour jouer une carte
 int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee) {
+
     Joueur *joueur = &partie->joueurs[idJoueur];
     int carteTrouvee = 0;  // Pour vérifier si la carte est dans la main du joueur
     int indexCarteJouee = -1;
@@ -177,6 +178,7 @@ int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee) {
     }
 
     afficherCarte(partie->carteVisible);
+
     return 1;
 }
 
