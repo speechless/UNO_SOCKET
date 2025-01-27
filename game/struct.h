@@ -42,23 +42,27 @@ typedef struct {
 } Carte;
 
 typedef struct {
-    Carte* main;
-    int tailleMain;
     int idSocket;
     int idJoueur;
+
+    int tailleMain;
+    Carte* main;    
 } Joueur;
 
 typedef struct
 {
-    Carte* pioche;
-    int nbCartesPioche;
-    Joueur joueurs[4];      //index 0 est l'hébergeur
     int nbJoueurs;
     int currentPlayer;
     int sens;               // 1 ou -1
-    int nbTours;
+    Joueur joueurs[4];      //index 0 est l'hébergeur
+
     Carte carteVisible;
+    int nbCartesPioche;
+    Carte* pioche;
+    
+    
     int estFinie;
+    int nbTours;
 } Partie;
 
 #endif // STRUCT_H

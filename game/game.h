@@ -1,10 +1,16 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "struct.h"
 #include "enhanceTerminal.h"
 #include "generateCards.h"
 #include "affichage.h"
+#include "serialize.h"
+
 
 
 void afficherMenu(int* state,int input);
