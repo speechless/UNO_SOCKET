@@ -9,7 +9,11 @@
 #define DEBUG 0
 
 void serialiserPartie(Partie p, char* chaine);
-void deserialiserPartie(const char* chaine, Partie* p);
-void debugprintf(const char* format, ...);
+void deserialiserPartie(char* chaine, Partie* p);
+
+void serialiserCoup(Partie p ,char* chaine);
+void deserialiserCoup(char* chaine, Partie* p);
+
+void debugprintf(char* format, ...);
 
 #endif // SERIALIZE_H

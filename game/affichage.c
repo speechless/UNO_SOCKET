@@ -55,7 +55,7 @@ void afficherMainAvecSelection(Joueur joueur, Carte carteVisible) {
     afficherCarte(carteVisible);
 
     // Affichage de la main du joueur
-    printf("Main du joueur %d :\n", joueur.idJoueur+1);
+    printf("Main du joueur %d :\n", joueur.idJoueur);
     for (int i = 0; i < joueur.tailleMain; i++) {
         afficherCarteMain(joueur.main[i],i);
     }
