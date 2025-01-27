@@ -3,7 +3,6 @@
 
 
 #define MAX_BUFF 1024
-char buffer[MAX_BUFF];
 
 typedef struct {
 	int code;
@@ -16,5 +15,8 @@ typedef struct {
 	short portHost;
 	int nbJoueursMax;
 } salon_t;
+
+void serialiserData(basic_data_t* data, char* chaine);
+void deserialiserData(char* chaine, basic_data_t* data);
 
 #endif

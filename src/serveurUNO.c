@@ -1,3 +1,7 @@
+#include <serveurUNO.h>
+
+#include <pthread.h>
+
 #include <session.h>
 #include <data.h>
 #include <libPSY.h>
@@ -5,9 +9,6 @@
 #include <common.h>
 #include <inc.h>
 
-#include <pthread.h>
-
-#include <serialisation.h>
 #include <requetes.h>
 
 

@@ -1,12 +1,5 @@
-
-
-
-# Nom de l'exécutable
-TARGET1 = serveurUNO
-TARGET2 = clientUNO
-
-# Dépendances target
-DEPS = includes/inc.h
+# Nom des exécutables
+TARGETS = serveurUNO clientUNO
 
 # Répertoires
 SRC_DIR = src
@@ -14,27 +7,38 @@ OBJ_DIR = obj
 BIN_DIR = bin
 INC_DIR = includes
 LIB_DIR = libs
-OBJ_DIR = obj
 
 # Options de compilation
 CC = gcc
+CFLAGS = -Wall -I$(INC_DIR) -L$(LIB_DIR)
 LIBS = -lPSY -lInet
-CFLAGS = -Wall -I$(INC_DIR) -L$(LIB_DIR) $(LIBS)#-g
 
-# Règle par défaut : compile le programme
-all: $(BIN_DIR)/$(TARGET1) $(BIN_DIR)/$(TARGET2)
+# Dépendances globales
+DEPS = $(INC_DIR)/inc.h
 
-# Règle pour compiler les fichiers .c en fichiers .o
+# Fichiers sources spécifiques aux cibles
+SRC_serveurUNO = serveurUNO.c requetes.c
+SRC_clientUNO = clientUNO.c requetes.c
+
+# Règles pour la compilation séparée
+all: serveurUNO clientUNO
+
+serveurUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_serveurUNO))))
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/serveurUNO
+
+clientUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_clientUNO))))
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/clientUNO
+
+# Génération des fichiers objets
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
+	@mkdir -p $(OBJ_DIR)
 	$(CC) -c $< $(CFLAGS) -o $@
-
-$(BIN_DIR)/%: $(OBJ_DIR)/%.o $(DEPS)
-	$(CC) $< $(CFLAGS) -o $@
 
 # Nettoyage des fichiers générés
 clean:
-	rm -rf $(OBJ_DIR)/* $(BIN_DIR)/*
+	rm -f $(OBJ_DIR)/* $(BIN_DIR)/*
 
-
-# Afficher l'état du Makefile
+# Cibles phony
 .PHONY: all clean
