@@ -15,21 +15,29 @@
 #include <requetes.h>
 
 
+void init();
 void dialogueClt(socket_t* socket);
 void traiterSignal(int sig);
 void bye(void);
 salon_t* getSalonPublic();
 salon_t* creerSalonPublic(int nbJoueursMax);
+void gererDemandeSalon(demande_salon demande, socket_t socket);
+socket_t* trouverSocketLibre();
 
-socket_t se, sd;
+socket_t se;
+#define CLIENTS_MAX 20
+socket_t sd[CLIENTS_MAX];
 pthread_t client;
 
-salon_t salons[20];
+salon_t salons[2];
 int nbSalons = 0;
 
 int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
+	init();
+
+	memset(&salons, 0, sizeof(salons));
 
 	se = creerSocketEcoute(ADRESSE_SVC, PORT_SVC);
 
@@ -38,18 +46,36 @@ int main() {
 
 	// Boucle permanente de service
 	while (1) {
-		sd = accepterClt(se);
+		socket_t* socketLibre;
+		do {
+			socketLibre = trouverSocketLibre();
+		} while (socketLibre == NULL);
 
-		pthread_create(&client, NULL, (void*)dialogueClt, &sd);
+		*socketLibre = accepterClt(se);
+
+		pthread_create(&client, NULL, (void*)dialogueClt, socketLibre);
 		pthread_detach(client);
 	}
 
 	return 0;
 }
 
+void init() {
+	for (int i = 0; i < CLIENTS_MAX; i++) {
+		sd[i].fd = -1;
+	}
+}
+
 void bye() {
 	printf("Fermeture socket écoute\n");
 	close(se.fd);
+
+	printf("Fermeture des sockets de dialogue restantes\n");
+	for (int i = 0; i < CLIENTS_MAX; i++) {
+		if (sd[i].fd == -1) {
+			close(sd[i].fd);
+		}
+	}
 }
 
 void dialogueClt(socket_t* socket) {
@@ -57,37 +83,15 @@ void dialogueClt(socket_t* socket) {
 
 	bloquerSignaux();
 
-	PAUSE("Lire un message du client");
 	recevoir(*socket, &requete, (pFct)deserialiserData);
+	printf("requete recu de [%d]\n", socket->fd);
 
-	if (requete.code == DEMANDE_SALON) {
-		demande_salon demande;
-		PAUSE("désérialiser demande");
-		deserialiserDemandeSalon(requete.data, &demande);
-
-		if (!demande.isPrivate) {
-			salon_t* salon = getSalonPublic();
-
-			// S'il n'y a pas de salon public on en crée un
-			if (salon == NULL) {
-				salon = creerSalonPublic(demande.nbJoueursMax);
-
-				salon->nbJoueursActuels++;
-				envoyerSalon(*socket, *salon);
-
-				// TODO: créer socket chez client et récup le salon
-			}
-			// Si le salon existait déjà
-			else {
-				salon->isHost = 0;
-
-				salon->nbJoueursActuels++;
-				envoyerSalon(*socket, *salon);
-			}
-
-		}
-
-
+	switch (requete.code) {
+		case DEMANDE_SALON:
+			demande_salon demande;
+			deserialiserDemandeSalon(requete.data, &demande);
+			gererDemandeSalon(demande, *socket);
+			break;
 	}
 
 	//PAUSE("Envoyer un message au client");
@@ -95,7 +99,8 @@ void dialogueClt(socket_t* socket) {
 
 	// Fermeture de la socket de dialogue
 	fprintf(stderr, "[%d]Fermeture discussion client\n", ntohs((*socket).adrDist.sin_port));
-	CHECK(close((*socket).fd), "close()");
+	CHECK(close(socket->fd), "close()");
+	socket->fd = -1;
 
 	pthread_exit(NULL);
 }
@@ -103,7 +108,6 @@ void dialogueClt(socket_t* socket) {
 void traiterSignal(int sigNum) {
 	switch (sigNum) {
 		case SIGINT:
-			printf("zdezdezze\n");
 			exit(0); // Sortie par ^C
 			break;
 	}
@@ -115,11 +119,14 @@ void traiterSignal(int sigNum) {
  */
 salon_t* getSalonPublic() {
 	for (int i = 0; i < nbSalons; i++) {
+		printf("========================\n");
+		afficherSalon(salons[i]);
 		if (!salons[i].isPrivate && salons[i].nbJoueursActuels < salons[i].nbJoueursMax) {
+			fprintf(stderr, "Salon public trouvé\n");
 			return &salons[i];
 		}
 	}
-
+	fprintf(stderr, "Aucun salon public trouvé\n");
 	return NULL;
 }
 
@@ -133,5 +140,42 @@ salon_t* creerSalonPublic(int nbJoueursMax) {
 	nouveauSalon->nbJoueursActuels = 0;
 	nouveauSalon->nbJoueursMax = nbJoueursMax;
 
+	nbSalons++;
+
 	return nouveauSalon;
+}
+
+void gererDemandeSalon(demande_salon demande, socket_t socket) {
+	if (!demande.isPrivate) {
+		salon_t* salon = getSalonPublic();
+
+		// S'il n'y a pas de salon public on en crée un
+		if (salon == NULL) {
+			salon = creerSalonPublic(demande.nbJoueursMax);
+
+			salon->nbJoueursActuels++;
+			envoyerSalon(socket, *salon);
+
+			// TODO: créer socket chez client et récup le salon
+		}
+		// Si le salon existait déjà
+		else {
+			salon->isHost = 0;
+
+			salon->nbJoueursActuels++;
+			envoyerSalon(socket, *salon);
+		}
+
+	}
+}
+
+socket_t* trouverSocketLibre() {
+	for (int i = 0; i < CLIENTS_MAX; i++) {
+		if (sd[i].fd == -1) {
+			printf("socketlibre = %d\n", i);
+			return &sd[i];
+		}
+	}
+
+	return NULL;
 }
