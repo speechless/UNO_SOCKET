@@ -5,7 +5,7 @@ EXEC = game
 CC = gcc
 
 # Options de compilation
-CFLAGS = -Wall -Wextra -std=c11 -O2
+CFLAGS = -Wall -Wextra
 
 # Fichiers source
 SRCS = game.c generateCards.c affichage.c  # Ajouter generateCards.c

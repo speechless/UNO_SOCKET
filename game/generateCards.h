@@ -1,14 +1,10 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include "struct.h"
-#include "enhanceTerminal.h"
-
-
 #ifndef CARTES_H
 #define CARTES_H
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include "struct.h"
 
 Carte *genererCartes();
 void melangerCartes(Carte *cartes, int nbCartes);
