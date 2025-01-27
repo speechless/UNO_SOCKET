@@ -34,7 +34,7 @@ socket_t creerSocket(int mode);
  * @param port 	Port sur lequel ouvrir la socket
  * @result		Socket créée
  */
-socket_t creerSocketAdr(int mode, char* adrIP, short port);
+socket_t creerSocketAdr(int mode, char* adrIP, unsigned short port);
 
 /**
  * @brief		Création d'une socket d'écoute avec l'adressage fourni en paramétre
@@ -42,7 +42,7 @@ socket_t creerSocketAdr(int mode, char* adrIP, short port);
  * @param port 	Port sur lequel écouter
  * @result		Socket d'écoute créée
  */
-socket_t creerSocketEcoute(char* adrIP, short port);
+socket_t creerSocketEcoute(char* adrIP, unsigned short port);
 
 /**
  * @brief				Accepte la demande de connexion d'un client
@@ -58,6 +58,6 @@ socket_t accepterClt(const socket_t sockEcoute);
  * @param port 			Port sur lequel se connecter
  * @result				Socket d'appel créée
  */
-socket_t connecterClt2Srv(int mode, char* adrIP, short port);
+socket_t connecterClt2Srv(int mode, char* adrIP, unsigned short port);
 
 #endif
