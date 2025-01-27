@@ -1,5 +1,8 @@
 #include "game.h"
 
+#define REAL 1
+#define TEST 1
+
 //TODO changement de couleur et +4
 
 int codes[100];
@@ -18,36 +21,50 @@ int state = 0;
 
 int main() {
     int input = 0;
-    Partie partie = initPartie(4);
-    
-    for(int i=0; i<partie.nbJoueurs; i++){
-        printf("\nJoueur %d\n",i+1);
-        afficherMain(partie.joueurs[i]);
-    }
 
-    while(!partie.estFinie){
-        clearScreen();
-        afficherMainAvecSelection(partie.joueurs[partie.currentPlayer], partie.carteVisible);
-        scanf("%d", &input);
-        if (input == partie.joueurs[partie.currentPlayer].tailleMain) {
-            piocherCarte(&partie, partie.currentPlayer);
-            prochainTour(&partie);
-        } else if (input < 0 || input >= partie.joueurs[partie.currentPlayer].tailleMain) {
-            printf("Erreur : Entrée invalide.\n");
-        } else{
-            if(jouerCarte(&partie, partie.currentPlayer, partie.joueurs[partie.currentPlayer].main[input])){
-                if(partie.joueurs[partie.currentPlayer].tailleMain == 0){
-                    printf("Le joueur %d a gagné la partie en %d tours\n", partie.currentPlayer+1, partie.nbTours);
-                    partie.estFinie = 1;
-                }else{
-                    prochainTour(&partie);
-                }
-                
-            }
-        }
+    Partie partie = initPartie(4);
+    if(TEST){ 
+        char* chaine = malloc(10000 * sizeof(char));
+
+        serialiserPartie(partie, chaine);
         
+        printf("\n.\n");
+        deserialiserPartie(chaine, &partie);
+
+        serialiserPartie(partie, chaine);
+
+        free(chaine);
+
     }
-    
+    if(REAL){
+        for(int i=0; i<partie.nbJoueurs; i++){
+            printf("\nJoueur %d\n",i);
+            afficherMain(partie.joueurs[i]);
+        }
+
+        while(!partie.estFinie){
+            clearScreen();
+            afficherMainAvecSelection(partie.joueurs[partie.currentPlayer], partie.carteVisible);
+            scanf("%d", &input);
+            if (input == partie.joueurs[partie.currentPlayer].tailleMain) {
+                piocherCarte(&partie, partie.currentPlayer);
+                prochainTour(&partie);
+            } else if (input < 0 || input >= partie.joueurs[partie.currentPlayer].tailleMain) {
+                printf("Erreur : Entrée invalide.\n");
+            } else{
+                if(jouerCarte(&partie, partie.currentPlayer, partie.joueurs[partie.currentPlayer].main[input])){
+                    if(partie.joueurs[partie.currentPlayer].tailleMain == 0){
+                        printf("Le joueur %d a gagné la partie en %d tours\n", partie.currentPlayer, partie.nbTours);
+                        partie.estFinie = 1;
+                    }else{
+                        prochainTour(&partie);
+                    }
+                    
+                }
+            }
+            
+        }
+    }
     return 0;
 }
 
@@ -59,7 +76,7 @@ Partie initPartie(int nbJoueurs) {
     partie.nbTours = 0;
     Carte startCard = {-1, -1};  // Carte invalide
     partie.carteVisible= startCard;
-    partie.currentPlayer = 3;
+    partie.currentPlayer = 1;
 
     // Initialiser les joueurs
     for(int i = 0; i < partie.nbJoueurs; i++) {
@@ -146,12 +163,12 @@ int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee) {
     }
 
     if(carteJouee.Valeur == PLUS_DEUX){
-        printf("Le joueur %d pioche 2 cartes\n", ((idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs)+1);
+        printf("Le joueur %d pioche 2 cartes\n", (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
         piocherCarte(partie, (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
         piocherCarte(partie, (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
     }
     if(carteJouee.Valeur == PASSE_TOUR){
-        printf("Le joueur %d passe son tour\n", ((idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs)+1);
+        printf("Le joueur %d passe son tour\n", (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
         prochainTour(partie);
     }
     if(carteJouee.Valeur == CHANGEMENT_SENS){

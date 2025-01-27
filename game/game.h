@@ -9,6 +9,8 @@
 #include "enhanceTerminal.h"
 #include "generateCards.h"
 #include "affichage.h"
+#include "serialize.h"
+
 
 
 void afficherMenu(int* state,int input);
