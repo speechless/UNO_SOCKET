@@ -1,19 +1,6 @@
-#include "struct.h"
-#include "enhanceTerminal.h"
-#include "generateCards.h"
+#include "game.h"
 
 //TODO changement de couleur et +4
-
-void afficherMenu(int* state,int input);
-void afficherMain(Joueur j);
-int generateCode();
-
-Partie initPartie(int nbJoueurs);
-int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee);
-
-void afficherMainAvecSelection(Joueur joueur, Carte carteVisible);
-
-void prochainTour(Partie *partie);
 
 int codes[100];
 int indexCode=0;
@@ -64,21 +51,6 @@ int main() {
     return 0;
 }
 
-// Fonction pour afficher la main du joueur avec un choix
-void afficherMainAvecSelection(Joueur joueur, Carte carteVisible) {
-    // Affichage de la carte visible
-    printf("\nCarte visible : ");
-    afficherCarte(carteVisible);
-
-    // Affichage de la main du joueur
-    printf("Main du joueur %d :\n", joueur.idJoueur+1);
-    for (int i = 0; i < joueur.tailleMain; i++) {
-        afficherCarteMain(joueur.main[i],i);
-    }
-    printf("%d - Piocher une carte\n", joueur.tailleMain);
-
-}
-
 Partie initPartie(int nbJoueurs) {
     Partie partie;
     partie.estFinie = 0;
@@ -115,7 +87,7 @@ Partie initPartie(int nbJoueurs) {
     partie.nbCartesPioche = TOTAL_CARTES;
     melangerCartes(partie.pioche, partie.nbCartesPioche);
 
-    // Distribuer 5 cartes à chaque joueur
+    // Distribuer les cartes à chaque joueur
     for (int i = 0; i < partie.nbJoueurs; i++) {
         for (int j = 0; j < TAILLE_MAIN; j++) { 
             piocherCarte(&partie, i);   // La fonction piocherCarte ajoute la carte à la main du joueur
@@ -125,83 +97,6 @@ Partie initPartie(int nbJoueurs) {
     return partie;
 }
 
-
-
-void afficherMenu(int* state, int input) {
-
-    switch (*state)
-    {
-    case 0:
-        switch (input)
-        {
-        case 0:
-            setTerm(BLACK);
-            printf("===== Menu Principal =====\n");
-            resetTerm();
-            printf("1. Lancer une partie publique\n");
-            printf("2. Lancer une partie privée\n");
-            printf("3. Héberger une partie privée\n");
-            printf("4. Quitter\n");
-            setTerm(BLACK);
-            printf("==========================\n");
-            resetTerm();
-            printf("\nInput : ");
-            break;
-        
-        case 1:
-            //Vue de la partie publique
-            *state = 1;
-            afficherMenu(state,0);
-            break;
-
-        case 2:
-            //Vue de la partie privée
-            *state = 2;
-            afficherMenu(state,0);
-            break;
-
-        case 3:
-            //Vue de l'hébergement de la partie privée
-            *state = 3;
-            afficherMenu(state,0);
-            break;
-        
-        case 4:
-            exit(0);
-            break;
-
-        default:
-            printf("Entrée invalide.\n");
-            break;
-        }
-        break;
-
-    case 1:
-        //Vue de la partie publique
-        setTerm(BLUE);
-        printf("En attente de joueurs...\n");
-        resetTerm();
-        break;
-    case 2:
-        //Vue de la partie privée
-        setTerm(BLACK);
-        printf("Veuillez entrer le code de la partie : ");
-        resetTerm();
-        break;
-
-    case 3:
-        //Vue de l'hébergement de la partie privée
-        setTerm(BLACK);
-        printf("Code de la partie : %d\n",generateCode());
-        resetTerm();
-        break;
-    
-    default:
-        exit(0);
-    }
-
-    
-}
 
 // Fonction pour jouer une carte
 int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee) {
@@ -287,12 +182,6 @@ int generateCode(){
         return code;
     }else{
         return generateCode();
-    }
-}
-
-void afficherMain(Joueur j){
-    for(int i = 0; i < j.tailleMain; i++){
-        afficherCarte(j.main[i]);
     }
 }
 

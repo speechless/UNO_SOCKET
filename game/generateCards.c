@@ -29,61 +29,14 @@ Carte *genererCartes() {
     }
 
     // Générer les cartes spéciales (NOIR : PLUS_QUATRE et CHANGEMENT_COULEUR)
-    for (int i = 0; i < 4; i++) { // 4 exemplaires pour chaque carte spéciale
+    /*for (int i = 0; i < 4; i++) { // 4 exemplaires pour chaque carte spéciale
         cartes[index++] = (Carte){NOIR, PLUS_QUATRE};
         cartes[index++] = (Carte){NOIR, CHANGEMENT_COULEUR};
-    }
+    }*/
 
     return cartes; // Retourner le tableau
 }
 
-
-/**
- * Affiche une carte donnée.
- * @param c La carte à afficher.
- */
-void afficherCarte(Carte c) {
-    const char *couleurs[] = {"ROUGE", "BLEU", "JAUNE", "VERT", "NOIR"};
-    const char *valeurs[] = {
-        "ZERO", "UN", "DEUX", "TROIS", "QUATRE", "CINQ", "SIX", "SEPT", "HUIT", "NEUF",
-        "PLUS_DEUX", "PASSE_TOUR", "CHANGEMENT_SENS", "CHANGEMENT_COULEUR", "PLUS_QUATRE"
-    };
-
-    if(!isCarteVide(c)){
-        switch (c.Couleur)
-        {
-        case ROUGE:
-            setTerm(RED);
-            break;
-        case BLEU:
-            setTerm(BLUE);
-            break;
-        case JAUNE:
-            setTerm(YELLOW);
-            break;
-        case VERT:
-            setTerm(GREEN);
-            break;
-        case NOIR:
-            setTerm(BLACK);
-            break;
-
-        default:
-            break;
-        }
-        
-        printf("[%s, %s]\n", couleurs[c.Couleur], valeurs[c.Valeur]);
-        resetTerm();
-    }else{
-        printf("Carte vide\n");
-    }
-    
-}
-
-void afficherCarteMain(Carte c, int index){
-    printf("%d - ", index);
-    afficherCarte(c);
-}
 
 void melangerCartes(Carte *cartes, int nbCartes) {
     srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
@@ -131,7 +84,7 @@ void piocherCarte(Partie *partie, int idJoueur) {
 }
 
 int isCarteVide(Carte c){
-    if(c.Couleur == -1 && c.Valeur == -1){
+    if((int) c.Couleur == -1 && (int) c.Valeur == -1){
         return 1;
     }
     return 0;

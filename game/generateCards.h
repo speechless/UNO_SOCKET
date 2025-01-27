@@ -10,8 +10,6 @@
 #ifndef CARTES_H
 #define CARTES_H
 
-void afficherCarte(Carte c);
-void afficherCarteMain(Carte c, int index);
 Carte *genererCartes();
 void melangerCartes(Carte *cartes, int nbCartes);
 
