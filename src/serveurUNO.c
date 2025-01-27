@@ -1,6 +1,9 @@
-#include <serveurUNO.h>
-
 #include <pthread.h>
+#include <string.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
 
 #include <session.h>
 #include <data.h>
@@ -15,10 +18,14 @@
 void dialogueClt(socket_t* socket);
 void traiterSignal(int sig);
 void bye(void);
-int getClientPort(int s);
+salon_t* getSalonPublic();
+salon_t* creerSalonPublic(int nbJoueursMax);
 
 socket_t se, sd;
 pthread_t client;
+
+salon_t salons[20];
+int nbSalons = 0;
 
 int main() {
 	installSignal(SIGINT, traiterSignal);
@@ -47,18 +54,47 @@ void bye() {
 
 void dialogueClt(socket_t* socket) {
 	basic_data_t requete;
-	basic_data_t reponse = {100, "salut"};
 
 	bloquerSignaux();
 
 	PAUSE("Lire un message du client");
 	recevoir(*socket, &requete, (pFct)deserialiserData);
 
-	PAUSE("Envoyer un message au client");
-	envoyer(*socket, &reponse, (pFct)serialiserData);
+	if (requete.code == DEMANDE_SALON) {
+		demande_salon demande;
+		PAUSE("désérialiser demande");
+		deserialiserDemandeSalon(requete.data, &demande);
+
+		if (!demande.isPrivate) {
+			salon_t* salon = getSalonPublic();
+
+			// S'il n'y a pas de salon public on en crée un
+			if (salon == NULL) {
+				salon = creerSalonPublic(demande.nbJoueursMax);
+
+				salon->nbJoueursActuels++;
+				envoyerSalon(*socket, *salon);
+
+				// TODO: créer socket chez client et récup le salon
+			}
+			// Si le salon existait déjà
+			else {
+				salon->isHost = 0;
+
+				salon->nbJoueursActuels++;
+				envoyerSalon(*socket, *salon);
+			}
+
+		}
+
+
+	}
+
+	//PAUSE("Envoyer un message au client");
+	//envoyer(*socket, &reponse, (pFct)serialiserData);
 
 	// Fermeture de la socket de dialogue
-	fprintf(stderr, "[%d]Fermeture discussion client\n", getClientPort((*socket).fd));
+	fprintf(stderr, "[%d]Fermeture discussion client\n", ntohs((*socket).adrDist.sin_port));
 	CHECK(close((*socket).fd), "close()");
 
 	pthread_exit(NULL);
@@ -73,13 +109,29 @@ void traiterSignal(int sigNum) {
 	}
 }
 
-int getClientPort(int s) {
-	struct sockaddr_in addr;
-	socklen_t addr_len = sizeof(addr);
+/**
+ * Cherche un salon public disponible
+ * @return Un pointeur sur un salon public existant et non plein, NULL si aucun n'est trouvé
+ */
+salon_t* getSalonPublic() {
+	for (int i = 0; i < nbSalons; i++) {
+		if (!salons[i].isPrivate && salons[i].nbJoueursActuels < salons[i].nbJoueursMax) {
+			return &salons[i];
+		}
+	}
 
-	// Récupérer les informations de la socket (adresse et port)
-	CHECK(getpeername(s, (struct sockaddr*)&addr, &addr_len), "getpeername()");
-
-	return ntohs(addr.sin_port);
+	return NULL;
 }
 
+salon_t* creerSalonPublic(int nbJoueursMax) {
+	salon_t* nouveauSalon = &salons[nbSalons];
+	nouveauSalon->id = nbSalons;
+	nouveauSalon->isHost = 1;
+	nouveauSalon->isPrivate = 0;
+	strcpy(nouveauSalon->adresseHost, "Aucune");
+	nouveauSalon->portHost = 0;
+	nouveauSalon->nbJoueursActuels = 0;
+	nouveauSalon->nbJoueursMax = nbJoueursMax;
+
+	return nouveauSalon;
+}
