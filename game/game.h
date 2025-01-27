@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include "struct.h"
 #include "enhanceTerminal.h"
 #include "generateCards.h"
@@ -14,3 +17,5 @@ int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee);
 void afficherMainAvecSelection(Joueur joueur, Carte carteVisible);
 
 void prochainTour(Partie *partie);
+
+#endif // GAME_H
