@@ -1,5 +1,5 @@
 # Nom des exécutables
-TARGETS = serveurUNO clientUNO
+TARGETS = serveurUNO clientUNO hostingClientUNO
 
 # Répertoires
 SRC_DIR = src
@@ -19,9 +19,10 @@ DEPS = $(INC_DIR)/inc.h
 # Fichiers sources spécifiques aux cibles
 SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
 SRC_clientUNO = clientUNO.c requetes.c
+SRC_hostingClientUNO = hostingClient.c requetes.c
 
 # Règles pour la compilation séparée
-all: serveurUNO clientUNO
+all: serveurUNO clientUNO hostingClientUNO
 
 serveurUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_serveurUNO))))
 	@mkdir -p $(BIN_DIR)
@@ -30,6 +31,10 @@ serveurUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_serveur
 clientUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_clientUNO))))
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/clientUNO
+
+hostingClientUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_hostingClientUNO))))
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/hostingClientUNO
 
 # Génération des fichiers objets
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)

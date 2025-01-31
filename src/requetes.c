@@ -1,6 +1,7 @@
 #include <requetes.h>
 #include <stdio.h>
 #include <data.h>
+#include <string.h>
 
 void serialiserData(basic_data_t* data, char* chaine) {
 	sprintf(chaine, "[%d] : %s", data->code, data->data);
@@ -24,6 +25,27 @@ void deserialiserSalon(char* chaine, salon_t* salon) {
 	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
 	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax);
 	afficherSalon(*salon);
+}
+
+/**
+ * Initialise un salon
+ * @param salon : le salon à initialiser
+ * @param id : l'identifiant du salon
+ * @param isPrivate : 1 si le salon est privé, 0 sinon
+ * @param isHost : 1 si le client est l'hôte du salon, 0 sinon
+ * @param adresseHost : l'adresse de l'hôte du salon
+ * @param portHost : le port de l'hôte du salon
+ * @param nbJoueursActuels : le nombre de joueurs actuels dans le salon
+ * @param nbJoueursMax : le nombre de joueurs maximum dans le salon
+ */
+void initSalon(salon_t* salon, int id, int isPrivate, int isHost, char* adresseHost, short portHost, int nbJoueursActuels, int nbJoueursMax) {
+	salon->id = id;
+	salon->isPrivate = isPrivate;
+	salon->isHost = isHost;
+	strcpy(salon->adresseHost, adresseHost);
+	salon->portHost = portHost;
+	salon->nbJoueursActuels = nbJoueursActuels;
+	salon->nbJoueursMax = nbJoueursMax;
 }
 
 void envoyerSalon(socket_t socket, salon_t salon) {

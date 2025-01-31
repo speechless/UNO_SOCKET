@@ -49,6 +49,7 @@ void deserialiserData(char* chaine, basic_data_t* data);
 
 void serialiserSalon(salon_t* salon, char* chaine);
 void deserialiserSalon(char* chaine, salon_t* salon);
+void initSalon(salon_t* salon, int id, int isPrivate, int isHost, char* adresseHost, short portHost, int nbJoueursActuels, int nbJoueursMax) ;
 void envoyerSalon(socket_t socket, salon_t salon);
 void afficherSalon(salon_t salon);
 
