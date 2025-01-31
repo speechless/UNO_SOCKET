@@ -16,13 +16,13 @@ void deserialiserData(char* chaine, basic_data_t* data) {
 
 void serialiserSalon(salon_t* salon, char* chaine) {
 	afficherSalon(*salon);
-	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d", salon->id, salon->isPrivate, salon->isHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax);
+	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax);
 	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
 }
 
 void deserialiserSalon(char* chaine, salon_t* salon) {
 	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
-	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d", &salon->id, &salon->isPrivate, &salon->isHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax);
+	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax);
 	afficherSalon(*salon);
 }
 
@@ -40,7 +40,7 @@ void envoyerSalon(socket_t socket, salon_t salon) {
 void afficherSalon(salon_t salon) {
 	printf("Salon.id = %d\n", salon.id);
 	printf("Salon.isPrivate = %d\n", salon.isPrivate);
-	printf("Salon.isHost = %d\n", salon.isHost);
+	printf("Salon.idHost = %d\n", salon.idHost);
 	printf("Salon.adresseHost = %s\n", salon.adresseHost);
 	printf("Salon.portHost = %d\n", salon.portHost);
 	printf("Salon.joueursActuel = %d\n", salon.nbJoueursActuels);
@@ -48,12 +48,23 @@ void afficherSalon(salon_t salon) {
 }
 
 
-void serialiserDemandeSalon(demande_salon* demande, char* chaine) {
-	sprintf(chaine, "%d:%d:%s", demande->isPrivate, demande->nbJoueursMax, demande->codeSalon);
+void serialiserCreationPartie(creation_partie_t* demande, char* chaine) {
+	sprintf(chaine, "%d:%d:%d:%s:%d", demande->idClient, demande->isPrivate, demande->nbJoueursMax, demande->adresseHost, demande->portHost);
 	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
 }
 
-void deserialiserDemandeSalon(char* chaine, demande_salon* demande) {
+void deserialiserCreationPartie(char* chaine, creation_partie_t* demande) {
 	fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
-	sscanf(chaine, "%d:%d:%s", &demande->isPrivate, &demande->nbJoueursMax, demande->codeSalon);
+	sscanf(chaine, "%d:%d:%d:%[^:]:%hd", &demande->idClient, &demande->isPrivate, &demande->nbJoueursMax, demande->adresseHost, &demande->portHost);
+}
+
+
+void serialiserClient(client_t* client, char* chaine) {
+	sprintf(chaine, "%d:%s:%d", client->id, client->adresse, client->port);
+	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+}
+
+void deserialiserClient(char* chaine, client_t* client) {
+	fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
+	sscanf(chaine, "%d:%[^:]:%hd", &client->id, client->adresse, &client->port);
 }

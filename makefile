@@ -17,7 +17,7 @@ LIBS = -lPSY -lInet
 DEPS = $(INC_DIR)/inc.h
 
 # Fichiers sources spécifiques aux cibles
-SRC_serveurUNO = serveurUNO.c requetes.c
+SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
 SRC_clientUNO = clientUNO.c requetes.c
 
 # Règles pour la compilation séparée

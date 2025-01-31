@@ -6,9 +6,17 @@
 #include <session.h>
 
 typedef enum {
+	CREATION_PARTIE,
 	SALON,
-	DEMANDE_SALON,
+	CLIENT,
 } type_requete;
+
+typedef struct {
+	int id;
+	socket_t socket;
+	char adresse[20];
+	unsigned short port;
+} client_t;
 
 typedef struct {
 	int code;
@@ -18,18 +26,21 @@ typedef struct {
 typedef struct {
 	int id;
 	int isPrivate;
-	int isHost;
+	int idHost;
 	char adresseHost[20];
 	unsigned short portHost;
 	int nbJoueursActuels;
 	int nbJoueursMax;
+	int idClients[20];
 } salon_t;
 
 typedef struct {
+	int idClient;
 	int isPrivate;
-	char codeSalon[20];
 	int nbJoueursMax;
-} demande_salon;
+	char adresseHost[20];
+	unsigned short portHost;
+} creation_partie_t;
 
 
 
@@ -41,6 +52,9 @@ void deserialiserSalon(char* chaine, salon_t* salon);
 void envoyerSalon(socket_t socket, salon_t salon);
 void afficherSalon(salon_t salon);
 
-void serialiserDemandeSalon(demande_salon* demande, char* chaine);
-void deserialiserDemandeSalon(char* chaine, demande_salon* demande);
+void serialiserCreationPartie(creation_partie_t* demande, char* chaine);
+void deserialiserCreationPartie(char* chaine, creation_partie_t* demande);
+
+void serialiserClient(client_t* client, char* chaine);
+void deserialiserClient(char* chaine, client_t* client);
 #endif

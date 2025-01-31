@@ -6,6 +6,7 @@
 #include <common.h>
 
 #include <unistd.h>
+#include <string.h>
 
 #include <requetes.h>
 
@@ -24,17 +25,29 @@ int main() {
 	socket_t socketAppel;
 	basic_data_t requete;
 	salon_t salon;
-	demande_salon demande;
+	creation_partie_t demande;
+	client_t clientLocal;
 
 	// Demande d’une connexion au service
 	PAUSE("Se connecter au service");
 	socketAppel = connecterClt2Srv(SOCK_STREAM, ADRESSE_SVC, PORT_SVC);
 
-	demande.isPrivate = 0;
-	demande.nbJoueursMax = 3;
+	recevoir(socketAppel, &requete, (pFct)deserialiserData);
+	if (requete.code == CLIENT) {
+		deserialiserClient(requete.data, &clientLocal);
+	}
+	else {
+		printf("Erreur\n");
+	}
 
-	requete.code = DEMANDE_SALON;
-	serialiserDemandeSalon(&demande, requete.data);
+	demande.isPrivate = 0;
+	strcpy(demande.adresseHost, ADRESSE_SVC);
+	demande.portHost = PORT_SVC;
+	demande.nbJoueursMax = 3;
+	demande.idClient = clientLocal.id;
+
+	requete.code = CREATION_PARTIE;
+	serialiserCreationPartie(&demande, requete.data);
 
 	PAUSE("Envoyer demande création partie publique");
 	envoyer(socketAppel, &requete, (pFct)serialiserData);
