@@ -132,14 +132,7 @@ salon_t* getSalonPublic() {
 
 salon_t* creerSalonPublic(int nbJoueursMax) {
 	salon_t* nouveauSalon = &salons[nbSalons];
-	nouveauSalon->id = nbSalons;
-	nouveauSalon->isHost = 1;
-	nouveauSalon->isPrivate = 0;
-	strcpy(nouveauSalon->adresseHost, "Aucune");
-	nouveauSalon->portHost = 0;
-	nouveauSalon->nbJoueursActuels = 0;
-	nouveauSalon->nbJoueursMax = nbJoueursMax;
-
+	initSalon(nouveauSalon, nbSalons, 0, 1, "Aucune", 0, 0, nbJoueursMax);
 	nbSalons++;
 
 	return nouveauSalon;
