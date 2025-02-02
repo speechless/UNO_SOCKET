@@ -20,7 +20,6 @@ T_Maille* insererEnTete(T_Elt* elt, T_Maille* liste) {
 }
 
 T_Maille* insererEnFin(T_Elt* elt, T_Maille* liste, T_Maille** mailleInseree) {
-	printf("dkaoiezjezcnoenvenvr\n");
 	if (listeVide(liste)) {
 		*mailleInseree = insererEnTete(elt, liste);
 		return *mailleInseree;
@@ -33,9 +32,7 @@ T_Maille* insererEnFin(T_Elt* elt, T_Maille* liste, T_Maille** mailleInseree) {
 	}
 	// mailleCourante correspond maintenant a la derniere de la liste
 	mailleCourante->suivant = newMaille(elt, NULL);
-	printf("a dernier = %p\n", mailleCourante->suivant);
 	*mailleInseree = mailleCourante->suivant;
-	printf("a inseree = %p\n", mailleInseree);
 	return liste;
 }
 
