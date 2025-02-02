@@ -16,13 +16,16 @@
 #include <liste.h>
 
 
-void init();
+void gererConnexion();
 void dialogueClt(client_t* client);
 void traiterSignal(int sig);
 void bye(void);
 salon_t* getSalonPublic();
 salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost);
-void gererDemandeSalon(creation_partie_t demande, client_t client);
+salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, char* code);
+void gererCreationPartie(creation_partie_t demande, client_t client);
+void gererRejoindrePartie(rejoindre_partie_t demande);
+void ajouterJoueurSalon(salon_t* salon, int idClient);
 client_t getClient(int idClient);
 
 socket_t se;
@@ -37,7 +40,6 @@ int nextSalonId = 1;
 int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
-	init();
 
 	memset(&salons, 0, sizeof(salons));
 
@@ -48,28 +50,36 @@ int main() {
 
 	// Boucle permanente de service
 	while (1) {
-		client_t client;
-		client.id = nextClientId++;
-		client.socket = accepterClt(se);
-		strcpy(client.adresse, inet_ntoa(client.socket.adrDist.sin_addr));
-		client.port = ntohs(client.socket.adrDist.sin_port);
-
-		T_Maille* mailleInseree;
-		listeClients = insererEnFin(&client, listeClients, &mailleInseree);
-
-		basic_data_t requete;
-		requete.code = CLIENT;
-		serialiserClient(&client, requete.data);
-		envoyer(client.socket, &requete, (pFct)serialiserData);
-
-		pthread_create(&TIDClient, NULL, (void*)dialogueClt, &mailleInseree->elt);
-		pthread_detach(TIDClient);
+		gererConnexion();
 	}
 
 	return 0;
 }
 
-void init() {
+void gererConnexion() {
+	client_t client;
+
+	// Récupération des informations du client
+	client.id = nextClientId++;
+	client.socket = accepterClt(se);
+	strcpy(client.adresse, inet_ntoa(client.socket.adrDist.sin_addr));
+	client.port = ntohs(client.socket.adrDist.sin_port);
+
+	fprintf(stderr, "Connexion de %s:%d (ID = %d)\n", client.adresse, client.port, client.id);
+
+	// Insertion dans la liste des clients connectés
+	T_Maille* mailleInseree;
+	listeClients = insererEnFin(&client, listeClients, &mailleInseree);
+
+	// Envoi de ses informations au client
+	basic_data_t requete;
+	requete.code = CLIENT;
+	serialiserClient(&client, requete.data);
+	envoyer(client.socket, &requete, (pFct)serialiserData);
+
+	// Création d'un thread pour communiquer
+	pthread_create(&TIDClient, NULL, (void*)dialogueClt, &mailleInseree->elt);
+	pthread_detach(TIDClient);
 }
 
 void bye() {
@@ -89,25 +99,40 @@ void dialogueClt(client_t* client) {
 
 	bloquerSignaux();
 
-	recevoir(client->socket, &requete, (pFct)deserialiserData);
-	printf("requete recu de [%d]\n", client->socket.fd);
+	while (1) {
 
-	switch (requete.code) {
-		case CREATION_PARTIE:
-			creation_partie_t demande;
-			deserialiserCreationPartie(requete.data, &demande);
-			gererDemandeSalon(demande, *client);
-			break;
+		// Réception d'une requête
+		recevoir(client->socket, &requete, (pFct)deserialiserData);
+		fprintf(stderr, "Requête reçue du client n°%d\n", client->id);
+
+		switch (requete.code) {
+			case CREATION_PARTIE:
+				creation_partie_t demandeCreation;
+
+				fprintf(stderr, "Requête de type CREATION_PARTIE\n");
+
+				deserialiserCreationPartie(requete.data, &demandeCreation);
+				gererCreationPartie(demandeCreation, *client);
+				break;
+			case REJOINDRE_PARTIE:
+				rejoindre_partie_t demandeRejoindre;
+
+				fprintf(stderr, "Requête de type REJOINDRE_PARTIE\n");
+
+				deserialiserRejoindrePartie(requete.data, &demandeRejoindre);
+				gererRejoindrePartie(demandeRejoindre);
+				break;
+		}
 	}
 
 	//PAUSE("Envoyer un message au client");
 	//envoyer(*socket, &reponse, (pFct)serialiserData);
-	afficherElt(client, "\n");
-	printf("close ce client\n");
+	//afficherElt(client, "\n");
+
 	// Fermeture de la socket de dialogue
-	fprintf(stderr, "[%d]Fermeture discussion client\n", ntohs(client->socket.adrDist.sin_port));
+	fprintf(stderr, "Fermeture de la discussion avec le client n°%d\n", client->id);
 	CHECK(close(client->socket.fd), "close()");
-	client->socket.fd = -1;
+	listeClients = supprimerElement(*client, listeClients);
 
 	pthread_exit(NULL);
 }
@@ -126,8 +151,6 @@ void traiterSignal(int sigNum) {
  */
 salon_t* getSalonPublic() {
 	for (int i = 0; i < NB_SALONS_MAX; i++) {
-		printf("========================\n");
-		afficherSalon(salons[i]);
 		if (!salons[i].isPrivate && salons[i].nbJoueursActuels < salons[i].nbJoueursMax && salons[i].id > 0) {
 			fprintf(stderr, "Salon public trouvé\n");
 			return &salons[i];
@@ -137,23 +160,46 @@ salon_t* getSalonPublic() {
 	return NULL;
 }
 
-salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost) {
+/**
+ * Cherche un salon privé à partir d'un code
+ * @param code Le code associé au salon
+ * @return Un pointeur sur un salon privé avec le code correspondant et non plein, NULL si aucun n'est trouvé
+ */
+salon_t* getSalonPrive(char* code) {
+	for (int i = 0; i < NB_SALONS_MAX; i++) {
+		if (salons[i].id > 0 && salons[i].isPrivate && strcmp(salons[i].code, code) == 0) {
 
+			if (salons[i].nbJoueursActuels < salons[i].nbJoueursMax) {
+				fprintf(stderr, "Salon privé correspondant trouvé\n");
+				return &salons[i];
+			}
+			else {
+				fprintf(stderr, "Salon correspondant trouvé mais plein\n");
+				return NULL;
+			}
+		}
+	}
+	fprintf(stderr, "Aucun salon n'existe avec ce code\n");
+	return NULL;
+}
+
+salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost) {
 	salon_t* nouveauSalon = NULL;
+
 	for (int i = 0; i < NB_SALONS_MAX; i++) {
 		if (salons[i].id <= 0) {
 			nouveauSalon = &salons[i];
 		}
 	}
 	if (nouveauSalon == NULL) {
-		//TODO message erreur client
-		printf("Plus de place\n");
+		fprintf(stderr, "Plus de place\n");
+		return NULL;
 	}
+
 	nouveauSalon->id = nextClientId++;
 	nouveauSalon->isPrivate = 0;
 	nouveauSalon->idHost = idHost;
 	strcpy(nouveauSalon->adresseHost, adresseHost);
-	printf("########%s###########\n", nouveauSalon->adresseHost);
 	nouveauSalon->portHost = portHost;
 	nouveauSalon->nbJoueursActuels = 0;
 	nouveauSalon->nbJoueursMax = nbJoueursMax;
@@ -161,19 +207,111 @@ salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short po
 	return nouveauSalon;
 }
 
-void gererDemandeSalon(creation_partie_t demande, client_t client) {
+salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, char* code) {
+	salon_t* nouveauSalon = NULL;
+
+	for (int i = 0; i < NB_SALONS_MAX; i++) {
+		if (salons[i].id <= 0) {
+			nouveauSalon = &salons[i];
+		}
+	}
+	if (nouveauSalon == NULL) {
+		fprintf(stderr, "Plus de place\n");
+		return NULL;
+	}
+
+	nouveauSalon->id = nextClientId++;
+	nouveauSalon->isPrivate = 1;
+	nouveauSalon->idHost = idHost;
+	strcpy(nouveauSalon->adresseHost, adresseHost);
+	nouveauSalon->portHost = portHost;
+	nouveauSalon->nbJoueursActuels = 0;
+	nouveauSalon->nbJoueursMax = nbJoueursMax;
+	strcpy(nouveauSalon->code, code);
+
+	return nouveauSalon;
+}
+
+//TODO : générer le code
+void gererCreationPartie(creation_partie_t demande, client_t client) {
+	salon_t* salon;
+
+	if (!demande.isPrivate) {
+		printf("Création d'un salon public\n");
+		salon = creerSalonPublic(demande.nbJoueursMax, demande.adresseHost, demande.portHost, client.id);
+
+		if (salon == NULL) {
+			envoyerErreur(client.socket, "Trop de salons en attente, veuillez réessayer plus tard");
+			return;
+		}
+	}
+	else {
+		printf("Création d'un salon privé\n");
+		salon = creerSalonPrive(demande.nbJoueursMax, demande.adresseHost, demande.portHost, client.id, "1234");
+
+		if (salon == NULL) {
+			envoyerErreur(client.socket, "Trop de salons en attente, veuillez réessayer plus tard");
+			return;
+		}
+	}
+
+	ajouterJoueurSalon(salon, client.id);
+}
+
+void gererRejoindrePartie(rejoindre_partie_t demande) {
+	client_t client = getClient(demande.idClient);
+
+	// Si le client souhaite rejoindre une partie publique
 	if (!demande.isPrivate) {
 		salon_t* salon = getSalonPublic();
 
-		// S'il n'y a pas de salon public on en crée un
+		// S'il n'y a pas de salon public on demande au client de créer une partie
 		if (salon == NULL) {
-			printf("Création d'un salon\n");
-			salon = creerSalonPublic(demande.nbJoueursMax, demande.adresseHost, demande.portHost, client.id);
+			basic_data_t requete;
+			requete.code = CREATION_PARTIE;
+			requete.data[0] = '\0';
+			envoyer(client.socket, &requete, (pFct)serialiserData);
+		}
+		else {
+			ajouterJoueurSalon(salon, client.id);
 		}
 
-		salon->idClients[salon->nbJoueursActuels] = client.id;
-		salon->nbJoueursActuels++;
-		envoyerSalon(client.socket, *salon);
+	}
+	// Si le client souhaite rejoindre une partie privée
+	else {
+		salon_t* salon = getSalonPrive(demande.code);
+
+		if (salon != NULL) {
+			ajouterJoueurSalon(salon, client.id);
+		}
+		else {
+			envoyerErreur(client.socket, "Code incorrect ou salon plein");
+		}
+	}
+}
+
+void ajouterJoueurSalon(salon_t* salon, int idClient) {
+	// Ajout du client aux joueurs
+	salon->idClients[salon->nbJoueursActuels] = idClient;
+	salon->nbJoueursActuels++;
+
+	// Envoi de l'état actualisé du salon à tout le monde
+	for (int i = 0; i < salon->nbJoueursActuels; i++) {
+		client_t joueurDuSalon = getClient(salon->idClients[i]);
+		envoyerSalon(joueurDuSalon.socket, *salon);
+	}
+
+	// Démarrage de la partie si complet
+	if (salon->nbJoueursActuels == salon->nbJoueursMax) {
+		fprintf(stderr, "Envoi du signal de démarrage\n");
+		basic_data_t requete;
+		requete.code = COMMENCER_PARTIE;
+		requete.data[0] = '\0';
+
+		for (int i = 0; i < salon->nbJoueursActuels; i++) {
+			client_t joueurDuSalon = getClient(salon->idClients[i]);
+			envoyer(joueurDuSalon.socket, &requete, (pFct)serialiserData);
+		}
 	}
 }
 

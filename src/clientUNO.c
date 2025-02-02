@@ -1,6 +1,7 @@
 #include <session.h>
 #include <data.h>
 #include <enhanceTerminal.h>
+#include <libPSY.h>
 
 #include <inc.h>
 #include <common.h>
@@ -9,6 +10,12 @@
 #include <string.h>
 
 #include <requetes.h>
+
+void traiterSignal(int sigNum);
+void bye();
+
+socket_t socketAppel;
+socket_t socketEcouteHebergeur;
 
 /**
  * states :
@@ -22,51 +29,88 @@
 int state = 0;
 
 int main() {
-	socket_t socketAppel;
-	basic_data_t requete;
+
+
 	salon_t salon;
-	creation_partie_t demande;
 	client_t clientLocal;
+
+	basic_data_t requete = {-1, ""};
+	creation_partie_t demandeCreation;
+	rejoindre_partie_t demandeRejoindre;
+
+	installSignal(SIGINT, traiterSignal);
+	atexit(bye);
 
 	// Demande d’une connexion au service
 	PAUSE("Se connecter au service");
 	socketAppel = connecterClt2Srv(SOCK_STREAM, ADRESSE_SVC, PORT_SVC);
 
+	// Réception des informations client
 	recevoir(socketAppel, &requete, (pFct)deserialiserData);
 	if (requete.code == CLIENT) {
 		deserialiserClient(requete.data, &clientLocal);
+		fprintf(stderr, "Je suis le client n°%d\n", clientLocal.id);
 	}
 	else {
 		printf("Erreur\n");
 	}
 
-	demande.isPrivate = 0;
-	strcpy(demande.adresseHost, ADRESSE_SVC);
-	demande.portHost = PORT_SVC;
-	demande.nbJoueursMax = 3;
-	demande.idClient = clientLocal.id;
+	//TODO menu
+	// Test statique de partie publique
+	demandeRejoindre.idClient = clientLocal.id;
+	demandeRejoindre.isPrivate = 0;
+	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
 
-	requete.code = CREATION_PARTIE;
-	serialiserCreationPartie(&demande, requete.data);
+	while (requete.code != COMMENCER_PARTIE) {
+		recevoir(socketAppel, &requete, (pFct)deserialiserData);
 
-	PAUSE("Envoyer demande création partie publique");
-	envoyer(socketAppel, &requete, (pFct)serialiserData);
+		switch (requete.code) {
 
-	PAUSE("Recevoir le salon");
-	recevoir(socketAppel, &requete, (pFct)deserialiserData);
-	deserialiserSalon(requete.data, &salon);
-	/*
-	PAUSE("Envoyer un message au serveur");
-	envoyer(socketAppel, &requete, (pFct)serialiserData);
+			// Le serveur nous demande les informations en tant qu'hébergeur de partie publique
+			case CREATION_PARTIE:
+				socketEcouteHebergeur = creerSocketEcoute("127.0.0.1", 0);
 
-	PAUSE("Lire un message du serveur");
-	recevoir(socketAppel, &reponse, (pFct)deserialiserData);
-*/
+				demandeCreation.isPrivate = 0;
+				strcpy(demandeCreation.adresseHost, "127.0.0.1");
+				demandeCreation.portHost = ntohs(socketEcouteHebergeur.adrLoc.sin_port);
+				demandeCreation.nbJoueursMax = 2;
+				demandeCreation.idClient = clientLocal.id;
+
+				envoyerCreationPartie(socketAppel, demandeCreation);
+				break;
+
+
+				// Réception des informations d'un salon
+			case SALON:
+				deserialiserSalon(requete.data, &salon);
+				break;
+			case COMMENCER_PARTIE:
+				printf("Démarrage\n");
+		}
+	}
+
+
 	PAUSE("Fermer la socket d'appel");
 	close(socketAppel.fd);
 
 
 	return 0;
+}
+
+//TODO: envoyer deconnexion
+void bye() {
+	printf("Fermeture socket appel\n");
+	CHECK(close(socketAppel.fd), "close socket appel");
+
+	//printf("Fermeture des sockets de dialogue restantes\n");
+}
+
+void traiterSignal(int sigNum) {
+	switch (sigNum) {
+		case SIGINT:
+			exit(0); // Sortie par ^C
+			break;
+	}
 }
 
 /*
