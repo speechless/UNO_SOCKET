@@ -1,6 +1,8 @@
 # Nom des exécutables
 TARGETS = serveurUNO clientUNO hostingClientUNO
 
+TARGETS_PATH = $(patsubst %, $(BIN_DIR)/%, $(TARGETS))
+
 # Répertoires
 SRC_DIR = src
 OBJ_DIR = obj
@@ -22,17 +24,17 @@ SRC_clientUNO = clientUNO.c requetes.c
 SRC_hostingClientUNO = hostingClient.c requetes.c
 
 # Règles pour la compilation séparée
-all: serveurUNO clientUNO hostingClientUNO
+all: $(TARGETS_PATH)
 
-serveurUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_serveurUNO))))
+$(BIN_DIR)/serveurUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/serveurUNO
 
-clientUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_clientUNO))))
+$(BIN_DIR)/clientUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_clientUNO))
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/clientUNO
 
-hostingClientUNO: $(addprefix $(OBJ_DIR)/, $(notdir $(patsubst %.c, %.o, $(SRC_hostingClientUNO))))
+$(BIN_DIR)/hostingClientUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_hostingClientUNO))
 	@mkdir -p $(BIN_DIR)
 	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/hostingClientUNO
 

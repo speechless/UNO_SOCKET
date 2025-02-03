@@ -304,6 +304,7 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 	// Démarrage de la partie si complet
 	if (salon->nbJoueursActuels == salon->nbJoueursMax) {
 		fprintf(stderr, "Envoi du signal de démarrage\n");
+
 		basic_data_t requete;
 		requete.code = COMMENCER_PARTIE;
 		requete.data[0] = '\0';
