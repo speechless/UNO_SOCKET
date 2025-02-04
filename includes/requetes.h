@@ -6,6 +6,8 @@
 #include <session.h>
 
 typedef enum {
+	DECONNEXION,
+	QUITTER_PARTIE,
 	CREATION_PARTIE,
 	REJOINDRE_PARTIE,
 	COMMENCER_PARTIE,

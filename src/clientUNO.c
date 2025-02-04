@@ -13,7 +13,10 @@
 
 void traiterSignal(int sigNum);
 void bye();
+void deconnexionServeurUNO();
+void quitterSalon();
 
+int isConnectedToUNO = 0;
 socket_t socketAppel;
 socket_t socketEcouteHebergeur;
 
@@ -50,6 +53,7 @@ int main() {
 	if (requete.code == CLIENT) {
 		deserialiserClient(requete.data, &clientLocal);
 		fprintf(stderr, "Je suis le client n°%d\n", clientLocal.id);
+		isConnectedToUNO = 1;
 	}
 	else {
 		printf("Erreur\n");
@@ -90,19 +94,14 @@ int main() {
 	}
 
 
-	PAUSE("Fermer la socket d'appel");
-	close(socketAppel.fd);
+	deconnexionServeurUNO();
 
 
 	return 0;
 }
 
-//TODO: envoyer deconnexion
 void bye() {
-	printf("Fermeture socket appel\n");
-	CHECK(close(socketAppel.fd), "close socket appel");
-
-	//printf("Fermeture des sockets de dialogue restantes\n");
+	deconnexionServeurUNO();
 }
 
 void traiterSignal(int sigNum) {
@@ -111,6 +110,33 @@ void traiterSignal(int sigNum) {
 			exit(0); // Sortie par ^C
 			break;
 	}
+}
+
+void deconnexionServeurUNO() {
+	if (!isConnectedToUNO) {
+		return;
+	}
+
+	fprintf(stderr, "Envoi requête déconnexion au serveur\n");
+
+	basic_data_t requete;
+	requete.code = DECONNEXION;
+	requete.data[0] = '\0';
+	envoyer(socketAppel, &requete, (pFct)serialiserData);
+
+	printf("Fermeture socket appel\n");
+	CHECK(close(socketAppel.fd), "close socket appel");
+
+	isConnectedToUNO = 0;
+}
+
+void quitterSalon() {
+	fprintf(stderr, "Envoi requête quitter salon\n");
+
+	basic_data_t requete;
+	requete.code = QUITTER_PARTIE;
+	requete.data[0] = '\0';
+	envoyer(socketAppel, &requete, (pFct)serialiserData);
 }
 
 /*

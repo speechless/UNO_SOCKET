@@ -26,14 +26,16 @@ salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short por
 void gererCreationPartie(creation_partie_t demande, client_t client);
 void gererRejoindrePartie(rejoindre_partie_t demande);
 void ajouterJoueurSalon(salon_t* salon, int idClient);
+void retirerJoueurSalon(salon_t* salon, int idClient);
 client_t getClient(int idClient);
+salon_t* getSalonClient(int idClient);
 
 socket_t se;
 T_Maille* listeClients = NULL;
 int nextClientId = 1;
 pthread_t TIDClient;
 
-#define NB_SALONS_MAX 20
+#define NB_SALONS_MAX 10
 salon_t salons[NB_SALONS_MAX];
 int nextSalonId = 1;
 
@@ -96,16 +98,41 @@ void bye() {
 
 void dialogueClt(client_t* client) {
 	basic_data_t requete;
+	salon_t* salonClient;
 
 	bloquerSignaux();
 
-	while (1) {
+	do {
+
+		printf("==========================\nid salons : ");
+		for (int i = 0; i < NB_SALONS_MAX; i++) {
+			printf("%d, ", salons[i].id);
+		}
+		printf("\n=================\n");
 
 		// Réception d'une requête
 		recevoir(client->socket, &requete, (pFct)deserialiserData);
 		fprintf(stderr, "Requête reçue du client n°%d\n", client->id);
 
 		switch (requete.code) {
+			case DECONNEXION:
+				fprintf(stderr, "Requête de type DECONNEXION\n");
+
+				salonClient = getSalonClient(client->id);
+				if (salonClient != NULL) {
+					retirerJoueurSalon(salonClient, client->id);
+				}
+				break;
+
+			case QUITTER_PARTIE:
+				fprintf(stderr, "Requête de type QUITTER_PARTIE\n");
+
+				salonClient = getSalonClient(client->id);
+				if (salonClient != NULL) {
+					retirerJoueurSalon(salonClient, client->id);
+				}
+				break;
+
 			case CREATION_PARTIE:
 				creation_partie_t demandeCreation;
 
@@ -114,6 +141,7 @@ void dialogueClt(client_t* client) {
 				deserialiserCreationPartie(requete.data, &demandeCreation);
 				gererCreationPartie(demandeCreation, *client);
 				break;
+
 			case REJOINDRE_PARTIE:
 				rejoindre_partie_t demandeRejoindre;
 
@@ -123,11 +151,8 @@ void dialogueClt(client_t* client) {
 				gererRejoindrePartie(demandeRejoindre);
 				break;
 		}
-	}
 
-	//PAUSE("Envoyer un message au client");
-	//envoyer(*socket, &reponse, (pFct)serialiserData);
-	//afficherElt(client, "\n");
+	} while (requete.code != DECONNEXION);
 
 	// Fermeture de la socket de dialogue
 	fprintf(stderr, "Fermeture de la discussion avec le client n°%d\n", client->id);
@@ -196,7 +221,7 @@ salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short po
 		return NULL;
 	}
 
-	nouveauSalon->id = nextClientId++;
+	nouveauSalon->id = nextSalonId++;
 	nouveauSalon->isPrivate = 0;
 	nouveauSalon->idHost = idHost;
 	strcpy(nouveauSalon->adresseHost, adresseHost);
@@ -220,7 +245,7 @@ salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short por
 		return NULL;
 	}
 
-	nouveauSalon->id = nextClientId++;
+	nouveauSalon->id = nextSalonId++;
 	nouveauSalon->isPrivate = 1;
 	nouveauSalon->idHost = idHost;
 	strcpy(nouveauSalon->adresseHost, adresseHost);
@@ -313,7 +338,39 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 			client_t joueurDuSalon = getClient(salon->idClients[i]);
 			envoyer(joueurDuSalon.socket, &requete, (pFct)serialiserData);
 		}
+
+		// Réinitialisation du salon
+		memset(salon, 0, sizeof(salon_t));
 	}
+}
+
+
+void retirerJoueurSalon(salon_t* salon, int idClient) {
+	// Suppression du client dans joueurs présents
+	int i = 0;
+	while (i < salon->nbJoueursActuels && salon->idClients[i] != idClient) {
+		i++;
+	}
+	// i est à l'index du joueur à retirer
+	i += 1; // i est à droite du joueurs à retirer
+	while (i < salon->nbJoueursActuels) {
+		salon->idClients[i - 1] = salon->idClients[i];
+	}
+
+	salon->nbJoueursActuels--;
+
+	if (salon->nbJoueursActuels > 0) {
+		// Envoi de l'état actualisé du salon à tout le monde
+		for (int i = 0; i < salon->nbJoueursActuels; i++) {
+			client_t joueurDuSalon = getClient(salon->idClients[i]);
+			envoyerSalon(joueurDuSalon.socket, *salon);
+		}
+	}
+	else {
+		// Réinitialisation du salon
+		memset(salon, 0, sizeof(salon_t));
+	}
+
 }
 
 client_t getClient(int idClient) {
@@ -331,4 +388,22 @@ client_t getClient(int idClient) {
 	clientVide.id = -1;
 
 	return clientVide;
+}
+
+salon_t* getSalonClient(int idClient) {
+	salon_t* salonCourant;
+
+	for (int i = 0; i < NB_SALONS_MAX; i++) {
+		salonCourant = &salons[i];
+
+		if (salonCourant->id > 0) {
+			for (int j = 0; j < salonCourant->nbJoueursActuels; j++) {
+				if (salonCourant->idClients[j] == idClient) {
+					return salonCourant;
+				}
+			}
+		}
+	}
+
+	return NULL;
 }
