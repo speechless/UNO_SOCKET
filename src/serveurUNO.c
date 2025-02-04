@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ * mutex
+ */
+
 #include <pthread.h>
 #include <string.h>
 
@@ -154,9 +159,12 @@ void dialogueClt(client_t* client) {
 
 	} while (requete.code != DECONNEXION);
 
+
 	// Fermeture de la socket de dialogue
 	fprintf(stderr, "Fermeture de la discussion avec le client n°%d\n", client->id);
 	CHECK(close(client->socket.fd), "close()");
+
+	// Suppression du client de la liste
 	listeClients = supprimerElement(*client, listeClients);
 
 	pthread_exit(NULL);
@@ -336,6 +344,7 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 
 		for (int i = 0; i < salon->nbJoueursActuels; i++) {
 			client_t joueurDuSalon = getClient(salon->idClients[i]);
+			printf("envoi démarrage à %d\n", joueurDuSalon.id);
 			envoyer(joueurDuSalon.socket, &requete, (pFct)serialiserData);
 		}
 

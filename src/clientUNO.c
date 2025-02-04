@@ -1,3 +1,10 @@
+/**
+ * TODO:
+ * menu
+ * connexion entre clients quand la partie est lancée
+ * jeu
+ */
+
 #include <session.h>
 #include <data.h>
 #include <enhanceTerminal.h>
@@ -52,14 +59,14 @@ int main() {
 	recevoir(socketAppel, &requete, (pFct)deserialiserData);
 	if (requete.code == CLIENT) {
 		deserialiserClient(requete.data, &clientLocal);
-		fprintf(stderr, "Je suis le client n°%d\n", clientLocal.id);
+		fprintf(stderr, "Je suis le client n°%d, port:%d\n", clientLocal.id, clientLocal.port);
 		isConnectedToUNO = 1;
 	}
 	else {
 		printf("Erreur\n");
 	}
 
-	//TODO menu
+
 	// Test statique de partie publique
 	demandeRejoindre.idClient = clientLocal.id;
 	demandeRejoindre.isPrivate = 0;
@@ -79,6 +86,8 @@ int main() {
 				demandeCreation.portHost = ntohs(socketEcouteHebergeur.adrLoc.sin_port);
 				demandeCreation.nbJoueursMax = 2;
 				demandeCreation.idClient = clientLocal.id;
+
+				printf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
 
 				envoyerCreationPartie(socketAppel, demandeCreation);
 				break;
