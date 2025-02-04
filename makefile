@@ -1,7 +1,9 @@
+# $^ = toutes les dépendances
+# $< = la première dépendance
+# $@ = la cible
+
 # Nom des exécutables
 TARGETS = serveurUNO clientUNO hostingClientUNO
-
-TARGETS_PATH = $(patsubst %, $(BIN_DIR)/%, $(TARGETS))
 
 # Répertoires
 SRC_DIR = src
@@ -23,25 +25,27 @@ SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
 SRC_clientUNO = clientUNO.c requetes.c
 SRC_hostingClientUNO = hostingClient.c requetes.c
 
+# Générer les fichiers objets correspondants à chaque exécutable
+OBJ_serveurUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))
+OBJ_clientUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_clientUNO))
+OBJ_hostingClientUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_hostingClientUNO))
+
 # Règles pour la compilation séparée
-all: $(TARGETS_PATH)
-
-$(BIN_DIR)/serveurUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))
-	@mkdir -p $(BIN_DIR)
-	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/serveurUNO
-
-$(BIN_DIR)/clientUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_clientUNO))
-	@mkdir -p $(BIN_DIR)
-	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/clientUNO
-
-$(BIN_DIR)/hostingClientUNO: $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_hostingClientUNO))
-	@mkdir -p $(BIN_DIR)
-	$(CC) $^ $(CFLAGS) $(LIBS) -o $(BIN_DIR)/hostingClientUNO
+all: $(addprefix $(BIN_DIR)/, $(TARGETS))
 
 # Génération des fichiers objets
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
 	@mkdir -p $(OBJ_DIR)
 	$(CC) -c $< $(CFLAGS) -o $@
+
+# Génération des fichier exécutables
+.SECONDEXPANSION:
+$(BIN_DIR)/%: $$(OBJ_$$*) 
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ $(CFLAGS) $(LIBS) -o $@
+
+
+
 
 # Nettoyage des fichiers générés
 clean:
