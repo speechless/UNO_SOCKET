@@ -27,14 +27,31 @@ void envoyerErreur(socket_t socket, char* message) {
 
 
 void serialiserSalon(salon_t* salon, char* chaine) {
+	char buffer[50];
 	afficherSalon(*salon);
-	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d:%s", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax, salon->code);
-	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+
+	char chaineIdJoueurs[20] = "";
+	for (int i = 0; i < salon->nbJoueursActuels; i++) {
+		sprintf(buffer, "%d:", salon->idClients[i]);
+		strcat(chaineIdJoueurs, buffer);
+	}
+
+	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d:[%s]:%s", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax, chaineIdJoueurs, salon->code);
+	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
 }
 
 void deserialiserSalon(char* chaine, salon_t* salon) {
-	//fprintf(stderr, "recu : #%s#\n", (char*)chaine);
-	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:%s", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, salon->code);
+	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
+	char chaineIdJoueurs[20];
+
+	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]:%s", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, salon->code);
+
+	char* ptr = chaineIdJoueurs;
+	for (int i = 0; i < salon->nbJoueursActuels; i++) {
+		sscanf(ptr, "%d:", &salon->idClients[i]);
+		ptr = strchr(ptr, ':') + 1;
+	}
+
 	afficherSalon(*salon);
 }
 
@@ -78,6 +95,11 @@ void afficherSalon(salon_t salon) {
 	printf("Salon.portHost = %d\n", salon.portHost);
 	printf("Salon.joueursActuel = %d\n", salon.nbJoueursActuels);
 	printf("Salon.joueursMax = %d\n", salon.nbJoueursMax);
+	printf("Salon.idJoueurs = [");
+	for (int i = 0; i < salon.nbJoueursActuels; i++) {
+		printf("%d, ", salon.idClients[i]);
+	}
+	printf("]\n");
 	printf("Salon.code = %s\n", salon.code);
 }
 
