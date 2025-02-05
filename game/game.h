@@ -4,6 +4,10 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <sys/select.h>
 
 #include "struct.h"
 #include "enhanceTerminal.h"
