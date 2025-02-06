@@ -6,17 +6,17 @@
 #include <netinet/in.h>
 
 /**
- * @struct Structure représentant une socket
+ * Structure représentant une socket
  */
 struct socket {
 	int fd; /**< file decriptor de la socket */
-	int mode;
-	struct sockaddr_in adrDist;
-	struct sockaddr_in adrLoc;
+	int mode; /**< mode SOCK_STREAM ou SOCK_DGRAM */
+	struct sockaddr_in adrDist; /**< adressage de la connexion distante */
+	struct sockaddr_in adrLoc; /**< adressage de la connexion locale */
 };
 
 /**
- * @typedef Définition du type de données socket_t
+ * Définition du type de données socket_t
  */
 typedef struct socket socket_t;
 
@@ -37,7 +37,7 @@ socket_t creerSocket(int mode);
 socket_t creerSocketAdr(int mode, char* adrIP, unsigned short port);
 
 /**
- * @brief		Création d'une socket d'écoute avec l'adressage fourni en paramétre
+ * @brief		Création d'une socket d'écoute avec l'adressage fourni en paramètres
  * @param adrIP Adresse IP d'écoute
  * @param port 	Port sur lequel écouter
  * @result		Socket d'écoute créée
@@ -53,7 +53,7 @@ socket_t accepterClt(const socket_t sockEcoute);
 
 /**
  * @brief				Création d'une socket d'appel et connexion au serveur dont l'adressage est fourni en paramètre
- * @param mode 	Mode d'ouverture de la socket DGRAM/STREAM
+ * @param mode 			Mode d'ouverture de la socket DGRAM/STREAM
  * @param adrIP 		Adresse IP à laquelle se connecter
  * @param port 			Port sur lequel se connecter
  * @result				Socket d'appel créée

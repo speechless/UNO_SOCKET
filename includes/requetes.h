@@ -5,6 +5,9 @@
 
 #include <session.h>
 
+/**
+ * Type de requête
+ */
 typedef enum {
 	DECONNEXION,
 	QUITTER_PARTIE,
@@ -16,6 +19,9 @@ typedef enum {
 	ERREUR,
 } type_requete;
 
+/**
+ * Structure représentant un client
+ */
 typedef struct {
 	int id;
 	socket_t socket;
@@ -23,11 +29,17 @@ typedef struct {
 	unsigned short port;
 } client_t;
 
+/**
+ * Structure représentant une requête basique
+ */
 typedef struct {
 	int code;
 	char data[MAX_BUFF];
 } basic_data_t;
 
+/**
+ * Structure représentant un salon pour la mise en relation des joueurs
+ */
 typedef struct {
 	int id;
 	int isPrivate;
@@ -40,6 +52,9 @@ typedef struct {
 	int code;
 } salon_t;
 
+/**
+ * Structure contenant les informations pour la création d'une partie
+ */
 typedef struct {
 	int idClient;
 	int isPrivate;
@@ -48,6 +63,9 @@ typedef struct {
 	unsigned short portHost;
 } creation_partie_t;
 
+/**
+ * Structure contenant les informations pour rejoindre une partie
+ */
 typedef struct {
 	int idClient;
 	int isPrivate;
