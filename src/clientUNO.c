@@ -150,7 +150,7 @@ int main() {
 					printf("Reception test faite %d\n", test);*/
 
 					resEnvoiPartie(socketPartie,partie);
-					printf("Reception partie faite %d\n",partie->nbJoueurs);
+					printf("Reception partie faite %d\n",clientLocal.id);
 
 					jouerPartieClient(partie,clientLocal.id,socketPartie);
 
