@@ -1,10 +1,10 @@
-#include "game.h"
+#include "player.h"
 
-int main() {
+int jouerPartie(Partie partie) {
     int input = 0;
 
     //récupère l'id du joueur dans la partie
-    int myId = getID();
+    int myID = getID();
 
 
     /*Si c'est son tour, affiche la main avec action
@@ -18,9 +18,9 @@ int main() {
         clearScreen();
         if(partie.currentPlayer != myID){
             printf("\nCarte visible : ");
-            afficherCarte(p.carteVisible);
-            afficherMain(partie.joueurs[i]);
-            resReceptionCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
+            afficherCarte(partie.carteVisible);
+            afficherMain(partie.joueurs[myID]);
+            resEnvoiCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
         }else{
             afficherMainAvecSelection(partie.joueurs[partie.currentPlayer], partie.carteVisible);
             scanf("%d", &input);
@@ -51,4 +51,4 @@ int main() {
     return 0;
 }
 
-int getID(){}
+int getID(){return 1;}
