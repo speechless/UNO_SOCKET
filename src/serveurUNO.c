@@ -128,6 +128,9 @@ void dialogueClt(client_t* client) {
 			printf("%d, ", salons[i].id);
 		}
 		printf("\n=================\n");
+		printf("==========================\nid salons : ");
+		afficherListe(listeClients);
+		printf("\n=================\n");
 
 		// Réception d'une requête
 		recevoir(client->socket, &requete, (pFct)deserialiserData);
@@ -269,6 +272,7 @@ salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short po
 	nouveauSalon->portHost = portHost;
 	nouveauSalon->nbJoueursActuels = 0;
 	nouveauSalon->nbJoueursMax = nbJoueursMax;
+	nouveauSalon->code = 0;
 
 	return nouveauSalon;
 }
