@@ -68,9 +68,7 @@ int main() {
     return 0;
 }*/
 
-Partie* initPartie(int nbJoueurs, socket_t* sockets) {
-    Partie* partie = malloc(sizeof(Partie));  // Allocation dynamique
-
+void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
     if (partie == NULL) {
         perror("Erreur d'allocation mémoire pour la partie");
         exit(EXIT_FAILURE);
@@ -116,7 +114,40 @@ Partie* initPartie(int nbJoueurs, socket_t* sockets) {
         }
     }
 
-    return partie;  // Retourne un pointeur valide
+}
+
+void initPartieClient(Partie* partie,int nbJoueurs) {
+    if (partie == NULL) {
+        perror("Erreur d'allocation mémoire pour la partie");
+        exit(EXIT_FAILURE);
+    }
+
+    partie->estFinie = 0;
+    partie->nbJoueurs = nbJoueurs;
+    partie->sens = 1; 
+    partie->nbTours = 0;
+    Carte startCard = {-1, -1};  // Carte invalide
+    partie->carteVisible = startCard;
+    partie->currentPlayer = 0;
+
+    // Initialiser les joueurs
+    for(int i = 0; i < partie->nbJoueurs; i++) {
+        partie->joueurs[i].idJoueur = i;
+        partie->joueurs[i].tailleMain = 0; 
+        partie->joueurs[i].main = malloc(TAILLE_MAIN_MAX * sizeof(Carte));  // Allouer mémoire pour la main
+
+        if (partie->joueurs[i].main == NULL) {
+            perror("Erreur d'allocation mémoire pour la main du joueur");
+            free(partie);
+            exit(EXIT_FAILURE);
+        }
+
+        // Initialisation de la main à -1, -1
+        for (int j = 0; j < TAILLE_MAIN_MAX; j++) {
+            partie->joueurs[i].main[j].Couleur = -1;
+            partie->joueurs[i].main[j].Valeur = -1;
+        }
+    }
 }
 
 

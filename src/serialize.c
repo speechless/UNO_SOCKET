@@ -7,9 +7,10 @@ void serialiserPartie(Partie p, char* chaine) {
     char buffer[256]; // Tampon pour formater les données temporaires
 
     // Initialisation de la chaîne
+    debugprintf("Serialisation de la partie\n");
     sprintf(chaine, "[%d:%d:%d:%d:[",STATUS_CODE_SERIA_PARTIE,p.nbJoueurs, p.currentPlayer, p.sens);
     debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p.nbJoueurs, p.currentPlayer, p.sens);
-
+/*
     for (int i = 0; i < p.nbJoueurs; i++) {
         // Ajout des informations de chaque joueur
         //sauf la socket
@@ -60,23 +61,24 @@ void serialiserPartie(Partie p, char* chaine) {
     sprintf(buffer, "%d:%d]", p.estFinie, p.nbTours);
     strcat(chaine, buffer);
 
-    debugprintf("%d:%d]", p.estFinie, p.nbTours);
+    debugprintf("%d:%d]", p.estFinie, p.nbTours);*/
 }
 
 
 void deserialiserPartie(char* chaine, Partie* p) {
     const char* ptr = chaine; // Pointeur pour parcourir la chaîne
-
+    debugprintf("Deserialisation de la partie\n");
     // Lecture des premières informations (nbJoueurs, currentPlayer, sens)
     char buffer[256];
     sprintf(buffer, "[%d:%d:%d:%d:[", STATUS_CODE_SERIA_PARTIE,p->nbJoueurs, p->currentPlayer, p->sens);
     sscanf(ptr, buffer, &p->nbJoueurs, &p->currentPlayer, &p->sens);
+    debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p->nbJoueurs, p->currentPlayer, p->sens);
 
     // Avancer le pointeur après cette section
-    ptr = strchr(ptr, '[') + 13;
+    //ptr = strchr(ptr, '[') + 13;
 
     // Lecture des joueurs
-    for (int i = 0; i < p->nbJoueurs; i++) {
+    /*for (int i = 0; i < p->nbJoueurs; i++) {
         //socket_t idSocket;
         int idJoueur, tailleMain;
         sscanf(ptr, "%d:%d:[", &idJoueur, &tailleMain);
@@ -133,7 +135,7 @@ void deserialiserPartie(char* chaine, Partie* p) {
     }
 
     // Lecture des informations finales (estFinie, nbTours)
-    sscanf(ptr, "%d:%d]", &p->estFinie, &p->nbTours);
+    sscanf(ptr, "%d:%d]", &p->estFinie, &p->nbTours);*/
 }
 
 void serialiserCoup(Partie p ,char* chaine){

@@ -22,7 +22,8 @@ void afficherMenu(int* state,int input);
 void afficherMain(Joueur j);
 int generateCode();
 
-Partie* initPartie(int nbJoueurs,socket_t* sockets);
+void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets);
+void initPartieClient(Partie* partie,int nbJoueurs);
 int jouerCarte(Partie *partie, int idJoueur, Carte carteJouee);
 
 void afficherMainAvecSelection(Joueur joueur, Carte carteVisible);

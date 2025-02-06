@@ -97,7 +97,7 @@ int main() {
 				deserialiserSalon(requete.data, &salon);
 				break;
 			case COMMENCER_PARTIE:
-				Partie* partie;
+				Partie* partie = malloc(sizeof(Partie));;
 
 				/*
 				SI pas host
@@ -119,11 +119,8 @@ int main() {
 
 					printf("je suis port : %d\n", ntohs(socketEcouteHebergeur.adrLoc.sin_port));
 
-					partie = initPartie(salon.nbJoueursMax, sockets);
-					if (partie == NULL) {
-						perror("Erreur lors de l'initialisation de la partie");
-						exit(EXIT_FAILURE);
-					}
+					initPartie(partie,salon.nbJoueursMax, sockets);
+					
 					printf("Création partie faite %d\n", partie->nbJoueurs);
 
 					int test = 8;
@@ -131,8 +128,9 @@ int main() {
 					printf("Envoi test faite %d\n", test);
 					printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));
 
-					//reqEnvoiPartie(sockets,partie);
-					//printf("Envoi partie faite %d\n",partie->nbJoueurs);
+
+					reqEnvoiPartie(sockets,partie);
+					printf("Envoi partie faite %d\n",partie->nbJoueurs);
 
 
 					//jouerPartieServeur(partie,sockets);
@@ -140,7 +138,7 @@ int main() {
 				}
 				else {
 					printf("Je suis client\n");
-					partie = malloc(sizeof(Partie));
+					initPartieClient(partie,salon.nbJoueursMax);
 
 					socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
 					printf("Connection serveur faite\n");
@@ -148,18 +146,15 @@ int main() {
 					printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
 					printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
 
-					int chaine;
-					recevoirTest(socketPartie, &chaine);
-					printf("Reception test faite %d\n", chaine);
+					int test;
+					recevoirTest(socketPartie, &test);
+					printf("Reception test faite %d\n", test);
 
-					//resEnvoiPartie(socketPartie,partie);
-					//printf("Reception partie faite %d\n",partie->nbJoueurs);
+					resEnvoiPartie(socketPartie,partie);
+					printf("Reception partie faite %d\n",partie->nbJoueurs);
 					//jouerPartieClient(partie,clientLocal.id,socketPartie);
 					CHECK(close(socketPartie.fd), "close socket partie");
 				}
-
-				if (partie == NULL) break;
-				free(partie);
 
 				break;
 			default:
