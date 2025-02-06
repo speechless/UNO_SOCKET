@@ -18,12 +18,12 @@ int indexCode=0;
  * 
  */
 int state = 0;
-
+/*
 int main() {
     int input = 0;
 
     Partie partie = initPartie(4);
-    reqEnvoiPartie(/*partie.joueurs[0].idSocket,*/ partie);
+    reqEnvoiPartie(partie.joueurs[0].idSocket, partie);
 
     if(TEST){;}
     if(REAL){
@@ -46,7 +46,7 @@ int main() {
                 // serialiserCoup(partie, chaine);
                 // free(chaine);
 
-                reqEnvoiCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
+                reqEnvoiCoup(partie.joueurs[partie.currentPlayer].idSocket,partie);
 
 
             } else if (input < 0 || input >= partie.joueurs[partie.currentPlayer].tailleMain) {
@@ -59,60 +59,66 @@ int main() {
                     }else{
                         prochainTour(&partie);
                     }
-                    reqEnvoiCoup(/*partie.joueurs[partie.currentPlayer].idSocket,*/ partie);
+                    reqEnvoiCoup(partie.joueurs[partie.currentPlayer].idSocket, partie);
                 }
             }
             
         }
     }
     return 0;
-}
+}*/
 
-Partie initPartie(int nbJoueurs) {
-    Partie partie;
-    partie.estFinie = 0;
-    partie.nbJoueurs = nbJoueurs;
-    partie.sens = -1; 
-    partie.nbTours = 0;
+Partie* initPartie(int nbJoueurs, socket_t* sockets) {
+    Partie* partie = malloc(sizeof(Partie));  // Allocation dynamique
+
+    if (partie == NULL) {
+        perror("Erreur d'allocation mémoire pour la partie");
+        exit(EXIT_FAILURE);
+    }
+
+    partie->estFinie = 0;
+    partie->nbJoueurs = nbJoueurs;
+    partie->sens = 1; 
+    partie->nbTours = 0;
     Carte startCard = {-1, -1};  // Carte invalide
-    partie.carteVisible= startCard;
-    partie.currentPlayer = 0;
+    partie->carteVisible = startCard;
+    partie->currentPlayer = 0;
 
     // Initialiser les joueurs
-    for(int i = 0; i < partie.nbJoueurs; i++) {
-        Joueur joueur;
-        joueur.idJoueur = i;
-        joueur.tailleMain = 0; 
-        joueur.main = malloc(TAILLE_MAIN_MAX * sizeof(Carte));  // Allouer de la mémoire pour la main
+    for(int i = 0; i < partie->nbJoueurs; i++) {
+        partie->joueurs[i].idJoueur = i;
+        partie->joueurs[i].idSocket = sockets[i];
+        partie->joueurs[i].tailleMain = 0; 
+        partie->joueurs[i].main = malloc(TAILLE_MAIN_MAX * sizeof(Carte));  // Allouer mémoire pour la main
 
-        if (joueur.main == NULL) {
+        if (partie->joueurs[i].main == NULL) {
             perror("Erreur d'allocation mémoire pour la main du joueur");
+            free(partie);
             exit(EXIT_FAILURE);
         }
 
         // Initialisation de la main à -1, -1
         for (int j = 0; j < TAILLE_MAIN_MAX; j++) {
-            joueur.main[j].Couleur = -1;  // Valeur invalide
-            joueur.main[j].Valeur = -1;   // Valeur invalide
+            partie->joueurs[i].main[j].Couleur = -1;
+            partie->joueurs[i].main[j].Valeur = -1;
         }
-
-        partie.joueurs[i] = joueur;
     }
 
     // Générer et mélanger les cartes
-    partie.pioche = genererCartes();
-    partie.nbCartesPioche = TOTAL_CARTES;
-    melangerCartes(partie.pioche, partie.nbCartesPioche);
+    partie->pioche = genererCartes();
+    partie->nbCartesPioche = TOTAL_CARTES;
+    melangerCartes(partie->pioche, partie->nbCartesPioche);
 
-    // Distribuer les cartes à chaque joueur
-    for (int i = 0; i < partie.nbJoueurs; i++) {
+    // Distribuer les cartes aux joueurs
+    for (int i = 0; i < partie->nbJoueurs; i++) {
         for (int j = 0; j < TAILLE_MAIN; j++) { 
-            piocherCarte(&partie, i);   // La fonction piocherCarte ajoute la carte à la main du joueur
+            piocherCarte(partie, i);   // La fonction piocherCarte ajoute la carte à la main du joueur
         }
     }
 
-    return partie;
+    return partie;  // Retourne un pointeur valide
 }
+
 
 
 // Fonction pour jouer une carte

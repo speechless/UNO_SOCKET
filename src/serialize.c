@@ -12,10 +12,12 @@ void serialiserPartie(Partie p, char* chaine) {
 
     for (int i = 0; i < p.nbJoueurs; i++) {
         // Ajout des informations de chaque joueur
-        sprintf(buffer, "%d:%d:%d:[", p.joueurs[i].idSocket, p.joueurs[i].idJoueur, p.joueurs[i].tailleMain);
+        //sauf la socket
+
+        sprintf(buffer, "%d:%d:[",p.joueurs[i].idJoueur, p.joueurs[i].tailleMain);
         strcat(chaine, buffer);
 
-        debugprintf("%d:%d:%d:[", p.joueurs[i].idSocket, p.joueurs[i].idJoueur, p.joueurs[i].tailleMain);
+        debugprintf("%d:%d:[", p.joueurs[i].idJoueur, p.joueurs[i].tailleMain);
 
         for (int j = 0; j < p.joueurs[i].tailleMain; j++) {
             // Ajout des informations des cartes dans la main du joueur
@@ -75,9 +77,9 @@ void deserialiserPartie(char* chaine, Partie* p) {
 
     // Lecture des joueurs
     for (int i = 0; i < p->nbJoueurs; i++) {
-        int idSocket, idJoueur, tailleMain;
-        sscanf(ptr, "%d:%d:%d:[", &idSocket, &idJoueur, &tailleMain);
-        p->joueurs[i].idSocket = idSocket;
+        //socket_t idSocket;
+        int idJoueur, tailleMain;
+        sscanf(ptr, "%d:%d:[", &idJoueur, &tailleMain);
         p->joueurs[i].idJoueur = idJoueur;
         p->joueurs[i].tailleMain = tailleMain;
 

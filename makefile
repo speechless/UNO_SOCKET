@@ -22,7 +22,7 @@ DEPS = $(INC_DIR)/inc.h
 
 # Fichiers sources spécifiques aux cibles
 SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
-SRC_clientUNO = clientUNO.c requetes.c
+SRC_clientUNO = clientUNO.c requetes.c game.c affichage.c serialize.c game_requests.c player.c generateCards.c
 
 # Générer les fichiers objets correspondants à chaque exécutable
 OBJ_serveurUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))

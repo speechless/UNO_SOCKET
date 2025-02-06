@@ -1,6 +1,8 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 
+#include "session.h"
+
 #define NB_COULEURS 4 // ROUGE, BLEU, JAUNE, VERT (sans NOIR)
 #define NB_VALEURS 13 // Valeurs de ZERO à CHANGEMENT_SENS (sans PLUS_QUATRE et CHANGEMENT_COULEUR)
 #define NB_SPECIALES 2 // PLUS_QUATRE, CHANGEMENT_COULEUR
@@ -42,7 +44,7 @@ typedef struct {
 } Carte;
 
 typedef struct {
-    int idSocket;
+    socket_t idSocket;
     int idJoueur;
 
     int tailleMain;

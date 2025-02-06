@@ -18,6 +18,12 @@
 
 #include <requetes.h>
 
+#include <struct.h>
+#include <game.h>
+#include <player.h>
+#include <game_requests.h>
+#include <serialize.h>
+
 void traiterSignal(int sigNum);
 void bye();
 void deconnexionServeurUNO();
@@ -29,6 +35,7 @@ socket_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
 socket_t socketEcouteHebergeur = {-1,};
+socket_t socketPartie;
 
 /**
  * states :
@@ -38,7 +45,7 @@ socket_t socketEcouteHebergeur = {-1,};
  * 3 : Attente de partie privée (hébergeur)
  * 4 : Attente de partie privée (rejoindre)
  */
-int state = 0;
+
 
 int main() {
 
@@ -48,9 +55,7 @@ int main() {
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
 	rejoindre_partie_t demandeRejoindre;
-
-	struct timeval to = {0,0};
-	fd_set read_fs;
+	int state = 0;
 
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
@@ -88,7 +93,8 @@ int main() {
 				deserialiserSalon(requete.data, &salon);
 				break;
 			case COMMENCER_PARTIE:
-				Partie partie;
+				Partie* partie; 
+		
 				/*
 				SI pas host 
 					connection à l'host
@@ -100,16 +106,50 @@ int main() {
 				*/
 				printf("Démarrage\n");
 				if(salon.idHost == clientLocal.id){
-					initConnection(salon);
-					partie = initPartie();
-					for(int i = 0; i < salon.nbJoueursMax; i++){
-						reqEnvoiPartie(salon.idClients[i],partie);
+					printf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);		
+					socket_t* sockets = initConnection(salon);
+					if (sockets == NULL) {
+						perror("Erreur allocation mémoire pour sockets");
+						exit(EXIT_FAILURE);
 					}
+					
+				
+					partie = initPartie(salon.nbJoueursMax ,sockets);
+					if (partie == NULL) {
+						perror("Erreur lors de l'initialisation de la partie");
+						exit(EXIT_FAILURE);
+					}
+					printf("Création partie faite %d\n",partie->nbJoueurs);
+
+					int test = 8;
+					envoiTest(sockets[1],&test);
+					printf("Envoi test faite %d\n",test);
+					
+					//reqEnvoiPartie(sockets,partie);
+					//printf("Envoi partie faite %d\n",partie->nbJoueurs);
+					
+					
+					//jouerPartieServeur(partie,sockets);
+					free(sockets);
 				}else{
-					socketEcouteHebergeur = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
-					resEnvoiePartie(socketEcouteHebergeur,partie)
+					printf("Je suis client\n");
+					partie = malloc(sizeof(Partie));
+
+					socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
+					printf("Connection serveur faite\n");
+
+					int chaine;
+					recevoirTest(socketPartie, &chaine);
+					printf("Reception test faite %d\n",chaine);
+
+					//resEnvoiPartie(socketPartie,partie);
+					//printf("Reception partie faite %d\n",partie->nbJoueurs);
+					//jouerPartieClient(partie,clientLocal.id,socketPartie);
+					CHECK(close(socketPartie.fd), "close socket partie");
 				}
-				jouerPartie(partie,clientLocal.id);
+				
+				if (partie == NULL) break;
+				free(partie);
 
 				break;
 			default:
@@ -163,16 +203,20 @@ void traiterSignal(int sigNum) {
 }
 
 socket_t* initConnection(salon_t salon){
-	socket_t sockets[salon.nbJoueursMax];
-	int nbJoueursConnectes = 0;
-	int nbJoueursMax = salon.nbJoueursMax;
+    socket_t* sockets = malloc((salon.nbJoueursMax) * sizeof(socket_t));
+    if (sockets == NULL) {
+        perror("Erreur allocation mémoire pour sockets");
+        exit(EXIT_FAILURE);
+    }
 
-	for(int i = 0; i < salon.nbJoueursMax; i++){
-		sockets[i] = accepterClt(salon.idClients[i]);
-		nbJoueursConnectes++;
-	}
-	return sockets;
+    int nbJoueursConnectes = 0;
+    for(int i = 0; i < salon.nbJoueursMax-1; i++){
+        sockets[i] = accepterClt(socketEcouteHebergeur);
+        nbJoueursConnectes++;
+    }
+    return sockets;
 }
+
 
 void deconnexionServeurUNO() {
 	fprintf(stderr, "Envoi requête déconnexion au serveur\n");
