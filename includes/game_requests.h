@@ -9,9 +9,9 @@
 void reqEnvoiPartie(socket_t* sockets, Partie* partie);
 void resEnvoiPartie(socket_t socket, Partie* partie);
 
-void reqEnvoiCoupServeur(socket_t* sockets, Partie partie);
-void reqEnvoiCoupClient(socket_t socketHost, Partie partie);
-void resEnvoiCoup(socket_t socket, Partie partie);
+void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie);
+void reqEnvoiCoupClient(socket_t socketHost, Partie* partie);
+void resEnvoiCoup(socket_t socket, Partie* partie);
 
 void envoiTest(socket_t socket, int* test);
 

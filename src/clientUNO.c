@@ -122,18 +122,17 @@ int main() {
 					initPartie(partie,salon.nbJoueursMax, sockets);
 					
 					printf("Création partie faite %d\n", partie->nbJoueurs);
-
+/*
 					int test = 8;
 					envoiTest(sockets[0], &test);
 					printf("Envoi test faite %d\n", test);
-					printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));
+					printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));*/
 
 
 					reqEnvoiPartie(sockets,partie);
 					printf("Envoi partie faite %d\n",partie->nbJoueurs);
 
-
-					//jouerPartieServeur(partie,sockets);
+					jouerPartieServeur(partie,sockets);
 					free(sockets);
 				}
 				else {
@@ -142,17 +141,19 @@ int main() {
 
 					socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
 					printf("Connection serveur faite\n");
-
+/*
 					printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
 					printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
 
 					int test;
 					recevoirTest(socketPartie, &test);
-					printf("Reception test faite %d\n", test);
+					printf("Reception test faite %d\n", test);*/
 
 					resEnvoiPartie(socketPartie,partie);
 					printf("Reception partie faite %d\n",partie->nbJoueurs);
-					//jouerPartieClient(partie,clientLocal.id,socketPartie);
+
+					jouerPartieClient(partie,clientLocal.id,socketPartie);
+
 					CHECK(close(socketPartie.fd), "close socket partie");
 				}
 
@@ -175,6 +176,7 @@ void bye() {
 	if (socketEcouteHebergeur.fd != -1) {
 		fprintf(stderr, "Fermeture socket d'écoute d'hébergeur de partie\n");
 		CHECK(close(socketEcouteHebergeur.fd), "close socket hébergeur");
+		CHECK(close(socketPartie.fd), "close socket partie");
 	}
 }
 

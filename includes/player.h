@@ -6,5 +6,5 @@
 #include "game.h"
 #include "generateCards.h"
 
-int jouerPartieServeur(Partie partie, socket_t* sockets);
-int jouerPartieClient(Partie partie,int idJoueur, socket_t socketHost);
+int jouerPartieServeur(Partie* partie, socket_t* sockets);
+int jouerPartieClient(Partie* partie,int idJoueur, socket_t socketHost);

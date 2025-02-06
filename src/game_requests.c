@@ -3,7 +3,7 @@
 /*Forcement serveur*/
 void reqEnvoiPartie(socket_t* sockets, Partie* partie) {
 	for (int i = 0; i < partie->nbJoueurs - 1; i++) {
-		envoyer(sockets[i], &partie, (pFct)serialiserPartie);
+		envoyer(sockets[i], partie, (pFct)serialiserPartie);
 	}
 }
 
@@ -32,19 +32,19 @@ int deserialiserD(char* chaine, int* data) {
 
 /*Forcement client*/
 void resEnvoiPartie(socket_t socket, Partie* partie) {
-	recevoir(socket, &partie, (pFct)deserialiserPartie);
+	recevoir(socket, partie, (pFct)deserialiserPartie);
 }
 
-void reqEnvoiCoupServeur(socket_t* sockets, Partie partie) {
-	for (int i = 0; i < partie.nbJoueurs - 1; i++) {
-		envoyer(sockets[i], &partie, (pFct)serialiserCoup);
+void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie) {
+	for (int i = 0; i < partie->nbJoueurs - 1; i++) {
+		envoyer(sockets[i], partie, (pFct)serialiserCoup);
 	}
 }
 
-void reqEnvoiCoupClient(socket_t socketHost, Partie partie) {
-	envoyer(socketHost, &partie, (pFct)serialiserCoup);
+void reqEnvoiCoupClient(socket_t socketHost, Partie* partie) {
+	envoyer(socketHost, partie, (pFct)serialiserCoup);
 }
 
-void resEnvoiCoup(socket_t socket, Partie partie) {
-	recevoir(socket, &partie, (pFct)deserialiserCoup);
+void resEnvoiCoup(socket_t socket, Partie* partie) {
+	recevoir(socket, partie, (pFct)deserialiserCoup);
 }
