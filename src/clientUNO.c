@@ -27,7 +27,7 @@ void quitterSalon();
 void lancerPartiePublique(client_t clientLocal);
 
 socket_t socketAppel;
-socket_t socketEcouteHebergeur;
+socket_t socketEcouteHebergeur = {-1,};
 
 /**
  * states :
@@ -85,6 +85,10 @@ int main() {
 				break;
 			case COMMENCER_PARTIE:
 				printf("Démarrage\n");
+				break;
+			default:
+				printf("CODE RECU NON RECONNU !\n");
+
 		}
 	}
 
@@ -94,6 +98,11 @@ int main() {
 
 void bye() {
 	deconnexionServeurUNO();
+
+	if (socketEcouteHebergeur.fd != -1) {
+		fprintf(stderr, "Fermeture socket d'écoute d'hébergeur de partie\n");
+		CHECK(close(socketEcouteHebergeur.fd), "close socket hébergeur");
+	}
 }
 
 client_t connexionServeurUNO() {
