@@ -1,4 +1,4 @@
-#include "requetes.h"
+#include "game_requests.h"
 
 void reqEnvoiPartie(socket_t* sockets, Partie partie){
     for(int i=0; i<partie.nbJoueurs; i++){

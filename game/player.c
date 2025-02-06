@@ -1,10 +1,10 @@
 #include "player.h"
 
-int jouerPartie(Partie partie) {
+int jouerPartie(Partie partie,int idJoueur){
     int input = 0;
 
     //récupère l'id du joueur dans la partie
-    int myID = getID();
+    int myID = idJoueur;
 
 
     /*Si c'est son tour, affiche la main avec action
@@ -50,5 +50,3 @@ int jouerPartie(Partie partie) {
     }
     return 0;
 }
-
-int getID(){return 1;}
