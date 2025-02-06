@@ -37,7 +37,7 @@ typedef struct {
 	int nbJoueursActuels;
 	int nbJoueursMax;
 	int idClients[20];
-	char code[20];
+	int code;
 } salon_t;
 
 typedef struct {
@@ -51,7 +51,7 @@ typedef struct {
 typedef struct {
 	int idClient;
 	int isPrivate;
-	char code[20];
+	int code;
 } rejoindre_partie_t;
 
 

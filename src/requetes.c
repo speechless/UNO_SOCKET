@@ -36,7 +36,7 @@ void serialiserSalon(salon_t* salon, char* chaine) {
 		strcat(chaineIdJoueurs, buffer);
 	}
 
-	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d:[%s]:%s", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax, chaineIdJoueurs, salon->code);
+	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d:[%s]:%d", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax, chaineIdJoueurs, salon->code);
 	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
 }
 
@@ -44,7 +44,7 @@ void deserialiserSalon(char* chaine, salon_t* salon) {
 	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
 	char chaineIdJoueurs[20];
 
-	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]:%s", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, salon->code);
+	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, &salon->code);
 
 	char* ptr = chaineIdJoueurs;
 	for (int i = 0; i < salon->nbJoueursActuels; i++) {
@@ -100,7 +100,7 @@ void afficherSalon(salon_t salon) {
 		printf("%d, ", salon.idClients[i]);
 	}
 	printf("]\n");
-	printf("Salon.code = %s\n", salon.code);
+	printf("Salon.code = %d\n", salon.code);
 }
 
 
@@ -126,13 +126,13 @@ void envoyerCreationPartie(socket_t socket, creation_partie_t demande) {
 }
 
 void serialiserRejoindrePartie(rejoindre_partie_t* demande, char* chaine) {
-	sprintf(chaine, "%d:%d:%s", demande->idClient, demande->isPrivate, demande->code);
+	sprintf(chaine, "%d:%d:%d", demande->idClient, demande->isPrivate, demande->code);
 	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
 }
 
 void deserialiserRejoindrePartie(char* chaine, rejoindre_partie_t* demande) {
 	//fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
-	sscanf(chaine, "%d:%d:%s", &demande->idClient, &demande->isPrivate, demande->code);
+	sscanf(chaine, "%d:%d:%d", &demande->idClient, &demande->isPrivate, &demande->code);
 }
 
 void envoyerRejoindrePartie(socket_t socket, rejoindre_partie_t demande) {

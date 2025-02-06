@@ -5,6 +5,7 @@
 
 #include <pthread.h>
 #include <string.h>
+#include <time.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -27,13 +28,15 @@ void traiterSignal(int sig);
 void bye(void);
 salon_t* getSalonPublic();
 salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost);
-salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, char* code);
+salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, int code);
 void gererCreationPartie(creation_partie_t demande, client_t client);
 void gererRejoindrePartie(rejoindre_partie_t demande);
 void ajouterJoueurSalon(salon_t* salon, int idClient);
 void retirerJoueurSalon(salon_t* salon, int idClient);
 client_t getClient(int idClient);
+void supprimerSalon(salon_t* salon);
 salon_t* getSalonClient(int idClient);
+int generateCode();
 
 socket_t se;
 T_Maille* listeClients = NULL;
@@ -43,10 +46,13 @@ pthread_t TIDClient;
 #define NB_SALONS_MAX 10
 salon_t salons[NB_SALONS_MAX];
 int nextSalonId = 1;
+int codes[100] = {0};
 
 int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
+
+	srand(time(NULL));
 
 	memset(&salons, 0, sizeof(salons));
 
@@ -198,9 +204,9 @@ salon_t* getSalonPublic() {
  * @param code Le code associé au salon
  * @return Un pointeur sur un salon privé avec le code correspondant et non plein, NULL si aucun n'est trouvé
  */
-salon_t* getSalonPrive(char* code) {
+salon_t* getSalonPrive(int code) {
 	for (int i = 0; i < NB_SALONS_MAX; i++) {
-		if (salons[i].id > 0 && salons[i].isPrivate && strcmp(salons[i].code, code) == 0) {
+		if (salons[i].id > 0 && salons[i].isPrivate && salons[i].code == code) {
 
 			if (salons[i].nbJoueursActuels < salons[i].nbJoueursMax) {
 				fprintf(stderr, "Salon privé correspondant trouvé\n");
@@ -240,7 +246,7 @@ salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short po
 	return nouveauSalon;
 }
 
-salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, char* code) {
+salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, int code) {
 	salon_t* nouveauSalon = NULL;
 
 	for (int i = 0; i < NB_SALONS_MAX; i++) {
@@ -260,12 +266,11 @@ salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short por
 	nouveauSalon->portHost = portHost;
 	nouveauSalon->nbJoueursActuels = 0;
 	nouveauSalon->nbJoueursMax = nbJoueursMax;
-	strcpy(nouveauSalon->code, code);
+	nouveauSalon->code = code;
 
 	return nouveauSalon;
 }
 
-//TODO : générer le code
 void gererCreationPartie(creation_partie_t demande, client_t client) {
 	salon_t* salon;
 
@@ -280,7 +285,15 @@ void gererCreationPartie(creation_partie_t demande, client_t client) {
 	}
 	else {
 		printf("Création d'un salon privé\n");
-		salon = creerSalonPrive(demande.nbJoueursMax, demande.adresseHost, demande.portHost, client.id, "1234");
+		int codeGenere = generateCode();
+
+		// S'il n'y a plus de place pour stocker le code du salon
+		if (codeGenere == -1) {
+			envoyerErreur(client.socket, "Trop de salons en attente, veuillez réessayer plus tard");
+			return;
+		}
+
+		salon = creerSalonPrive(demande.nbJoueursMax, demande.adresseHost, demande.portHost, client.id, codeGenere);
 
 		if (salon == NULL) {
 			envoyerErreur(client.socket, "Trop de salons en attente, veuillez réessayer plus tard");
@@ -348,8 +361,7 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 			envoyer(joueurDuSalon.socket, &requete, (pFct)serialiserData);
 		}
 
-		// Réinitialisation du salon
-		memset(salon, 0, sizeof(salon_t));
+		supprimerSalon(salon);
 	}
 }
 
@@ -376,10 +388,28 @@ void retirerJoueurSalon(salon_t* salon, int idClient) {
 		}
 	}
 	else {
-		// Réinitialisation du salon
-		memset(salon, 0, sizeof(salon_t));
+		supprimerSalon(salon);
 	}
 
+}
+
+/**
+ * Supprime un salon et rend disponible son code
+ * @param salon pointeur sur le salon à supprimer
+ */
+void supprimerSalon(salon_t* salon) {
+
+	if (salon->isPrivate) {
+		// Libération du code privé
+		for (int i = 0; i < 100; i++) {
+			if (codes[i] == salon->code) {
+				codes[i] = -1;
+			}
+		}
+	}
+
+	// Réinitialisation du salon
+	memset(salon, 0, sizeof(salon_t));
 }
 
 client_t getClient(int idClient) {
@@ -415,4 +445,36 @@ salon_t* getSalonClient(int idClient) {
 	}
 
 	return NULL;
+}
+
+/**
+ * Génère un code et le place dans le tableau des codes
+ * @return Le code généré ou -1 tableau plein
+ */
+int generateCode() {
+	int isHereFlag = 0;
+
+	int code = rand() % 10000;
+
+	// Vérification si code déjà existant
+	for (int i = 0; i < 100; i++) {
+		if (codes[i] == code) {
+			isHereFlag = 1;
+			break;
+		}
+	}
+
+	// Si code inexistant, on trouve une place disponible
+	if (!isHereFlag) {
+		for (int i = 0; i < 100; i++) {
+			if (codes[i] <= 0) {
+				codes[i] = code;
+				return code;
+			}
+		}
+		return -1;
+	}
+	else {
+		return generateCode();
+	}
 }

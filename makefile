@@ -3,7 +3,7 @@
 # $@ = la cible
 
 # Nom des exécutables
-TARGETS = serveurUNO clientUNO hostingClientUNO
+TARGETS = serveurUNO clientUNO
 
 # Répertoires
 SRC_DIR = src
@@ -23,12 +23,10 @@ DEPS = $(INC_DIR)/inc.h
 # Fichiers sources spécifiques aux cibles
 SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
 SRC_clientUNO = clientUNO.c requetes.c
-SRC_hostingClientUNO = hostingClient.c requetes.c
 
 # Générer les fichiers objets correspondants à chaque exécutable
 OBJ_serveurUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))
 OBJ_clientUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_clientUNO))
-OBJ_hostingClientUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_hostingClientUNO))
 
 # Règles pour la compilation séparée
 all: $(addprefix $(BIN_DIR)/, $(TARGETS))
