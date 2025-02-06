@@ -76,7 +76,7 @@ Partie initPartie(int nbJoueurs) {
     partie.nbTours = 0;
     Carte startCard = {-1, -1};  // Carte invalide
     partie.carteVisible= startCard;
-    partie.currentPlayer = 1;
+    partie.currentPlayer = 0;
 
     // Initialiser les joueurs
     for(int i = 0; i < partie.nbJoueurs; i++) {

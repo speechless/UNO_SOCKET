@@ -8,7 +8,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra
 
 # Fichiers source
-SRCS = game.c generateCards.c affichage.c serialize.c requetes.c player.c
+SRCS = game.c generateCards.c affichage.c serialize.c game_requests.c player.c
 
 # Fichiers objets générés
 OBJS = $(SRCS:.c=.o)
@@ -21,7 +21,7 @@ $(EXEC): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Compilation des fichiers objets
-%.o: %.c generateCards.h enhanceTerminal.h struct.h affichage.h serialize.h requetes.h player.h
+%.o: %.c generateCards.h enhanceTerminal.h struct.h affichage.h serialize.h game_requests.h player.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Nettoyage des fichiers générés

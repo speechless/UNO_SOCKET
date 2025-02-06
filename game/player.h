@@ -2,8 +2,7 @@
 #include "enhanceTerminal.h"
 #include "affichage.h"
 #include "serialize.h"
-#include "requetes.h"
+#include "game_requests.h"
 #include "game.h"
 
-int jouerPartie(Partie partie);
-int getID();
+int jouerPartie(Partie partie, int idJoueur);

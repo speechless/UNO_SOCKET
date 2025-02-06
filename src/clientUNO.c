@@ -25,6 +25,7 @@ client_t connexionServeurUNO();
 void quitterSalon();
 //void afficherMenu(int* state, int input);
 void lancerPartiePublique(client_t clientLocal);
+socket_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
 socket_t socketEcouteHebergeur = {-1,};
@@ -47,6 +48,9 @@ int main() {
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
 	rejoindre_partie_t demandeRejoindre;
+
+	struct timeval to = {0,0};
+	fd_set read_fs;
 
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
@@ -84,11 +88,35 @@ int main() {
 				deserialiserSalon(requete.data, &salon);
 				break;
 			case COMMENCER_PARTIE:
+				Partie partie;
+				/*
+				SI pas host 
+					connection à l'host
+					attendre recevoir partie
+				Sinon 
+					attendre le nombre de connections attendu
+					creation partie
+				jouer partie
+				*/
 				printf("Démarrage\n");
+				if(salon.idHost == clientLocal.id){
+					initConnection(salon);
+					partie = initPartie();
+					for(int i = 0; i < salon.nbJoueursMax; i++){
+						reqEnvoiPartie(salon.idClients[i],partie);
+					}
+				}else{
+					socketEcouteHebergeur = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
+					resEnvoiePartie(socketEcouteHebergeur,partie)
+				}
+				jouerPartie(partie,clientLocal.id);
+
 				break;
 			default:
 				printf("CODE RECU NON RECONNU !\n");
 
+				
+				
 		}
 	}
 
@@ -132,6 +160,18 @@ void traiterSignal(int sigNum) {
 			exit(0); // Sortie par ^C
 			break;
 	}
+}
+
+socket_t* initConnection(salon_t salon){
+	socket_t sockets[salon.nbJoueursMax];
+	int nbJoueursConnectes = 0;
+	int nbJoueursMax = salon.nbJoueursMax;
+
+	for(int i = 0; i < salon.nbJoueursMax; i++){
+		sockets[i] = accepterClt(salon.idClients[i]);
+		nbJoueursConnectes++;
+	}
+	return sockets;
 }
 
 void deconnexionServeurUNO() {
