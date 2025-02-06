@@ -48,6 +48,9 @@ int main() {
 	creation_partie_t demandeCreation;
 	rejoindre_partie_t demandeRejoindre;
 
+	struct timeval to = {0,0};
+	fd_set read_fs;
+
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
 
@@ -84,11 +87,34 @@ int main() {
 				deserialiserSalon(requete.data, &salon);
 				break;
 			case COMMENCER_PARTIE:
+				/*
+				SI pas host 
+					connection à l'host
+					attendre recevoir partie
+				Sinon 
+					attendre le nombre de connections attendu
+					creation partie
+				jouer partie
+				*/
 				printf("Démarrage\n");
+<<<<<<< Updated upstream
 				break;
 			default:
 				printf("CODE RECU NON RECONNU !\n");
 
+=======
+				if(salon.idHost == clientLocal.id){
+					initConnection(salon);
+					Partie p = initPartie();
+					for(int i = 0; i < salon.nbJoueursMax; i++){
+						reqEnvoiPartie(salon.idClients[i],p);
+					}
+				}else{
+					
+				}
+				jouerPartie(p);
+				
+>>>>>>> Stashed changes
 		}
 	}
 
@@ -131,6 +157,16 @@ void traiterSignal(int sigNum) {
 		case SIGINT:
 			exit(0); // Sortie par ^C
 			break;
+	}
+}
+
+void initConnection(salon_t salon){
+	int nbJoueursConnectes = 0;
+	int nbJoueursMax = salon.nbJoueursMax;
+
+	for(int i = 0; i < salon.nbJoueursMax; i++){
+		accepterClt(salon.idClients[i]);
+		nbJoueursConnectes++;
 	}
 }
 
