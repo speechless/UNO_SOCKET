@@ -44,7 +44,7 @@ void deserialiserSalon(char* chaine, salon_t* salon) {
 	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
 	char chaineIdJoueurs[20];
 
-	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, &salon->code);
+	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]]:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, &salon->code);
 
 	char* ptr = chaineIdJoueurs;
 	for (int i = 0; i < salon->nbJoueursActuels; i++) {
