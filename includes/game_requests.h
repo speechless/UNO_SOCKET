@@ -17,7 +17,7 @@ void envoiTest(socket_t socket, int* test);
 
 void recevoirTest(socket_t socket, int* test);
 
-int serialiserD(char* chaine, void* data);
+int serialiserD(int* data, char* chaine);
 
-int deserialiserD(char* chaine, void* data);
+int deserialiserD(char* chaine, int* data);
 #endif // REQ_GAME_H
