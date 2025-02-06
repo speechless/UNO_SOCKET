@@ -1,64 +1,34 @@
+/**
+ * @file es.c
+ */
+
 #include "es.h"
 
-/**
- * ======================================
- * QUAND T_ELT EST UN INT
- * ======================================
-*/
-/*
-void saisirElt(T_Elt* e) {
-	scanf("%d", e);
-}
-void afficherElt(T_Elt* e, char* end) {
-	printf("%d%s", *e, end);
-}
-void affecterElt(T_Elt* d, T_Elt* s) {
-	*d = *s;
-}
-int comparerElt(T_Elt* elt1, T_Elt* elt2) {
-	return *elt1 - *elt2;
-}
-*/
-
-
-/**
- * ======================================
- * QUAND T_ELT EST UN INT[2]
- * ======================================
-*/
-/*
-void saisirElt(T_Elt* e) {
-	scanf("%d %d", &(*e[0]), &(*e[1]));
-}
-void afficherElt(T_Elt* e, char* end) {
-	printf("[%d, %d]%s", (*e)[0], (*e)[1], end);
-}
-void affecterElt(T_Elt* d, T_Elt* s) {
-	(*d)[0] = (*s)[0];
-	(*d)[1] = (*s)[1];
-}
-int comparerElt(T_Elt* elt1, T_Elt* elt2) {
-	return (*elt1)[0] - (*elt2)[0];
-}
-*/
-
-
-/**
- * ======================================
- * QUAND T_ELT EST UN client_t
- * ======================================
-*/
-
-void saisirElt(T_Elt* e) {
-	printf("saisir NON IMPLEMENTE\n");
-}
+ /**
+  * Afficher un élément de type T_Elt
+  * @param e Pointeur vers l'élément à afficher
+  * @param end Chaîne de caractères à afficher après l'élément
+  */
 void afficherElt(T_Elt* e, char* end) {
 	printf("{id = %d, fd = %d]%s", (*e).id, e->socket.fd, end);
 }
-void affecterElt(T_Elt* d, T_Elt* s) {
-	(*d).id = (*s).id;
-	(*d).socket = (*s).socket;
+
+/**
+ * Affecter un élément de type T_Elt à un autre
+ * @param dest Pointeur vers l'élément de destination
+ * @param src Pointeur vers l'élément source
+ */
+void affecterElt(T_Elt* dest, T_Elt* src) {
+	(*dest).id = (*src).id;
+	(*dest).socket = (*src).socket;
 }
+
+/**
+ * Compare deux éléments
+ * @param elt1 Premier élément
+ * @param elt2 Deuxième élément
+ * @return nombre négatif si elt1 < elt2, 0 si elt1 == elt2, nombre positif sinon
+ */
 int comparerElt(T_Elt* elt1, T_Elt* elt2) {
 	return (*elt1).id - (*elt2).id;
 }

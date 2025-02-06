@@ -1,8 +1,12 @@
+/**
+ * @file data.h
+ */
+
 #include "session.h"
 
-/**
- * Définition du type de données generic
- */
+ /**
+  * Définition du type de données generic
+  */
 typedef void* generic;
 
 /**

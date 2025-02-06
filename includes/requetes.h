@@ -1,13 +1,19 @@
+/**
+ * @file requetes.h
+ */
 #ifndef REQUETES
 #define REQUETES
 
+ /**
+  * Buffer maximal pour les données
+  */
 #define MAX_BUFF 1024
 
 #include <session.h>
 
-/**
- * Type de requête
- */
+  /**
+   * Type de requête
+   */
 typedef enum {
 	DECONNEXION,
 	QUITTER_PARTIE,

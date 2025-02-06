@@ -1,3 +1,7 @@
+/**
+ * @file session.h
+ */
+
 #ifndef SESSION
 #define SESSION
 
@@ -5,9 +9,9 @@
 #include <stdio.h>
 #include <netinet/in.h>
 
-/**
- * Structure représentant une socket
- */
+ /**
+  * Structure représentant une socket
+  */
 struct socket {
 	int fd; /**< file decriptor de la socket */
 	int mode; /**< mode SOCK_STREAM ou SOCK_DGRAM */

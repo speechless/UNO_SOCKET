@@ -1,11 +1,18 @@
+/**
+ * @file liste.h
+ */
+
 #include "es.h"
 #include <stdlib.h>
 
+ /**
+  * Vérifie si une liste est vide
+  */
 #define listeVide(L) (L==NULL)
 
-/**
- * Structure de liste chainée
- */
+  /**
+   * Structure de liste chainée
+   */
 typedef struct maille {
 	T_Elt elt; /**< élément de la maille courante */
 	struct maille* suivant; /**< pointeur sur l'élément suivant */

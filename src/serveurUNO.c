@@ -1,7 +1,12 @@
 /**
- * TODO:
- * mutex
+ * @file serveurUNO.c
  */
+
+ /**
+  * TODO:
+  * mutex
+  */
+
 
 #include <pthread.h>
 #include <string.h>
@@ -38,21 +43,26 @@ void supprimerSalon(salon_t* salon);
 salon_t* getSalonClient(int idClient);
 int generateCode();
 
-socket_t se;
-T_Maille* listeClients = NULL;
-int nextClientId = 1;
-pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER;
+socket_t se; /**< Socket d'écoute du serveur */
 
-pthread_t TIDClient;
+T_Maille* listeClients = NULL; /**< Liste chainee des clients connectés */
+int nextClientId = 1; /**< ID pour le prochain client */
+pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des clients */
 
-#define NB_SALONS_MAX 10
-salon_t salons[NB_SALONS_MAX];
-int nextSalonId = 1;
-pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER;
+pthread_t TIDClient; /**< ID du thread pour gérer les connexions des clients */
 
-int codes[100] = {0};
-pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER;
+#define NB_SALONS_MAX 10 /**< Nombre maximum de salons */
+salon_t salons[NB_SALONS_MAX]; /**< Tableau de salons */
+int nextSalonId = 1; /**< ID pour le prochain salon */
+pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des salons */
 
+int codes[100] = {-1}; /**< Codes des salons privés (-1 si non attribué) */
+pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des codes */
+
+
+/**
+ * Fonction principale qui permet la mise en relation des clients
+ */
 int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);

@@ -1,10 +1,13 @@
+/**
+ * @file liste.c
+ */
 #include "liste.h"
 
-/**
- * Crée une nouvelle maille
- * @param elt Le premier élément de la maille
- * @param suivant Le pointeur sur la maille suivante
- */
+ /**
+  * Crée une nouvelle maille
+  * @param elt Le premier élément de la maille
+  * @param suivant Le pointeur sur la maille suivante
+  */
 T_Maille* newMaille(T_Elt* elt, T_Maille* suivant) {
 	T_Maille* maille = malloc(sizeof(T_Maille));
 	affecterElt(&maille->elt, elt);

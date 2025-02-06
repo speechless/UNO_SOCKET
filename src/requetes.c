@@ -1,13 +1,16 @@
+/**
+ * @file requetes.c
+ */
 #include <requetes.h>
 #include <stdio.h>
 #include <data.h>
 #include <string.h>
 
-/**
- * Sérialise les données de base
- * @param data Données à sérialiser
- * @param chaine Chaîne de caractères résultante
- */
+ /**
+  * Sérialise les données de base
+  * @param data Données à sérialiser
+  * @param chaine Chaîne de caractères résultante
+  */
 void serialiserData(basic_data_t* data, char* chaine) {
 	sprintf(chaine, "[%d] : %s", data->code, data->data);
 	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
