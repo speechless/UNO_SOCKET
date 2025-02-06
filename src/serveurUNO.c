@@ -41,12 +41,17 @@ int generateCode();
 socket_t se;
 T_Maille* listeClients = NULL;
 int nextClientId = 1;
+pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER;
+
 pthread_t TIDClient;
 
 #define NB_SALONS_MAX 10
 salon_t salons[NB_SALONS_MAX];
 int nextSalonId = 1;
+pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER;
+
 int codes[100] = {0};
+pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
 	installSignal(SIGINT, traiterSignal);
@@ -82,7 +87,10 @@ void gererConnexion() {
 
 	// Insertion dans la liste des clients connectés
 	T_Maille* mailleInseree;
+	CHECK(pthread_mutex_lock(&mutexListeClients), "lock liste clients");
 	listeClients = insererEnFin(&client, listeClients, &mailleInseree);
+	CHECK(pthread_mutex_unlock(&mutexListeClients), "unlock liste clients");
+
 
 	// Envoi de ses informations au client
 	basic_data_t requete;
@@ -129,19 +137,27 @@ void dialogueClt(client_t* client) {
 			case DECONNEXION:
 				fprintf(stderr, "Requête de type DECONNEXION\n");
 
+				CHECK(pthread_mutex_lock(&mutexListeSalons), "lock liste salons");
+
 				salonClient = getSalonClient(client->id);
 				if (salonClient != NULL) {
 					retirerJoueurSalon(salonClient, client->id);
 				}
+
+				CHECK(pthread_mutex_unlock(&mutexListeSalons), "unlock liste salons");
 				break;
 
 			case QUITTER_PARTIE:
 				fprintf(stderr, "Requête de type QUITTER_PARTIE\n");
 
+				CHECK(pthread_mutex_lock(&mutexListeSalons), "lock liste salons");
+
 				salonClient = getSalonClient(client->id);
 				if (salonClient != NULL) {
 					retirerJoueurSalon(salonClient, client->id);
 				}
+
+				CHECK(pthread_mutex_unlock(&mutexListeSalons), "unlock liste salons");
 				break;
 
 			case CREATION_PARTIE:
@@ -150,7 +166,11 @@ void dialogueClt(client_t* client) {
 				fprintf(stderr, "Requête de type CREATION_PARTIE\n");
 
 				deserialiserCreationPartie(requete.data, &demandeCreation);
+
+				CHECK(pthread_mutex_lock(&mutexListeSalons), "lock liste salons");
 				gererCreationPartie(demandeCreation, *client);
+				CHECK(pthread_mutex_unlock(&mutexListeSalons), "unlock liste salons");
+
 				break;
 
 			case REJOINDRE_PARTIE:
@@ -159,7 +179,11 @@ void dialogueClt(client_t* client) {
 				fprintf(stderr, "Requête de type REJOINDRE_PARTIE\n");
 
 				deserialiserRejoindrePartie(requete.data, &demandeRejoindre);
+
+				CHECK(pthread_mutex_lock(&mutexListeSalons), "lock liste salons");
 				gererRejoindrePartie(demandeRejoindre);
+				CHECK(pthread_mutex_unlock(&mutexListeSalons), "unlock liste salons");
+
 				break;
 		}
 
@@ -171,7 +195,10 @@ void dialogueClt(client_t* client) {
 	CHECK(close(client->socket.fd), "close()");
 
 	// Suppression du client de la liste
+
+	CHECK(pthread_mutex_lock(&mutexListeClients), "lock liste clients");
 	listeClients = supprimerElement(*client, listeClients);
+	CHECK(pthread_mutex_unlock(&mutexListeClients), "unlock liste clients");
 
 	pthread_exit(NULL);
 }
@@ -415,13 +442,19 @@ void supprimerSalon(salon_t* salon) {
 client_t getClient(int idClient) {
 	T_Maille* mailleCourante = listeClients;
 
+	CHECK(pthread_mutex_lock(&mutexListeClients), "lock liste clients");
+
 	while (mailleCourante != NULL) {
 		if (mailleCourante->elt.id == idClient) {
+			CHECK(pthread_mutex_unlock(&mutexListeClients), "unlock liste clients");
 			return mailleCourante->elt;
 		}
 
 		mailleCourante = mailleCourante->suivant;
 	}
+
+	CHECK(pthread_mutex_unlock(&mutexListeClients), "unlock liste clients");
+
 
 	client_t clientVide;
 	clientVide.id = -1;
@@ -456,6 +489,9 @@ int generateCode() {
 
 	int code = rand() % 10000;
 
+	CHECK(pthread_mutex_lock(&mutexListeCodes), "lock liste codes");
+
+
 	// Vérification si code déjà existant
 	for (int i = 0; i < 100; i++) {
 		if (codes[i] == code) {
@@ -469,12 +505,16 @@ int generateCode() {
 		for (int i = 0; i < 100; i++) {
 			if (codes[i] <= 0) {
 				codes[i] = code;
+				CHECK(pthread_mutex_unlock(&mutexListeCodes), "unlock liste codes");
+
 				return code;
 			}
 		}
+		CHECK(pthread_mutex_unlock(&mutexListeCodes), "unlock liste codes");
 		return -1;
 	}
 	else {
+		CHECK(pthread_mutex_unlock(&mutexListeCodes), "unlock liste codes");
 		return generateCode();
 	}
 }
