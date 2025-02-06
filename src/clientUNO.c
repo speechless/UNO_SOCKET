@@ -1,9 +1,13 @@
 /**
- * TODO:
- * menu
- * connexion entre clients quand la partie est lancée
- * jeu
+ * @file clientUNO.c
  */
+
+ /**
+  * TODO:
+  * menu
+  * connexion entre clients quand la partie est lancée
+  * jeu
+  */
 
 #include <session.h>
 #include <data.h>
@@ -96,10 +100,10 @@ int main() {
 				Partie* partie; 
 		
 				/*
-				SI pas host 
+				SI pas host
 					connection à l'host
 					attendre recevoir partie
-				Sinon 
+				Sinon
 					attendre le nombre de connections attendu
 					creation partie
 				jouer partie
@@ -155,8 +159,8 @@ int main() {
 			default:
 				printf("CODE RECU NON RECONNU !\n");
 
-				
-				
+
+
 		}
 	}
 

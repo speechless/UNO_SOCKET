@@ -1,13 +1,15 @@
+/**
+ * @file data.h
+ */
+
 #include "session.h"
 
-/**
- * @typedef
- * Définition du type de données generic
- */
+ /**
+  * Définition du type de données generic
+  */
 typedef void* generic;
 
 /**
- * @typedef
  * Définition d'un pointeur de fonction avec deux arguments generic
  */
 typedef void (*pFct)(generic, generic);

@@ -1,8 +1,12 @@
-#ifndef LIBPSY
-#define LIBSPY
+/**
+ * @file libPSY.h
+ */
 
-// Pour avoir accès à sigaction, SA_RESTART (et probablement d'autres choses)
-#define _POSIX_C_SOURCE 200809L
+#ifndef LIBPSY
+#define LIBPSY
+
+
+#define _POSIX_C_SOURCE 200809L /**< Pour avoir accès à sigaction, SA_RESTART (et probablement d'autres choses) */
 
 #include <unistd.h>
 #include <stdio.h>
@@ -13,11 +17,11 @@
 #include <stdarg.h>
 
 
-/**
- * Installe un gestionnaire de signal (effectue une action à la réception d'un signal)
- * @param sigNum numéro du signal à gérer
- * @param handler fonction à appeler quand le signal est reçu
- */
+ /**
+  * Installe un gestionnaire de signal (effectue une action à la réception d'un signal)
+  * @param sigNum numéro du signal à gérer
+  * @param handler fonction à appeler quand le signal est reçu
+  */
 void installSignal(int sigNum, void (*handler)(int));
 
 
@@ -34,12 +38,20 @@ void bloquerSignaux(void);
  */
 void debloquerSignaux(int nbSig, ...);
 
+/**
+ * Définition d'un type de pointeur de fonction générique
+ */
 typedef void (*pFctGenerique)(void*);
+
+/**
+ * Définition d'un type générique
+ */
 typedef void* generique;
 
 /**
  * Crée un processus fils
- * @param pF fonction à exécuter par le fils
+ * @param pF Fonction à exécuter par le fils
+ * @param arg Argument à passer à la fonction
  * @return pid du fils
  */
 pid_t cloner(pFctGenerique pF, generique arg);

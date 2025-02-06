@@ -1,7 +1,12 @@
 /**
- * TODO:
- * mutex
+ * @file serveurUNO.c
  */
+
+ /**
+  * TODO:
+  * mutex
+  */
+
 
 #include <pthread.h>
 #include <string.h>
@@ -38,21 +43,26 @@ void supprimerSalon(salon_t* salon);
 salon_t* getSalonClient(int idClient);
 int generateCode();
 
-socket_t se;
-T_Maille* listeClients = NULL;
-int nextClientId = 1;
-pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER;
+socket_t se; /**< Socket d'écoute du serveur */
 
-pthread_t TIDClient;
+T_Maille* listeClients = NULL; /**< Liste chainee des clients connectés */
+int nextClientId = 1; /**< ID pour le prochain client */
+pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des clients */
 
-#define NB_SALONS_MAX 10
-salon_t salons[NB_SALONS_MAX];
-int nextSalonId = 1;
-pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER;
+pthread_t TIDClient; /**< ID du thread pour gérer les connexions des clients */
 
-int codes[100] = {0};
-pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER;
+#define NB_SALONS_MAX 10 /**< Nombre maximum de salons */
+salon_t salons[NB_SALONS_MAX]; /**< Tableau de salons */
+int nextSalonId = 1; /**< ID pour le prochain salon */
+pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des salons */
 
+int codes[100] = {-1}; /**< Codes des salons privés (-1 si non attribué) */
+pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER; /**< Mutex pour synchroniser l'accès à la liste des codes */
+
+
+/**
+ * Fonction principale qui permet la mise en relation des clients
+ */
 int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
@@ -74,6 +84,9 @@ int main() {
 	return 0;
 }
 
+/**
+ * S'occupe d'accepter une connexion entrante d'un client, de lui envoyer son id et de créer un thread de service
+ */
 void gererConnexion() {
 	client_t client;
 
@@ -103,9 +116,13 @@ void gererConnexion() {
 	pthread_detach(TIDClient);
 }
 
+/**
+ * Fonction appelée à la fin du programme
+ * Ferme la socket d'écoute ainsi que les sockets de dialogue
+ */
 void bye() {
 	printf("Fermeture socket écoute\n");
-	close(se.fd);
+	CHECK(close(se.fd), "close socket écoute");
 
 	printf("Fermeture des sockets de dialogue restantes\n");
 	T_Maille* mailleCourante = listeClients;
@@ -115,6 +132,11 @@ void bye() {
 	}
 }
 
+/**
+ * Fonction exécutée par les threads de service
+ * Reçoit toutes les requêtes d'un client et s'occupe de les gérer
+ * @param client Pointeur sur la case du client à servir dans la liste chainée
+ */
 void dialogueClt(client_t* client) {
 	basic_data_t requete;
 	salon_t* salonClient;
@@ -206,6 +228,10 @@ void dialogueClt(client_t* client) {
 	pthread_exit(NULL);
 }
 
+/**
+ * Fonction appelée pour traiter le signal SIGINT
+ * @param sigNum Numéro du signal à traiter
+ */
 void traiterSignal(int sigNum) {
 	switch (sigNum) {
 		case SIGINT:
@@ -252,6 +278,13 @@ salon_t* getSalonPrive(int code) {
 	return NULL;
 }
 
+/**
+ * Créer un salon de type public
+ * @param nbJoueursMax Nombre maximal de joueurs dans la partie
+ * @param adresseHost Adresse IP de l'hébergeur de la partie en notation pointée x.x.x.x
+ * @param portHost Port de l'hébergeur de la partie
+ * @param idHost Id du client hébergeur de la partie
+ */
 salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost) {
 	salon_t* nouveauSalon = NULL;
 
@@ -277,6 +310,14 @@ salon_t* creerSalonPublic(int nbJoueursMax, char* adresseHost, unsigned short po
 	return nouveauSalon;
 }
 
+/**
+ * Créer un salon de type privé
+ * @param nbJoueursMax Nombre maximal de joueurs dans la partie
+ * @param adresseHost Adresse IP de l'hébergeur de la partie en notation pointée x.x.x.x
+ * @param portHost Port de l'hébergeur de la partie
+ * @param idHost Id du client hébergeur de la partie
+ * @param code Code qui sera à rentrer par les joueurs pour rejoindre la partie
+ */
 salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short portHost, int idHost, int code) {
 	salon_t* nouveauSalon = NULL;
 
@@ -302,6 +343,12 @@ salon_t* creerSalonPrive(int nbJoueursMax, char* adresseHost, unsigned short por
 	return nouveauSalon;
 }
 
+/**
+ * Gère la création d'une partie privée ou publique. Envoie au client un message d'erreur si un problème est survenu
+ * S'il n'y a pas de problème le client est automatiquement ajouté au salon
+ * @param demande Paramètres pour la création de la partie
+ * @param client Client à l'initiative de la création
+ */
 void gererCreationPartie(creation_partie_t demande, client_t client) {
 	salon_t* salon;
 
@@ -335,6 +382,16 @@ void gererCreationPartie(creation_partie_t demande, client_t client) {
 	ajouterJoueurSalon(salon, client.id);
 }
 
+/**
+ * Gère la demande d'un client pour rejoindre une partie publique ou privée.
+ *
+ * Si la partie est publique, le client est ajouté à un salon public existant ou invité à
+ * créer une nouvelle partie si aucun salon n'existe.
+ * Si la partie est privée, le client est ajouté au salon privé correspondant au code fourni
+ * ou reçoit un message d'erreur si le code est incorrect ou si le salon est plein.
+ *
+ * @param demande Structure contenant les informations de la demande de rejoindre une partie.
+ */
 void gererRejoindrePartie(rejoindre_partie_t demande) {
 	client_t client = getClient(demande.idClient);
 
@@ -367,6 +424,17 @@ void gererRejoindrePartie(rejoindre_partie_t demande) {
 	}
 }
 
+/**
+ * @brief Ajoute un joueur à un salon et gère l'état du salon.
+ *
+ * Cette fonction ajoute un joueur à un salon en mettant à jour la liste des
+ * joueurs et en envoyant l'état actualisé du salon à tous les joueurs présents.
+ * Si le salon atteint le nombre maximum de joueurs, la partie est démarrée et
+ * un signal de démarrage est envoyé à tous les joueurs. Le salon est ensuite supprimé.
+ *
+ * @param salon Pointeur vers la structure du salon.
+ * @param idClient Identifiant du client à ajouter au salon.
+ */
 void ajouterJoueurSalon(salon_t* salon, int idClient) {
 	// Ajout du client aux joueurs
 	salon->idClients[salon->nbJoueursActuels] = idClient;
@@ -396,7 +464,16 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 	}
 }
 
-
+/**
+ * @brief Retire un joueur d'un salon et gère l'état du salon.
+ *
+ * Cette fonction retire un joueur d'un salon en mettant à jour la liste des
+ * joueurs et en envoyant l'état actualisé du salon à tous les joueurs présents.
+ * Si le salon devient vide après le retrait du joueur, le salon est supprimé.
+ *
+ * @param salon Pointeur vers la structure du salon.
+ * @param idClient Identifiant du client à retirer du salon.
+ */
 void retirerJoueurSalon(salon_t* salon, int idClient) {
 	// Suppression du client dans joueurs présents
 	int i = 0;
@@ -426,7 +503,7 @@ void retirerJoueurSalon(salon_t* salon, int idClient) {
 
 /**
  * Supprime un salon et rend disponible son code
- * @param salon pointeur sur le salon à supprimer
+ * @param salon Pointeur sur le salon à supprimer
  */
 void supprimerSalon(salon_t* salon) {
 
@@ -443,6 +520,11 @@ void supprimerSalon(salon_t* salon) {
 	memset(salon, 0, sizeof(salon_t));
 }
 
+/**
+ * Cherche les informations d'un client
+ * @param idClient Id du client à chercher
+ * @return Une structure client_t contenant les informations du client, un client vide si non trouvé
+ */
 client_t getClient(int idClient) {
 	T_Maille* mailleCourante = listeClients;
 
@@ -466,6 +548,11 @@ client_t getClient(int idClient) {
 	return clientVide;
 }
 
+/**
+ * Cherche le salon dans lequel se trouve un client
+ * @param idClient Id du client à chercher
+ * @return Un pointeur sur le salon dans lequel se trouve le client, NULL si non trouvé
+ */
 salon_t* getSalonClient(int idClient) {
 	salon_t* salonCourant;
 
