@@ -23,53 +23,53 @@ typedef enum {
  * Structure représentant un client
  */
 typedef struct {
-	int id;
-	socket_t socket;
-	char adresse[20];
-	unsigned short port;
+	int id; /**< Identifiant du client */
+	socket_t socket; /**< Socket du client */
+	char adresse[20]; /**< Adresse du client en notation pointée */
+	unsigned short port; /**< Port du client */
 } client_t;
 
 /**
  * Structure représentant une requête basique
  */
 typedef struct {
-	int code;
-	char data[MAX_BUFF];
+	int code; /**< Code de la requête */
+	char data[MAX_BUFF]; /**< Données de la requête */
 } basic_data_t;
 
 /**
  * Structure représentant un salon pour la mise en relation des joueurs
  */
 typedef struct {
-	int id;
-	int isPrivate;
-	int idHost;
-	char adresseHost[20];
-	unsigned short portHost;
-	int nbJoueursActuels;
-	int nbJoueursMax;
-	int idClients[20];
-	int code;
+	int id; /**< Identifiant du salon */
+	int isPrivate; /**< Indicateur de salon privé (1) ou public (0) */
+	int idHost; /**< Identifiant de l'hôte du salon */
+	char adresseHost[20]; /**< Adresse de l'hôte du salon en notation pointée */
+	unsigned short portHost; /**< Port de l'hôte du salon */
+	int nbJoueursActuels; /**< Nombre de joueurs actuels dans le salon */
+	int nbJoueursMax; /**< Nombre de joueurs maximum dans le salon */
+	int idClients[20]; /**< Identifiants des clients dans le salon */
+	int code; /**< Code du salon s'il est privé, 0 sinon */
 } salon_t;
 
 /**
  * Structure contenant les informations pour la création d'une partie
  */
 typedef struct {
-	int idClient;
-	int isPrivate;
-	int nbJoueursMax;
-	char adresseHost[20];
-	unsigned short portHost;
+	int idClient; /**< Identifiant du client */
+	int isPrivate; /**< Indicateur de partie privée (1) ou publique (0) */
+	int nbJoueursMax; /**< Nombre de joueurs maximum */
+	char adresseHost[20]; /**< Adresse de l'hôte en notation pointée */
+	unsigned short portHost; /**< Port de l'hôte */
 } creation_partie_t;
 
 /**
  * Structure contenant les informations pour rejoindre une partie
  */
 typedef struct {
-	int idClient;
-	int isPrivate;
-	int code;
+	int idClient; /**< Identifiant du client */
+	int isPrivate; /**< Indicateur de partie privée (1) ou publique (0) */
+	int code; /**< Code de la partie */
 } rejoindre_partie_t;
 
 /**

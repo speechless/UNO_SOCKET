@@ -72,7 +72,7 @@ int appartient(T_Elt elt, T_Maille* liste) {
 
 /**
  * Affiche le contenu de la liste chaînée
- * @param p Pointeur sur la liste à afficher
+ * @param maille Pointeur sur la liste à afficher
  * @return 0 si la liste est vide, 1 sinon
  */
 int afficherListe(T_Maille* maille) {

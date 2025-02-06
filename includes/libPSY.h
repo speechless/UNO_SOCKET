@@ -39,7 +39,8 @@ typedef void* generique;
 
 /**
  * Crée un processus fils
- * @param pF fonction à exécuter par le fils
+ * @param pF Fonction à exécuter par le fils
+ * @param arg Argument à passer à la fonction
  * @return pid du fils
  */
 pid_t cloner(pFctGenerique pF, generique arg);
