@@ -21,9 +21,11 @@
 void traiterSignal(int sigNum);
 void bye();
 void deconnexionServeurUNO();
+client_t connexionServeurUNO();
 void quitterSalon();
+//void afficherMenu(int* state, int input);
+void lancerPartiePublique(client_t clientLocal);
 
-int isConnectedToUNO = 0;
 socket_t socketAppel;
 socket_t socketEcouteHebergeur;
 
@@ -34,12 +36,10 @@ socket_t socketEcouteHebergeur;
  * 2 : Entre le code de la partie privée
  * 3 : Attente de partie privée (hébergeur)
  * 4 : Attente de partie privée (rejoindre)
- *
  */
 int state = 0;
 
 int main() {
-
 
 	salon_t salon;
 	client_t clientLocal;
@@ -51,26 +51,12 @@ int main() {
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
 
-	// Demande d’une connexion au service
-	PAUSE("Se connecter au service");
-	socketAppel = connecterClt2Srv(SOCK_STREAM, ADRESSE_SVC, PORT_SVC);
 
-	// Réception des informations client
-	recevoir(socketAppel, &requete, (pFct)deserialiserData);
-	if (requete.code == CLIENT) {
-		deserialiserClient(requete.data, &clientLocal);
-		fprintf(stderr, "Je suis le client n°%d, port:%d\n", clientLocal.id, clientLocal.port);
-		isConnectedToUNO = 1;
-	}
-	else {
-		printf("Erreur\n");
-	}
-
+	// Connexion au hub de jeu
+	clientLocal = connexionServeurUNO();
 
 	// Test statique de partie publique
-	demandeRejoindre.idClient = clientLocal.id;
-	demandeRejoindre.isPrivate = 0;
-	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
+	lancerPartiePublique(clientLocal);
 
 	while (requete.code != COMMENCER_PARTIE) {
 		recevoir(socketAppel, &requete, (pFct)deserialiserData);
@@ -103,14 +89,32 @@ int main() {
 	}
 
 
-	deconnexionServeurUNO();
-
-
 	return 0;
 }
 
 void bye() {
 	deconnexionServeurUNO();
+}
+
+client_t connexionServeurUNO() {
+	basic_data_t requete = {-1, ""};
+	client_t client;
+
+	// Demande d’une connexion au service
+	PAUSE("Se connecter au service");
+	socketAppel = connecterClt2Srv(SOCK_STREAM, ADRESSE_SVC, PORT_SVC);
+
+	// Réception des informations client
+	recevoir(socketAppel, &requete, (pFct)deserialiserData);
+	if (requete.code == CLIENT) {
+		deserialiserClient(requete.data, &client);
+		fprintf(stderr, "Je suis le client n°%d, port:%d\n", client.id, client.port);
+	}
+	else {
+		printf("Erreur\n");
+	}
+
+	return client;
 }
 
 void traiterSignal(int sigNum) {
@@ -122,10 +126,6 @@ void traiterSignal(int sigNum) {
 }
 
 void deconnexionServeurUNO() {
-	if (!isConnectedToUNO) {
-		return;
-	}
-
 	fprintf(stderr, "Envoi requête déconnexion au serveur\n");
 
 	basic_data_t requete;
@@ -135,8 +135,6 @@ void deconnexionServeurUNO() {
 
 	printf("Fermeture socket appel\n");
 	CHECK(close(socketAppel.fd), "close socket appel");
-
-	isConnectedToUNO = 0;
 }
 
 void quitterSalon() {
@@ -148,8 +146,22 @@ void quitterSalon() {
 	envoyer(socketAppel, &requete, (pFct)serialiserData);
 }
 
-/*
+void lancerPartiePublique(client_t clientLocal) {
+	rejoindre_partie_t demandeRejoindre;
+	demandeRejoindre.idClient = clientLocal.id;
+	demandeRejoindre.isPrivate = 0;
+	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
+}
 
+void rejoindrePartiePrivee(client_t clientLocal, int code) {
+	rejoindre_partie_t demandeRejoindre;
+	demandeRejoindre.idClient = clientLocal.id;
+	demandeRejoindre.isPrivate = 1;
+	demandeRejoindre.code = code;
+	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
+}
+
+/*
 void afficherMenu(int* state, int input) {
 
 	switch (*state) {
@@ -213,7 +225,7 @@ void afficherMenu(int* state, int input) {
 		case 3:
 			//Vue de l'hébergement de la partie privée
 			setTerm(BLACK);
-			printf("Code de la partie : %d\n", generateCode());
+			printf("Code de la partie : ...\n");
 			resetTerm();
 			break;
 
@@ -221,3 +233,4 @@ void afficherMenu(int* state, int input) {
 			exit(0);
 	}
 }*/
+
