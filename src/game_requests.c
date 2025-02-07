@@ -7,6 +7,10 @@ void reqEnvoiPartie(socket_t* sockets, Partie* partie) {
 	}
 }
 
+void reqEnvoiPartieClient(socket_t socket, Partie* partie) {
+	envoyer(socket, partie, (pFct)serialiserPartie);
+}
+
 void envoiTest(socket_t socket, int* test) {
 	envoyer(socket, test, (pFct)serialiserD);  // Envoie *test (l'entier), pas &test
 }
@@ -34,17 +38,17 @@ int deserialiserD(char* chaine, int* data) {
 void resEnvoiPartie(socket_t socket, Partie* partie) {
 	recevoir(socket, partie, (pFct)deserialiserPartie);
 }
-
+/*
 void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie) {
-	for (int i = 0; i < partie->nbJoueurs - 1; i++) {
+	for (int i = 1; i < partie->nbJoueurs - 1; i++) {
 		envoyer(sockets[i], partie, (pFct)serialiserCoup);
 	}
-}
+
 
 void reqEnvoiCoupClient(socket_t socketHost, Partie* partie) {
 	envoyer(socketHost, partie, (pFct)serialiserCoup);
 }
-
+*/
 void resEnvoiCoup(socket_t socket, Partie* partie) {
 	recevoir(socket, partie, (pFct)deserialiserCoup);
 }

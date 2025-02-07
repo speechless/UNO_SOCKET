@@ -21,7 +21,9 @@ int jouerPartieClient(Partie* partie,int idJoueur, socket_t socketHost){
             printf("Il affiche\n");
             afficherMain(partie->joueurs[myID]);
             printf("Il affiche main\n");
-            resEnvoiCoup(partie->joueurs[0].idSocket, partie);
+
+            //Arret ici
+            resEnvoiPartie(socketHost, partie);
             printf("Il recup le coup\n");
         } else {
             afficherMainAvecSelection(partie->joueurs[partie->currentPlayer], partie->carteVisible);
@@ -31,7 +33,7 @@ int jouerPartieClient(Partie* partie,int idJoueur, socket_t socketHost){
                 piocherCarte(partie, partie->currentPlayer);
                 prochainTour(partie);
                 printf("Il fait son ptit truc\n");
-                reqEnvoiCoupClient(socketHost, partie);
+                reqEnvoiPartieClient(socketHost, partie);
                 printf("Il envoi le coup client\n");
             } else if (input < 0 || input >= partie->joueurs[partie->currentPlayer].tailleMain) {
                 printf("Erreur : Entrée invalide.\n");
@@ -43,7 +45,7 @@ int jouerPartieClient(Partie* partie,int idJoueur, socket_t socketHost){
                     } else {
                         prochainTour(partie);
                     }
-                    reqEnvoiCoupClient(socketHost, partie);
+                    reqEnvoiPartieClient(socketHost, partie);
                 }
             }
         }
@@ -53,7 +55,7 @@ int jouerPartieClient(Partie* partie,int idJoueur, socket_t socketHost){
 }
 
 int jouerPartieServeur(Partie* partie, socket_t* sockets){
-    int input = 0;
+    int input;
 
     // Récupère l'id du joueur dans la partie
     int myID = 0;
@@ -66,25 +68,31 @@ int jouerPartieServeur(Partie* partie, socket_t* sockets){
        attend que le host envoie un changement
     */
     while (!partie->estFinie) {
+        input=0;
         clearScreen();
         if (partie->currentPlayer != myID) {
             printf("\nCarte visible : ");
             afficherCarte(partie->carteVisible);
             afficherMain(partie->joueurs[myID]);
             printf("Il affiche\n");
-            resEnvoiCoup(partie->joueurs[partie->currentPlayer].idSocket, partie);
+            //resEnvoiCoup(partie->joueurs[partie->currentPlayer].idSocket, partie);
+            resEnvoiPartie(sockets[partie->currentPlayer-1],partie);
             printf("Il recup coup du joueur\n");
-            reqEnvoiCoupServeur(sockets, partie);
+            //reqEnvoiCoupServeur(sockets, partie);
+            reqEnvoiPartie(sockets, partie);
             printf("Il transmet l'info\n");
         } else {
             afficherMainAvecSelection(partie->joueurs[partie->currentPlayer], partie->carteVisible);
             printf("Il affiche\n");
             scanf("%d", &input);
+            //arrete ici
             if (input == partie->joueurs[partie->currentPlayer].tailleMain) {
                 piocherCarte(partie, partie->currentPlayer);
+                printf("Il a pioché\n");
                 prochainTour(partie);
                 printf("Il fait son ptit truc serveur\n");
-                reqEnvoiCoupServeur(sockets, partie);
+                reqEnvoiPartie(sockets, partie);
+                //reqEnvoiCoupServeur(sockets, partie);
                 printf("Il envoi le coup serveur\n");
 
             } else if (input < 0 || input >= partie->joueurs[partie->currentPlayer].tailleMain) {
@@ -97,7 +105,7 @@ int jouerPartieServeur(Partie* partie, socket_t* sockets){
                     } else {
                         prochainTour(partie);
                     }
-                    reqEnvoiCoupServeur(sockets, partie);
+                    reqEnvoiPartie(sockets, partie);
                 }
             }
         }

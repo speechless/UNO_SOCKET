@@ -8,7 +8,7 @@
 #define NB_SPECIALES 2 // PLUS_QUATRE, CHANGEMENT_COULEUR
 
 #define TAILLE_MAIN 5
-#define TAILLE_MAIN_MAX 108
+#define TAILLE_MAIN_MAX 150
 
 #define TOTAL_CARTES ((NB_COULEURS * NB_VALEURS * 2) + (NB_SPECIALES * 4)) // Cartes normales * 2 + Cartes spéciales
 
