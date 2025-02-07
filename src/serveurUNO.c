@@ -454,9 +454,9 @@ void ajouterJoueurSalon(salon_t* salon, int idClient) {
 		requete.code = COMMENCER_PARTIE;
 		requete.data[0] = '\0';
 
+
 		for (int i = 0; i < salon->nbJoueursActuels; i++) {
 			client_t joueurDuSalon = getClient(salon->idClients[i]);
-			printf("envoi démarrage à %d\n", joueurDuSalon.id);
 			envoyer(joueurDuSalon.socket, &requete, (pFct)serialiserData);
 		}
 
@@ -544,6 +544,9 @@ client_t getClient(int idClient) {
 
 	client_t clientVide;
 	clientVide.id = -1;
+	clientVide.port = 0;
+	clientVide.socket.fd = -1;
+	clientVide.adresse[0] = '\0';
 
 	return clientVide;
 }

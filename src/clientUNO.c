@@ -34,7 +34,9 @@ void deconnexionServeurUNO();
 client_t connexionServeurUNO();
 void quitterSalon();
 //void afficherMenu(int* state, int input);
+void afficherMenu();
 void lancerPartiePublique(client_t clientLocal);
+void rejoindrePartiePrivee(client_t clientLocal, int code);
 socket_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
@@ -60,6 +62,7 @@ int main() {
 	creation_partie_t demandeCreation;
 	rejoindre_partie_t demandeRejoindre;
 	int state = 0;
+	int input = 0;
 
 	Partie* partie;
 	socket_t* sockets;
@@ -71,103 +74,129 @@ int main() {
 	// Connexion au hub de jeu
 	clientLocal = connexionServeurUNO();
 
-	// Test statique de partie publique
-	lancerPartiePublique(clientLocal);
-
-	while (requete.code != COMMENCER_PARTIE) {
-		recevoir(socketAppel, &requete, (pFct)deserialiserData);
-
-		switch (requete.code) {
-
-			// Le serveur nous demande les informations en tant qu'hébergeur de partie publique
-			case CREATION_PARTIE:
-				socketEcouteHebergeur = creerSocketEcoute("127.0.0.1", 0);
-
-				demandeCreation.isPrivate = 0;
-				strcpy(demandeCreation.adresseHost, "127.0.0.1");
-				demandeCreation.portHost = ntohs(socketEcouteHebergeur.adrLoc.sin_port);
-				demandeCreation.nbJoueursMax = 2;
-				demandeCreation.idClient = clientLocal.id;
-
-				printf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
-
-				envoyerCreationPartie(socketAppel, demandeCreation);
+	while (1) {
+		afficherMenu();
+		scanf("%d", &input);
+		switch (input) {
+			case 1:
+				// Lancer une partie publique
+				lancerPartiePublique(clientLocal);
 				break;
+			case 2:
+				// Rejoindre une partie privée
+				printf("Entrez le code de la partie privée : ");
+				scanf("%d", &input);
 
-
-				// Réception des informations d'un salon
-			case SALON:
-				deserialiserSalon(requete.data, &salon);
+				rejoindrePartiePrivee(clientLocal, input);
 				break;
-			case COMMENCER_PARTIE:
-				partie = malloc(sizeof(Partie));
+			case 3:
+				break;
+		}
 
-				/*
-				SI pas host
-					connection à l'host
-					attendre recevoir partie
-				Sinon
-					attendre le nombre de connections attendu
-					creation partie
-				jouer partie
-				*/
-				printf("Démarrage\n");
-				if (salon.idHost == clientLocal.id) {
-					printf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);
-					sockets = initConnection(salon);
-					if (sockets == NULL) {
-						perror("Erreur allocation mémoire pour sockets");
-						exit(EXIT_FAILURE);
+
+		while (requete.code != COMMENCER_PARTIE) {
+			printf("Attente de requête\n");
+			recevoir(socketAppel, &requete, (pFct)deserialiserData);
+			printf("Requête reçue\n");
+
+			switch (requete.code) {
+
+				// Le serveur nous demande les informations en tant qu'hébergeur de partie publique
+				case CREATION_PARTIE:
+					socketEcouteHebergeur = creerSocketEcoute("127.0.0.1", 0);
+
+					demandeCreation.isPrivate = 0;
+					strcpy(demandeCreation.adresseHost, "127.0.0.1");
+					demandeCreation.portHost = ntohs(socketEcouteHebergeur.adrLoc.sin_port);
+					demandeCreation.nbJoueursMax = 2;
+					demandeCreation.idClient = clientLocal.id;
+
+					printf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
+
+					envoyerCreationPartie(socketAppel, demandeCreation);
+					break;
+
+
+					// Réception des informations d'un salon
+				case SALON:
+					deserialiserSalon(requete.data, &salon);
+					break;
+				case COMMENCER_PARTIE:
+					partie = malloc(sizeof(Partie));
+
+					deconnexionServeurUNO();
+
+					/*
+					SI pas host
+						connection à l'host
+						attendre recevoir partie
+					Sinon
+						attendre le nombre de connections attendu
+						creation partie
+					jouer partie
+					*/
+					printf("Démarrage\n");
+					if (salon.idHost == clientLocal.id) {
+						printf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);
+						sockets = initConnection(salon);
+						if (sockets == NULL) {
+							perror("Erreur allocation mémoire pour sockets");
+							exit(EXIT_FAILURE);
+						}
+
+						printf("je suis port : %d\n", ntohs(socketEcouteHebergeur.adrLoc.sin_port));
+
+						initPartie(partie, salon.nbJoueursMax, sockets);
+
+						printf("Création partie faite %d\n", partie->nbJoueurs);
+						/*
+											int test = 8;
+											envoiTest(sockets[0], &test);
+											printf("Envoi test faite %d\n", test);
+											printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));*/
+
+
+						reqEnvoiPartie(sockets, partie);
+						printf("Envoi partie faite %d\n", partie->nbJoueurs);
+
+						jouerPartieServeur(partie, sockets);
+					}
+					else {
+						printf("Je suis client\n");
+						initPartieClient(partie, salon.nbJoueursMax);
+
+						socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
+						printf("Connection serveur faite\n");
+						/*
+											printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
+											printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
+
+											int test;
+											recevoirTest(socketPartie, &test);
+											printf("Reception test faite %d\n", test);*/
+
+						resEnvoiPartie(socketPartie, partie);
+						printf("Reception partie faite %d\n", clientLocal.id);
+
+						jouerPartieClient(partie, clientLocal.id, socketPartie);
+
+
 					}
 
-					printf("je suis port : %d\n", ntohs(socketEcouteHebergeur.adrLoc.sin_port));
+					break;
+				default:
+					printf("CODE RECU NON RECONNU !\n");
+			}
 
-					initPartie(partie,salon.nbJoueursMax, sockets);
-					
-					printf("Création partie faite %d\n", partie->nbJoueurs);
-/*
-					int test = 8;
-					envoiTest(sockets[0], &test);
-					printf("Envoi test faite %d\n", test);
-					printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));*/
-
-
-					reqEnvoiPartie(sockets,partie);
-					printf("Envoi partie faite %d\n",partie->nbJoueurs);
-
-					jouerPartieServeur(partie,sockets);
-				}
-				else {
-					printf("Je suis client\n");
-					initPartieClient(partie,salon.nbJoueursMax);
-
-					socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
-					printf("Connection serveur faite\n");
-/*
-					printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
-					printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
-
-					int test;
-					recevoirTest(socketPartie, &test);
-					printf("Reception test faite %d\n", test);*/
-
-					resEnvoiPartie(socketPartie,partie);
-					printf("Reception partie faite %d\n",clientLocal.id);
-
-					jouerPartieClient(partie,clientLocal.id,socketPartie);
-
-					
-				}
-
-				break;
-			default:
-				printf("CODE RECU NON RECONNU !\n");
 		}
-		
+
+
 	}
+
+
 	free(sockets);
 	CHECK(close(socketPartie.fd), "close socket partie");
-	
+
 	return 0;
 }
 
@@ -260,6 +289,23 @@ void rejoindrePartiePrivee(client_t clientLocal, int code) {
 	demandeRejoindre.isPrivate = 1;
 	demandeRejoindre.code = code;
 	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
+}
+
+/**
+ * Affiche le menu
+ */
+void afficherMenu() {
+	setTerm(BLACK);
+	printf("===== Menu Principal =====\n");
+	resetTerm();
+	printf("1. Lancer une partie publique\n");
+	printf("2. Lancer une partie privée\n");
+	printf("3. Héberger une partie privée\n");
+	printf("4. Quitter\n");
+	setTerm(BLACK);
+	printf("==========================\n");
+	resetTerm();
+	printf("\nChoix : ");
 }
 
 /*

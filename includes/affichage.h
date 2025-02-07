@@ -11,7 +11,6 @@
 void afficherCarte(Carte c);
 void afficherCarteMain(Carte c, int index);
 void afficherMainAvecSelection(Joueur joueur, Carte carteVisible);
-void afficherMenu(int* state, int input);
 void afficherMain(Joueur j);
 
 #endif // AFFICHAGE_H
