@@ -18,56 +18,6 @@ int indexCode=0;
  * 
  */
 int state = 0;
-/*
-int main() {
-    int input = 0;
-
-    Partie partie = initPartie(4);
-    reqEnvoiPartie(partie.joueurs[0].idSocket, partie);
-
-    if(TEST){;}
-    if(REAL){
-        for(int i=0; i<partie.nbJoueurs; i++){
-            printf("\nJoueur %d\n",i);
-            afficherMain(partie.joueurs[i]);
-        }
-
-        while(!partie.estFinie){
-            clearScreen();
-            afficherMainAvecSelection(partie.joueurs[partie.currentPlayer], partie.carteVisible);
-            scanf("%d", &input);
-            if (input == partie.joueurs[partie.currentPlayer].tailleMain) {
-                piocherCarte(&partie, partie.currentPlayer);
-                prochainTour(&partie);
-
-                // char* chaine = malloc(1000 * sizeof(char));
-                // serialiserCoup(partie, chaine);
-                // deserialiserCoup(chaine, &partie);
-                // serialiserCoup(partie, chaine);
-                // free(chaine);
-
-                reqEnvoiCoup(partie.joueurs[partie.currentPlayer].idSocket,partie);
-
-
-            } else if (input < 0 || input >= partie.joueurs[partie.currentPlayer].tailleMain) {
-                printf("Erreur : Entrée invalide.\n");
-            } else{
-                if(jouerCarte(&partie, partie.currentPlayer, partie.joueurs[partie.currentPlayer].main[input])){
-                    if(partie.joueurs[partie.currentPlayer].tailleMain == 0){
-                        printf("Le joueur %d a gagné la partie en %d tours\n", partie.currentPlayer, partie.nbTours);
-                        partie.estFinie = 1;
-                    }else{
-                        prochainTour(&partie);
-                    }
-                    reqEnvoiCoup(partie.joueurs[partie.currentPlayer].idSocket, partie);
-                }
-            }
-            
-        }
-    }
-    return 0;
-}*/
-
 void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
     if (partie == NULL) {
         perror("Erreur d'allocation mémoire pour la partie");
@@ -77,7 +27,6 @@ void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
     partie->estFinie = 0;
     partie->nbJoueurs = nbJoueurs;
     partie->sens = 1; 
-    partie->nbTours = 0;
     Carte startCard = {-1, -1};  // Carte invalide
     partie->carteVisible = startCard;
     partie->currentPlayer = 0;
@@ -125,7 +74,6 @@ void initPartieClient(Partie* partie,int nbJoueurs) {
     partie->estFinie = 0;
     partie->nbJoueurs = nbJoueurs;
     partie->sens = 1; 
-    partie->nbTours = 0;
     Carte startCard = {-1, -1};  // Carte invalide
     partie->carteVisible = startCard;
     partie->currentPlayer = 0;
@@ -243,5 +191,4 @@ int generateCode(){
 
 void prochainTour(Partie *partie){
     partie->currentPlayer = (partie->currentPlayer + partie->sens + partie->nbJoueurs) % partie->nbJoueurs;
-    partie->nbTours++;
 }

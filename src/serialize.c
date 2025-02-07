@@ -4,9 +4,8 @@ int STATUS_CODE_SERIA_PARTIE = 200;
 int STATUS_CODE_SERIA_COUP = 300;
 
 void serialiserPartie(Partie* p, char* chaine) {
-    char buffer[256]; // Tampon pour formater les données temporaires
+    char buffer[500]; // Tampon pour formater les données temporaires
     // Initialisation de la chaîne
-    printf("Serialisation de la partie, sens =  %d\n",p->sens);
     sprintf(chaine, "[%d:%d:%d:%d:[",STATUS_CODE_SERIA_PARTIE,p->nbJoueurs, p->currentPlayer, p->sens);
     //debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p.nbJoueurs, p.currentPlayer, p.sens);
 
@@ -57,12 +56,9 @@ void serialiserPartie(Partie* p, char* chaine) {
         strcat(chaine, buffer);
     }
 
-    sprintf(buffer, "%d:%d]", p->estFinie, p->nbTours);
+    sprintf(buffer, "%d]", p->estFinie);
     strcat(chaine, buffer);
 
-    debugprintf("%d:%d]", p->estFinie, p->nbTours);
-
-    printf("\n%s\n",chaine);
 }
 
 
@@ -102,7 +98,7 @@ void deserialiserPartie( char* chaine,Partie* p) {
 
     // Allouer de la mémoire pour les joueurs
     for (int i = 0; i < p->nbJoueurs; i++) {
-        p->joueurs[i].main = (Carte*)malloc(p->joueurs[i].tailleMain * sizeof(Carte));
+        p->joueurs[i].main = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
     }
     if (p->joueurs == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire pour les joueurs.\n");
@@ -119,7 +115,7 @@ void deserialiserPartie( char* chaine,Partie* p) {
         p->joueurs[i].tailleMain = extraireEntier(&ptr); // Taille de la main
 
         // Allouer de la mémoire pour la main du joueur
-        p->joueurs[i].main = (Carte*)malloc(p->joueurs[i].tailleMain * sizeof(Carte));
+        p->joueurs[i].main = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
         if (p->joueurs[i].main == NULL) {
             fprintf(stderr, "Erreur d'allocation mémoire pour la main du joueur.\n");
             free(str);
@@ -148,7 +144,7 @@ void deserialiserPartie( char* chaine,Partie* p) {
     p->nbCartesPioche = extraireEntier(&ptr); // Nombre de cartes dans la pioche
 
     // Allouer de la mémoire pour la pioche
-    p->pioche = (Carte*)malloc(p->nbCartesPioche * sizeof(Carte));
+    p->pioche = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
     if (p->pioche == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire pour la pioche.\n");
         free(str);
@@ -169,7 +165,6 @@ void deserialiserPartie( char* chaine,Partie* p) {
 
     // Lire les informations de fin de partie
     p->estFinie = extraireEntier(&ptr); // Partie terminée ?
-    p->nbTours = extraireEntier(&ptr);  // Nombre de tours
 
     // Libérer la copie de la chaîne
     free(str);
@@ -230,11 +225,11 @@ void serialiserCoup(Partie p ,char* chaine){
         strcat(chaine, buffer);
     }
 
-    // Ajout des informations finales (estFinie, nbTours)
-    sprintf(buffer, "%d:%d]", p.estFinie, p.nbTours);
+    // Ajout des informations finales (estFinie)
+    sprintf(buffer, "%d]", p.estFinie);
     strcat(chaine, buffer);
 
-    debugprintf("%d:%d]", p.estFinie, p.nbTours);
+    debugprintf(":%d]", p.estFinie);
 }
 
 
@@ -260,7 +255,7 @@ void deserialiserCoup(char* chaine, Partie* p){
             p->joueurs[i].tailleMain = extraireEntier(&ptr); // Taille de la main
 
             // Allouer de la mémoire pour la main du joueur
-            p->joueurs[i].main = (Carte*)malloc(p->joueurs[i].tailleMain * sizeof(Carte));
+            p->joueurs[i].main = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
             if (p->joueurs[i].main == NULL) {
                 fprintf(stderr, "Erreur d'allocation mémoire pour la main du joueur.\n");
                 free(str);
@@ -287,7 +282,7 @@ void deserialiserCoup(char* chaine, Partie* p){
     p->nbCartesPioche = extraireEntier(&ptr); // Nombre de cartes dans la pioche
 
     // Allouer de la mémoire pour la pioche
-    p->pioche = (Carte*)malloc(p->nbCartesPioche * sizeof(Carte));
+    p->pioche = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
     if (p->pioche == NULL) {
         fprintf(stderr, "Erreur d'allocation mémoire pour la pioche.\n");
         free(str);
@@ -306,9 +301,8 @@ void deserialiserCoup(char* chaine, Partie* p){
     // Ignorer le caractère ']'
     if (*ptr == ']') ptr++;
 
-    // Lire les informations finales (estFinie, nbTours)
+    // Lire les informations finales (estFinie)
     p->estFinie = extraireEntier(&ptr); // Partie terminée ?
-    p->nbTours = extraireEntier(&ptr);  // Nombre de tours
 
     // Libérer la copie de la chaîne
     free(str);

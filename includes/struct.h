@@ -63,7 +63,6 @@ typedef struct
     Carte* pioche;
     
     int estFinie;
-    int nbTours;
 } Partie;
 
 #endif // STRUCT_H

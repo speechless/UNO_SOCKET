@@ -61,6 +61,9 @@ int main() {
 	rejoindre_partie_t demandeRejoindre;
 	int state = 0;
 
+	Partie* partie;
+	socket_t* sockets;
+
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
 
@@ -97,7 +100,7 @@ int main() {
 				deserialiserSalon(requete.data, &salon);
 				break;
 			case COMMENCER_PARTIE:
-				Partie* partie = malloc(sizeof(Partie));;
+				partie = malloc(sizeof(Partie));
 
 				/*
 				SI pas host
@@ -111,7 +114,7 @@ int main() {
 				printf("Démarrage\n");
 				if (salon.idHost == clientLocal.id) {
 					printf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);
-					socket_t* sockets = initConnection(salon);
+					sockets = initConnection(salon);
 					if (sockets == NULL) {
 						perror("Erreur allocation mémoire pour sockets");
 						exit(EXIT_FAILURE);
@@ -133,7 +136,6 @@ int main() {
 					printf("Envoi partie faite %d\n",partie->nbJoueurs);
 
 					jouerPartieServeur(partie,sockets);
-					free(sockets);
 				}
 				else {
 					printf("Je suis client\n");
@@ -154,19 +156,18 @@ int main() {
 
 					jouerPartieClient(partie,clientLocal.id,socketPartie);
 
-					CHECK(close(socketPartie.fd), "close socket partie");
+					
 				}
 
 				break;
 			default:
 				printf("CODE RECU NON RECONNU !\n");
-
-
-
 		}
+		
 	}
-
-
+	free(sockets);
+	CHECK(close(socketPartie.fd), "close socket partie");
+	
 	return 0;
 }
 
