@@ -1,3 +1,7 @@
+/**
+ * @file common.c
+ */
+
 #ifdef DEBUG
 #define DEBUG_PRINT 1
 #else

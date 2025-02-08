@@ -1,14 +1,23 @@
+/**
+ * @file serialize.c
+ */
+
 #include "serialize.h"
 #include <common.h>
 
-int STATUS_CODE_SERIA_PARTIE = 200;
-int STATUS_CODE_SERIA_COUP = 300;
+int STATUS_CODE_SERIA_PARTIE = 200; /**< Code d'une requete de serialisation de partie */
+int STATUS_CODE_SERIA_COUP = 300; /**< Code d'une requete de serialisation de coup */
 
+/**
+ * Sérialise une partie
+ * @param p Partie en cours
+ * @param chaine Chaîne de caractères résultante
+ */
 void serialiserPartie(Partie* p, char* chaine) {
 	char buffer[500]; // Tampon pour formater les données temporaires
 	// Initialisation de la chaîne
 	sprintf(chaine, "[%d:%d:%d:%d:[", STATUS_CODE_SERIA_PARTIE, p->nbJoueurs, p->currentPlayer, p->sens);
-	//debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p.nbJoueurs, p.currentPlayer, p.sens);
+	debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p.nbJoueurs, p.currentPlayer, p.sens);
 
 	for (int i = 0; i < p->nbJoueurs; i++) {
 		// Ajout des informations de chaque joueur
@@ -67,7 +76,10 @@ void serialiserPartie(Partie* p, char* chaine) {
 }
 
 
-// Fonction pour extraire un entier d'une chaîne
+/**
+ * Fonction pour extraire un entier d'une chaîne
+ *  @param str Pointeur vers chaîne de caractères résultante
+ */ 
 int extraireEntier(char** str) {
 	char* end;
 	int valeur = strtol(*str, &end, 10);
@@ -79,7 +91,10 @@ int extraireEntier(char** str) {
 	return valeur;
 }
 
-// Fonction pour extraire une carte d'une chaîne
+/**
+ * Fonction pour extraire une carte d'une chaîne
+ *  @param str Pointeur vers chaîne de caractères résultante
+ */ 
 Carte extraireCarte(char** str) {
 	Carte carte;
 	carte.Couleur = extraireEntier(str); // Extraire la couleur
@@ -87,7 +102,11 @@ Carte extraireCarte(char** str) {
 	return carte;
 }
 
-// Fonction de désérialisation
+/**
+ * Sérialise une partie
+ * @param p Partie en cours
+ * @param chaine Chaîne de caractères résultante
+ */
 void deserialiserPartie(char* chaine, Partie* p) {
 	char* str = strdup(chaine); // Copie de la chaîne pour éviter de la modifier
 	char* ptr = str;
@@ -100,16 +119,6 @@ void deserialiserPartie(char* chaine, Partie* p) {
 	p->nbJoueurs = extraireEntier(&ptr);   // Nombre de joueurs
 	p->currentPlayer = extraireEntier(&ptr); // Joueur actuel
 	p->sens = extraireEntier(&ptr);        // Sens du jeu
-
-	/*// Allouer de la mémoire pour les joueurs
-	for (int i = 0; i < p->nbJoueurs; i++) {
-		p->joueurs[i].main = (Carte*)malloc(TAILLE_MAIN_MAX * sizeof(Carte));
-	}
-	if (p->joueurs == NULL) {
-		fprintf(stderr, "Erreur d'allocation mémoire pour les joueurs.\n");
-		free(str);
-		return;
-	}*/
 
 	// Ignorer le caractère '['
 	if (*ptr == '[') ptr++;
@@ -143,7 +152,6 @@ void deserialiserPartie(char* chaine, Partie* p) {
 		if (*ptr == ',') ptr++;
 	}
 
-	//printf("Chaine restante : %s\n", ptr);
 	// Lire la carte visible et le nombre de cartes dans la pioche
 	p->carteVisible = extraireCarte(&ptr); // Carte visible
 	p->nbCartesPioche = extraireEntier(&ptr); // Nombre de cartes dans la pioche
@@ -178,9 +186,13 @@ void deserialiserPartie(char* chaine, Partie* p) {
 	// Libérer la copie de la chaîne
 	free(str);
 
-	//printf("\n%s\n",chaine);
 }
 
+/**
+ * Sérialise la mise à jour d'une partie
+ * @param p Partie en cours
+ * @param chaine Chaîne de caractères résultante
+ */
 void serialiserCoup(Partie p, char* chaine) {
 	char buffer[256]; // Tampon pour formater les données temporaires
 
@@ -244,7 +256,11 @@ void serialiserCoup(Partie p, char* chaine) {
 	debugprintf(":%d]", p.estFinie);
 }
 
-
+/**
+ * Désérialise la mise à jour d'une partie
+ * @param chaine Chaîne de caractères résultante
+ * @param p Partie en cours
+ */
 void deserialiserCoup(char* chaine, Partie* p) {
 	char* str = strdup(chaine); // Copie de la chaîne pour éviter de la modifier
 	char* ptr = str;

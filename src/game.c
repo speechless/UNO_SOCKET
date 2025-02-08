@@ -1,11 +1,16 @@
-#include "game.h"
+/**
+ * @file game.c
+ */
 
-#define REAL 1
-#define TEST 1
+ #include "game.h"
 
-//TODO changement de couleur et +4
-
-
+/**
+ * initalise une partie
+ * @param partie la partie à initialiser
+ * @param nbJoueurs le nombre de joueur de la partie
+ * @param clients les joueurs
+ * @param idHost l'host de la partie
+ */
 void initPartie(Partie* partie, int nbJoueurs, client_t* clients, int idHost) {
 	if (partie == NULL) {
 		perror("Erreur d'allocation mémoire pour la partie");
@@ -54,43 +59,16 @@ void initPartie(Partie* partie, int nbJoueurs, client_t* clients, int idHost) {
 
 }
 
-/*
-void initPartieClient(Partie* partie, int nbJoueurs) {
-	if (partie == NULL) {
-		perror("Erreur d'allocation mémoire pour la partie");
-		exit(EXIT_FAILURE);
-	}
-
-	partie->estFinie = 0;
-	partie->nbJoueurs = nbJoueurs;
-	partie->sens = 1;
-	Carte startCard = {-1, -1};  // Carte invalide
-	partie->carteVisible = startCard;
-	partie->currentPlayer = 0;
-
-	// Initialiser les joueurs
-	for (int i = 0; i < partie->nbJoueurs; i++) {
-		partie->joueurs[i].idJoueur = i;
-		partie->joueurs[i].tailleMain = 0;
-		partie->joueurs[i].main = malloc(TAILLE_MAIN_MAX * sizeof(Carte));  // Allouer mémoire pour la main
-
-		if (partie->joueurs[i].main == NULL) {
-			perror("Erreur d'allocation mémoire pour la main du joueur");
-			free(partie);
-			exit(EXIT_FAILURE);
-		}
-
-		// Initialisation de la main à -1, -1
-		for (int j = 0; j < TAILLE_MAIN_MAX; j++) {
-			partie->joueurs[i].main[j].Couleur = -1;
-			partie->joueurs[i].main[j].Valeur = -1;
-		}
-	}
-}*/
 
 
-
-// Fonction pour jouer une carte
+/**
+ * Fonction pour jouer une carte
+ * @param partie partie actuelle
+ * @param idJoueur le joueur qui joue la carte
+ * @param carteJouee la carte qu'il souhaite jouer
+ * 
+ * @return renvoie 1 si l'action s'est faite et 0 si erreur
+ */ 
 int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	int indexJoueurQuiJoue = getIndexFromIdJoueur(idJoueur, partie->joueurs, partie->nbJoueurs);
 
@@ -143,15 +121,14 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	if (carteJouee.Valeur == PLUS_DEUX) {
 		int indexJoueurQuiPioche = (indexJoueurQuiJoue + partie->sens + partie->nbJoueurs) % partie->nbJoueurs;
 
-		//printf("Le joueur %d pioche 2 cartes\n", indexJoueurQuiPioche);
 		printf("Le joueur suivant pioche 2 cartes\n");
 		piocherCarte(partie, indexJoueurQuiPioche);
 		piocherCarte(partie, indexJoueurQuiPioche);
 	}
 	if (carteJouee.Valeur == PASSE_TOUR) {
-		//printf("Le joueur %d passe son tour\n", (indexJoueurQuiJoue + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
 		printf("Le joueur suivant passe son tour\n");
-		prochainTour(partie);
+		if(joueur->tailleMain > 0)
+			prochainTour(partie);
 	}
 	if (carteJouee.Valeur == CHANGEMENT_SENS) {
 		printf("Changement de sens\n");
@@ -160,7 +137,9 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 
 	if (carteJouee.Valeur == CHANGEMENT_COULEUR) {
 		printf("Changement de couleur\n");
-		prochainTour(partie);
+		if(joueur->tailleMain > 0)
+			prochainTour(partie);
+		
 
 	}
 
@@ -169,7 +148,10 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	return 1;
 }
 
-
+/**
+ * Fait passer la partie au tour suivant
+ * @param partie La partie actuelle
+ */
 void prochainTour(Partie* partie) {
 	int indexJoueurActuel = 0;
 	while (partie->joueurs[indexJoueurActuel].idJoueur != partie->currentPlayer) {
@@ -179,6 +161,14 @@ void prochainTour(Partie* partie) {
 	partie->currentPlayer = partie->joueurs[indexJoueurActuel].idJoueur;
 }
 
+/**
+ * Donne l'index d'un client en fonction de son id
+ * @param id id du joueur
+ * @param joueurs tous les joueurs de la partie
+ * @param nbJoueurs nombre de joueur de la partie
+ * 
+ * @return -1 si pas trouvé sinon son ID
+ */
 int getIndexFromIdClient(int id, client_t* joueurs, int nbJoueurs) {
 	for (int i = 0; i < nbJoueurs; i++) {
 		if (joueurs[i].id == id) {
@@ -188,6 +178,14 @@ int getIndexFromIdClient(int id, client_t* joueurs, int nbJoueurs) {
 	return -1;
 }
 
+/**
+ * Donne l'index dans la partie d'un joueur en fonction de son id client
+ * @param id id du joueur
+ * @param joueurs tous les joueurs de la partie
+ * @param nbJoueurs nombre de joueur de la partie
+ * 
+ * @return -1 si pas trouvé sinon son ID
+ */
 int getIndexFromIdJoueur(int id, Joueur* joueurs, int nbJoueurs) {
 	for (int i = 0; i < nbJoueurs; i++) {
 		if (joueurs[i].idJoueur == id) {

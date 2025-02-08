@@ -35,7 +35,11 @@ Carte* genererCartes() {
 	return cartes; // Retourner le tableau
 }
 
-
+/**
+ * Melange les cartes
+ * @param cartes l'ensemble des cartes à mélanger
+ * @param nbCartes taille de l'ensemble des cartes
+ */
 void melangerCartes(Carte* cartes, int nbCartes) {
 	srand(time(NULL)); // Initialiser le générateur de nombres aléatoires
 
@@ -81,6 +85,13 @@ void piocherCarte(Partie* partie, int indexJoueur) {
 	partie->nbCartesPioche--;  // Réduit le nombre de cartes dans la pioche
 }
 
+/**
+ * Vérifie si une carte est "vide"
+ * utile pour le début de partie 
+ * @param c carte à vérifier
+ * 
+ * @return 1 si vide sinon 0
+ */
 int isCarteVide(Carte c) {
 	if ((int)c.Couleur == -1 && (int)c.Valeur == -1) {
 		return 1;

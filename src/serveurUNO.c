@@ -2,12 +2,6 @@
  * @file serveurUNO.c
  */
 
- /**
-  * TODO:
-  * mutex
-  */
-
-
 #include <pthread.h>
 #include <string.h>
 #include <time.h>

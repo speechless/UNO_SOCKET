@@ -1,3 +1,7 @@
+/**
+ * @file game_requests.h
+ */
+
 #ifndef REQ_GAME_H
 #define REQ_GAME_H
 
@@ -7,19 +11,32 @@
 #include <data.h>
 #include <requetes.h>
 
+/**
+ * L'host envoie aux autres jouers la partie
+ * @param clients tous les joueurs de la partie
+ * @param partie la partie
+ */
 void reqEnvoiPartie(client_t* sockets, Partie* partie);
+
+/**
+ * Reçoit d'un joueur la partie actualisée
+ * @param socket socket avec le joueur
+ * @param partie la partie
+ */
 void resEnvoiPartie(socket_t socket, Partie* partie);
 
-//void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie);
+/**
+ * Un joueur non host envoie la partie actualisée à l'host
+ * @param socket socket avec l'host
+ * @param partie la partie
+ */
 void reqEnvoiPartieClient(socket_t socket, Partie* partie);
-//void reqEnvoiCoupClient(socket_t socketHost, Partie* partie);
+
+/**
+ * Reçoit d'un joueur la partie actualisée après un coup joué
+ * @param socket socket avec le joueur
+ * @param partie la partie
+ */
 void resEnvoiCoup(socket_t socket, Partie* partie);
 
-void envoiTest(socket_t socket, int* test);
-
-void recevoirTest(socket_t socket, int* test);
-
-int serialiserD(int* data, char* chaine);
-
-int deserialiserD(char* chaine, int* data);
 #endif // REQ_GAME_H

@@ -1,17 +1,24 @@
+/**
+ * @file struct.h
+ */
+
 #ifndef STRUCT_H
 #define STRUCT_H
 
 #include "session.h"
 
-#define NB_COULEURS 4 // ROUGE, BLEU, JAUNE, VERT (sans NOIR)
-#define NB_VALEURS 13 // Valeurs de ZERO à CHANGEMENT_SENS (sans PLUS_QUATRE et CHANGEMENT_COULEUR)
-#define NB_SPECIALES 2 // PLUS_QUATRE, CHANGEMENT_COULEUR
+#define NB_COULEURS 4 /**< Nombre de couleurs ROUGE, BLEU, JAUNE, VERT (sans NOIR)*/
+#define NB_VALEURS 13 /**< Valeurs de ZERO à CHANGEMENT_SENS (sans PLUS_QUATRE et CHANGEMENT_COULEUR)*/
+#define NB_SPECIALES 1 /**< CHANGEMENT_COULEUR */
 
-#define TAILLE_MAIN 5
-#define TAILLE_MAIN_MAX 150
+#define TAILLE_MAIN 5 /**< Taille main de base d'un joueur */
+#define TAILLE_MAIN_MAX 150 /**< Taille maximale main d'un joueur */
 
-#define TOTAL_CARTES ((NB_COULEURS * NB_VALEURS * 2) + (NB_SPECIALES * 4)) // Cartes normales * 2 + Cartes spéciales
+#define TOTAL_CARTES ((NB_COULEURS * NB_VALEURS * 2) + (NB_SPECIALES * 4))  /**<  Cartes normales * 2 + Cartes spéciales*/
 
+/**
+ * Couleurs possibles des cartes
+ */
 typedef enum {
 	ROUGE,
 	BLEU,
@@ -20,6 +27,9 @@ typedef enum {
 	NOIR
 } Couleur;
 
+/**
+ * Valeurs possibles des cartes
+ */
 typedef enum {
 	ZERO,
 	UN,
@@ -37,11 +47,17 @@ typedef enum {
 	CHANGEMENT_COULEUR
 } Valeur;
 
+/**
+ * Carte du jeu
+ */
 typedef struct {
 	Couleur Couleur;
 	Valeur Valeur;
 } Carte;
 
+/**
+ * Joueur 
+ */
 typedef struct {
 	socket_t idSocket;
 	int idJoueur;
@@ -50,6 +66,9 @@ typedef struct {
 	Carte* main;
 } Joueur;
 
+/**
+ * Partie
+ */
 typedef struct
 {
 	int nbJoueurs;

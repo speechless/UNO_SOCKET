@@ -1,6 +1,16 @@
+/**
+ * @file player.c
+ */
+
 #include "player.h"
 #include <common.h>
 
+/**
+ * Déroulement de la partie côté client
+ * @param partie la partie actuelle
+ * @param idJoueur id du joueur
+ * @param socketHost socket avec l'host de la partie
+ */
 int jouerPartieClient(Partie* partie, int idJoueur, socket_t socketHost) {
 	int input;
 	debugprintf("idJoueur = %d, idCourant = %d\n", idJoueur, partie->currentPlayer);
@@ -61,6 +71,12 @@ int jouerPartieClient(Partie* partie, int idJoueur, socket_t socketHost) {
 
 }
 
+/**
+ * Déroulement de la partie côté host
+ * @param partie la partie actuelle
+ * @param idJoueur id du joueur
+ * @param socketHost tous les clients qui deviennent les joueurs de la partie
+ */
 int jouerPartieServeur(Partie* partie, int idJoueur, client_t* clients) {
 	int input;
 

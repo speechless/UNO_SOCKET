@@ -2,13 +2,6 @@
  * @file clientUNO.c
  */
 
- /**
-  * TODO:
-  * menu
-  * connexion entre clients quand la partie est lancée
-  * jeu
-  */
-
 #include <session.h>
 #include <data.h>
 #include <enhanceTerminal.h>
@@ -33,7 +26,6 @@ void bye();
 void deconnexionServeurUNO();
 client_t connexionServeurUNO();
 void quitterSalon();
-//void afficherMenu(int* state, int input);
 void afficherMenu();
 void lancerPartiePublique(client_t clientLocal);
 void rejoindrePartiePrivee(client_t clientLocal, int code);
@@ -41,24 +33,17 @@ void creerPartiePrivee(client_t clientLocal, int nbJoueursMax);
 client_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
-socket_t socketEcouteHebergeur = {-1,};
+socket_t socketEcouteHebergeur = {-1,}; 
 socket_t socketPartie;
 int connecte = 0;
 
 /**
- * states :
- * 0 : Menu principal
- * 1 : Attente de partie publique
- * 2 : Entre le code de la partie privée
- * 3 : Attente de partie privée (hébergeur)
- * 4 : Attente de partie privée (rejoindre)
+ * Programme principal du client
  */
-
-
 int main() {
 
 	salon_t salon;
-	client_t clientLocal;
+	client_t clientLocal; 
 
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
@@ -226,6 +211,9 @@ int main() {
 	return 0;
 }
 
+/**
+ * Fonction à exécuter lors de la fermeture du programme
+ */
 void bye() {
 	deconnexionServeurUNO();
 
@@ -236,6 +224,11 @@ void bye() {
 	}
 }
 
+/**
+ * Connecte un client au serveur
+ * 
+ * @return l'objet client
+ */
 client_t connexionServeurUNO() {
 	basic_data_t requete = {-1, ""};
 	client_t client;
@@ -257,6 +250,9 @@ client_t connexionServeurUNO() {
 	return client;
 }
 
+/**
+ * Neutralise le ^C afin d'avoir une fermeture propre du programme
+ */
 void traiterSignal(int sigNum) {
 	switch (sigNum) {
 		case SIGINT:
@@ -265,6 +261,12 @@ void traiterSignal(int sigNum) {
 	}
 }
 
+/**
+ * Initialise la connection avec un salon du serveur
+ * @param salon le salo du serveur
+ * 
+ * @return l'objet client
+ */
 client_t* initConnection(salon_t salon) {
 	client_t* clients = malloc((salon.nbJoueursMax) * sizeof(client_t));
 	if (clients == NULL) {
@@ -295,7 +297,9 @@ client_t* initConnection(salon_t salon) {
 	return clients;
 }
 
-
+/**
+ * Déconnecte le client du serveur
+ */
 void deconnexionServeurUNO() {
 	debugprintf("Envoi requête déconnexion au serveur\n");
 
@@ -309,6 +313,9 @@ void deconnexionServeurUNO() {
 	connecte = 0;
 }
 
+/**
+ * Le client quitte son salon actuel
+ */
 void quitterSalon() {
 	debugprintf("Envoi requête quitter salon\n");
 
@@ -318,6 +325,9 @@ void quitterSalon() {
 	envoyer(socketAppel, &requete, (pFct)serialiserData);
 }
 
+/**
+ * Rejoint une partie publique
+ */
 void lancerPartiePublique(client_t clientLocal) {
 	rejoindre_partie_t demandeRejoindre;
 	demandeRejoindre.idClient = clientLocal.id;
@@ -325,6 +335,11 @@ void lancerPartiePublique(client_t clientLocal) {
 	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
 }
 
+/**
+ * Rejoint une partie privée
+ * @param clientLocal le client
+ * @param code le code d'entrée de la partie
+ */
 void rejoindrePartiePrivee(client_t clientLocal, int code) {
 	rejoindre_partie_t demandeRejoindre;
 	demandeRejoindre.idClient = clientLocal.id;
@@ -333,6 +348,9 @@ void rejoindrePartiePrivee(client_t clientLocal, int code) {
 	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
 }
 
+/**
+ * Créé une partie privée
+ */
 void creerPartiePrivee(client_t clientLocal, int nbJoueursMax) {
 	creation_partie_t demandeCreation;
 
@@ -365,77 +383,4 @@ void afficherMenu() {
 	resetTerm();
 	printf("\nChoix : ");
 }
-
-/*
-void afficherMenu(int* state, int input) {
-
-	switch (*state) {
-		case 0:
-			switch (input) {
-				case 0:
-					setTerm(BLACK);
-					printf("===== Menu Principal =====\n");
-					resetTerm();
-					printf("1. Lancer une partie publique\n");
-					printf("2. Lancer une partie privée\n");
-					printf("3. Héberger une partie privée\n");
-					printf("4. Quitter\n");
-					setTerm(BLACK);
-					printf("==========================\n");
-					resetTerm();
-					printf("\nInput : ");
-					break;
-
-				case 1:
-					//Vue de la partie publique
-					*state = 1;
-					afficherMenu(state, 0);
-					break;
-
-				case 2:
-					//Vue de la partie privée
-					*state = 2;
-					afficherMenu(state, 0);
-					break;
-
-				case 3:
-					//Vue de l'hébergement de la partie privée
-					*state = 3;
-					afficherMenu(state, 0);
-					break;
-
-				case 4:
-					exit(0);
-					break;
-
-				default:
-					printf("Entrée invalide.\n");
-					break;
-			}
-			break;
-
-		case 1:
-			//Vue de la partie publique
-			setTerm(BLUE);
-			printf("En attente de joueurs...\n");
-			resetTerm();
-			break;
-		case 2:
-			//Vue de la partie privée
-			setTerm(BLACK);
-			printf("Veuillez entrer le code de la partie : ");
-			resetTerm();
-			break;
-
-		case 3:
-			//Vue de l'hébergement de la partie privée
-			setTerm(BLACK);
-			printf("Code de la partie : ...\n");
-			resetTerm();
-			break;
-
-		default:
-			exit(0);
-	}
-}*/
 
