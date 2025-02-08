@@ -20,6 +20,10 @@
    */
 #define PAUSE(msg) printf("%s [Entrée pour continuer]\n", msg); getchar();
 
-
+   /**
+	* Affiche un message de débogage
+	* @param format Format du message
+	* @param ... Arguments du message
+	*/
 void debugprintf(char* format, ...);
 #endif

@@ -13,6 +13,11 @@
 #include <string.h>
 #include <stdarg.h> // Pour va_list et les fonctions associées
 
+ /**
+  * Affiche un message de débogage
+  * @param format Format du message
+  * @param ... Arguments du message
+  */
 void debugprintf(char* format, ...) {
 	if (DEBUG_PRINT) {
 		va_list args;                // Initialise une liste d'arguments variadiques

@@ -16,9 +16,9 @@
 
 #define TOTAL_CARTES ((NB_COULEURS * NB_VALEURS * 2) + (NB_SPECIALES * 4))  /**<  Cartes normales * 2 + Cartes spéciales*/
 
-/**
- * Couleurs possibles des cartes
- */
+ /**
+  * Couleurs possibles des cartes
+  */
 typedef enum {
 	ROUGE,
 	BLEU,
@@ -51,19 +51,19 @@ typedef enum {
  * Carte du jeu
  */
 typedef struct {
-	Couleur Couleur;
-	Valeur Valeur;
+	Couleur Couleur; /**< Couleur de la carte */
+	Valeur Valeur; /**< Valeur ou type spécial de la carte */
 } Carte;
 
 /**
- * Joueur 
+ * Joueur
  */
 typedef struct {
-	socket_t idSocket;
-	int idJoueur;
+	socket_t idSocket; /**< Socket du joueur */
+	int idJoueur; /**< Identifiant du joueur */
 
-	int tailleMain;
-	Carte* main;
+	int tailleMain; /**< Taille de la main du joueur */
+	Carte* main; /**< Main du joueur */
 } Joueur;
 
 /**
@@ -71,17 +71,17 @@ typedef struct {
  */
 typedef struct
 {
-	int nbJoueurs;
-	int currentPlayer;
-	int sens;               // 1 ou -1
-	Joueur joueurs[4];      //index 0 est l'hébergeur
+	int nbJoueurs; /**< Nombre de joueurs max dans la partie */
+	int currentPlayer; /**< Nombre de joueurs actuel */
+	int sens; /**< Sens pour déterminer le prochain joueur (-1 ou 1) */
+	Joueur joueurs[4];      /**< Joueurs présents dans la partie (index 0 est l'hébergeur) */
 
-	Carte carteVisible;
-	int nbCartesPioche;
-	Carte* pioche;
+	Carte carteVisible; /**< Carte visible, celle qui a été la dernière placée */
+	int nbCartesPioche; /**< Nombre de cartes dans la pioche */
+	Carte* pioche; /**< Pioche de cartes */
 
-	int estFinie;
-	int idHost;
+	int estFinie; /**< 1 si la partie est finie, 0 sinon */
+	int idHost; /**< Identifiant de l'hôte de la partie */
 } Partie;
 
 #endif // STRUCT_H

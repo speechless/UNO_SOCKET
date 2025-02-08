@@ -7,12 +7,12 @@
 #include <enhanceTerminal.h>
 #include <libPSY.h>
 
-#include <inc.h>
 #include <common.h>
 
 #include <unistd.h>
 #include <string.h>
 
+#include <inc.h>
 #include <requetes.h>
 
 #include <struct.h>
@@ -32,10 +32,10 @@ void rejoindrePartiePrivee(client_t clientLocal, int code);
 void creerPartiePrivee(client_t clientLocal, int nbJoueursMax);
 client_t* initConnection(salon_t salon);
 
-socket_t socketAppel;
-socket_t socketEcouteHebergeur = {-1,};
-socket_t socketPartie;
-int connecte = 0;
+socket_t socketAppel; /**< Socket utilisée pour se connecter au serveur principal */
+socket_t socketEcouteHebergeur = {-1,};/**< Socket d'écoute en tant qu'hébergeur de la partie */
+socket_t socketPartie;/**< Socket utilisée pour se connecter au serveur hébergeur de la partie */
+int connecte = 0; /**< Etat de connexion au serveur principal */
 
 /**
  * Programme principal du client
