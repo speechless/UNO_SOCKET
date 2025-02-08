@@ -33,7 +33,7 @@ void creerPartiePrivee(client_t clientLocal, int nbJoueursMax);
 client_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
-socket_t socketEcouteHebergeur = {-1,}; 
+socket_t socketEcouteHebergeur = {-1,};
 socket_t socketPartie;
 int connecte = 0;
 
@@ -43,7 +43,7 @@ int connecte = 0;
 int main() {
 
 	salon_t salon;
-	client_t clientLocal; 
+	client_t clientLocal;
 
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
@@ -75,9 +75,6 @@ int main() {
 			scanf("%d", &input);
 			switch (input) {
 				case 1:
-					// Connexion au hub de jeu
-					clientLocal = connexionServeurUNO();
-
 					// Lancer une partie publique
 					lancerPartiePublique(clientLocal);
 					clearScreen();
@@ -226,7 +223,7 @@ void bye() {
 
 /**
  * Connecte un client au serveur
- * 
+ *
  * @return l'objet client
  */
 client_t connexionServeurUNO() {
@@ -264,7 +261,7 @@ void traiterSignal(int sigNum) {
 /**
  * Initialise la connection avec un salon du serveur
  * @param salon le salo du serveur
- * 
+ *
  * @return l'objet client
  */
 client_t* initConnection(salon_t salon) {

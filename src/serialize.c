@@ -17,7 +17,7 @@ void serialiserPartie(Partie* p, char* chaine) {
 	char buffer[500]; // Tampon pour formater les données temporaires
 	// Initialisation de la chaîne
 	sprintf(chaine, "[%d:%d:%d:%d:[", STATUS_CODE_SERIA_PARTIE, p->nbJoueurs, p->currentPlayer, p->sens);
-	debugprintf("[%d:%d:%d:%d\n:[\n",STATUS_CODE_SERIA_PARTIE, p.nbJoueurs, p.currentPlayer, p.sens);
+	debugprintf("[%d:%d:%d:%d\n:[\n", STATUS_CODE_SERIA_PARTIE, p->nbJoueurs, p->currentPlayer, p->sens);
 
 	for (int i = 0; i < p->nbJoueurs; i++) {
 		// Ajout des informations de chaque joueur
@@ -79,7 +79,7 @@ void serialiserPartie(Partie* p, char* chaine) {
 /**
  * Fonction pour extraire un entier d'une chaîne
  *  @param str Pointeur vers chaîne de caractères résultante
- */ 
+ */
 int extraireEntier(char** str) {
 	char* end;
 	int valeur = strtol(*str, &end, 10);
@@ -94,7 +94,7 @@ int extraireEntier(char** str) {
 /**
  * Fonction pour extraire une carte d'une chaîne
  *  @param str Pointeur vers chaîne de caractères résultante
- */ 
+ */
 Carte extraireCarte(char** str) {
 	Carte carte;
 	carte.Couleur = extraireEntier(str); // Extraire la couleur
