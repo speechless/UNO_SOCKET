@@ -9,10 +9,11 @@ Lancer autant de fois que souhaité bin/clientUNO (dans des terminaux différent
 - Fonctionnement du programme
 Choisir l'option souhaitée dans le menu client
 La partie publique se lance automatiquement lorsque 2 joueurs ont rejoint.
-La partie privée se crée avec un hébergeur et des joueurs.
+La partie privée se créée automatiquement avec un joueur qui deviendra son futur hébergeur.
 La partie privée se lance quand le nombre entré initialement par l'hébergeur est atteint.
 
-Dans des cas rares, il se peut qu'un seul client reçoive le signal de démarrage (une seule déconnexion visible du côté serveur et partie non lancée). Cela arrive quand l'un des clients reçoit sa requête avant de se mettre à écouter. Cela se produit souvent avec des PC + lents.
+Dans des cas rares, il se peut qu'un seul client reçoive le signal de démarrage (une seule déconnexion visible du côté serveur et partie non lancée). 
+Cela arrive quand l'un des clients reçoit sa requête avant de se mettre à écouter. Cela se produit souvent avec des PC + lents.
 
 - Déroulé du jeu
 Les joueurs choisissent une carte de leur main pour la poser sur la pile de cartes. Il faut que soit la couleur, soit le symbole corresponde pour pouvoir poser. Sinon il faut piocher.
