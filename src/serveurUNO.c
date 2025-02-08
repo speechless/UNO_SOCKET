@@ -355,6 +355,12 @@ void gererCreationPartie(creation_partie_t demande, client_t client) {
 	}
 	else {
 		debugprintf("Création d'un salon privé\n");
+
+		if (demande.nbJoueursMax <= 2) {
+			envoyerErreur(client.socket, "Nombre de joueurs incorrect");
+			return;
+		}
+
 		int codeGenere = generateCode();
 
 		// S'il n'y a plus de place pour stocker le code du salon

@@ -237,7 +237,7 @@ client_t connexionServeurUNO() {
 	client_t client;
 
 	// Demande d’une connexion au service
-	PAUSE("Se connecter au service");
+	//PAUSE("Se connecter au service");
 	socketAppel = connecterClt2Srv(SOCK_STREAM, ADRESSE_SVC, PORT_SVC);
 
 	// Réception des informations client
