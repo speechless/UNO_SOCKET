@@ -1,9 +1,14 @@
 #include "game_requests.h"
+#include <requetes.h>
+#include <common.h>
 
 /*Forcement serveur*/
-void reqEnvoiPartie(socket_t* sockets, Partie* partie) {
-	for (int i = 0; i < partie->nbJoueurs - 1; i++) {
-		envoyer(sockets[i], partie, (pFct)serialiserPartie);
+void reqEnvoiPartie(client_t* clients, Partie* partie) {
+	for (int i = 0; i < partie->nbJoueurs; i++) {
+		if (clients[i].id != partie->idHost) {
+			debugprintf("envoi à %d port %d\n", clients[i].id, clients[i].port);
+			envoyer(clients[i].socket, partie, (pFct)serialiserPartie);
+		}
 	}
 }
 
@@ -21,15 +26,15 @@ void recevoirTest(socket_t socket, int* test) {
 
 int serialiserD(int* data, char* chaine) {
 	sprintf(chaine, "%d", *data);
-	printf("envoi : #%s#\n", chaine);
+	debugprintf("envoi : #%s#\n", chaine);
 	return 0;
 }
 
 int deserialiserD(char* chaine, int* data) {
-	printf("recu : #%s#\n", chaine);
+	debugprintf("recu : #%s#\n", chaine);
 	sscanf(chaine, "%d", data);  // Convertit la chaîne en int
 	//*data = atoi(chaine);  // Convertit la chaîne en int
-	printf("recu : %d\n", *(int*)data);
+	debugprintf("recu : %d\n", *(int*)data);
 	return 0;  // Retourne 0 pour indiquer le succès
 }
 

@@ -5,8 +5,9 @@
 #include "struct.h"
 #include <stdlib.h>
 #include <data.h>
+#include <requetes.h>
 
-void reqEnvoiPartie(socket_t* sockets, Partie* partie);
+void reqEnvoiPartie(client_t* sockets, Partie* partie);
 void resEnvoiPartie(socket_t socket, Partie* partie);
 
 //void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie);

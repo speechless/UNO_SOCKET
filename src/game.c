@@ -6,7 +6,7 @@
 //TODO changement de couleur et +4
 
 
-void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
+void initPartie(Partie* partie, int nbJoueurs, client_t* clients, int idHost) {
 	if (partie == NULL) {
 		perror("Erreur d'allocation mémoire pour la partie");
 		exit(EXIT_FAILURE);
@@ -17,12 +17,13 @@ void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
 	partie->sens = 1;
 	Carte startCard = {-1, -1};  // Carte invalide
 	partie->carteVisible = startCard;
-	partie->currentPlayer = 0;
+	partie->currentPlayer = idHost;
+	partie->idHost = idHost;
 
 	// Initialiser les joueurs
 	for (int i = 0; i < partie->nbJoueurs; i++) {
-		partie->joueurs[i].idJoueur = i;
-		partie->joueurs[i].idSocket = sockets[i];
+		partie->joueurs[i].idJoueur = clients[i].id;
+		partie->joueurs[i].idSocket = clients[i].socket;
 		partie->joueurs[i].tailleMain = 0;
 		partie->joueurs[i].main = malloc(TAILLE_MAIN_MAX * sizeof(Carte));  // Allouer mémoire pour la main
 
@@ -53,6 +54,7 @@ void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets) {
 
 }
 
+/*
 void initPartieClient(Partie* partie, int nbJoueurs) {
 	if (partie == NULL) {
 		perror("Erreur d'allocation mémoire pour la partie");
@@ -84,14 +86,15 @@ void initPartieClient(Partie* partie, int nbJoueurs) {
 			partie->joueurs[i].main[j].Valeur = -1;
 		}
 	}
-}
+}*/
 
 
 
 // Fonction pour jouer une carte
 int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
+	int indexJoueurQuiJoue = getIndexFromIdJoueur(idJoueur, partie->joueurs, partie->nbJoueurs);
 
-	Joueur* joueur = &partie->joueurs[idJoueur];
+	Joueur* joueur = &partie->joueurs[indexJoueurQuiJoue];
 	int carteTrouvee = 0;  // Pour vérifier si la carte est dans la main du joueur
 	int indexCarteJouee = -1;
 
@@ -137,12 +140,16 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	}
 
 	if (carteJouee.Valeur == PLUS_DEUX) {
-		printf("Le joueur %d pioche 2 cartes\n", (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
-		piocherCarte(partie, (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
-		piocherCarte(partie, (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
+		int indexJoueurQuiPioche = (indexJoueurQuiJoue + partie->sens + partie->nbJoueurs) % partie->nbJoueurs;
+
+		//printf("Le joueur %d pioche 2 cartes\n", indexJoueurQuiPioche);
+		printf("Le joueur suivant pioche 2 cartes\n");
+		piocherCarte(partie, indexJoueurQuiPioche);
+		piocherCarte(partie, indexJoueurQuiPioche);
 	}
 	if (carteJouee.Valeur == PASSE_TOUR) {
-		printf("Le joueur %d passe son tour\n", (idJoueur + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
+		//printf("Le joueur %d passe son tour\n", (indexJoueurQuiJoue + partie->sens + partie->nbJoueurs) % partie->nbJoueurs);
+		printf("Le joueur suivant passe son tour\n");
 		prochainTour(partie);
 	}
 	if (carteJouee.Valeur == CHANGEMENT_SENS) {
@@ -157,5 +164,28 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 
 
 void prochainTour(Partie* partie) {
-	partie->currentPlayer = (partie->currentPlayer + partie->sens + partie->nbJoueurs) % partie->nbJoueurs;
+	int indexJoueurActuel = 0;
+	while (partie->joueurs[indexJoueurActuel].idJoueur != partie->currentPlayer) {
+		indexJoueurActuel++;
+	}
+	indexJoueurActuel = (indexJoueurActuel + partie->sens + partie->nbJoueurs) % partie->nbJoueurs;
+	partie->currentPlayer = partie->joueurs[indexJoueurActuel].idJoueur;
+}
+
+int getIndexFromIdClient(int id, client_t* joueurs, int nbJoueurs) {
+	for (int i = 0; i < nbJoueurs; i++) {
+		if (joueurs[i].id == id) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int getIndexFromIdJoueur(int id, Joueur* joueurs, int nbJoueurs) {
+	for (int i = 0; i < nbJoueurs; i++) {
+		if (joueurs[i].idJoueur == id) {
+			return i;
+		}
+	}
+	return -1;
 }

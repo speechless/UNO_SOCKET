@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <data.h>
 #include <string.h>
+#include <common.h>
 
  /**
   * Sérialise les données de base
@@ -13,7 +14,7 @@
   */
 void serialiserData(basic_data_t* data, char* chaine) {
 	sprintf(chaine, "[%d] : %s", data->code, data->data);
-	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+	//debugprintf("envoi : #%s#\n", (char*)chaine);
 }
 
 /**
@@ -22,9 +23,9 @@ void serialiserData(basic_data_t* data, char* chaine) {
  * @param data Données résultantes
  */
 void deserialiserData(char* chaine, basic_data_t* data) {
-	//fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
+	//debugprintf("Reçu : #%s#\n", (char*)chaine);
 	sscanf(chaine, "[%d] : %[\001-\377]", &data->code, data->data);
-	//fprintf(stderr, "Désérialisé : #[%d] : %s#\n", data->code, data->data);
+	//debugprintf("Désérialisé : #[%d] : %s#\n", data->code, data->data);
 }
 
 /**
@@ -50,7 +51,7 @@ void envoyerErreur(socket_t socket, char* message) {
  */
 void serialiserSalon(salon_t* salon, char* chaine) {
 	char buffer[50];
-	afficherSalon(*salon);
+	//afficherSalon(*salon);
 
 	char chaineIdJoueurs[20] = "";
 	for (int i = 0; i < salon->nbJoueursActuels; i++) {
@@ -59,7 +60,7 @@ void serialiserSalon(salon_t* salon, char* chaine) {
 	}
 
 	sprintf(chaine, "%d:%d:%d:%s:%d:%d:%d:[%s]:%d", salon->id, salon->isPrivate, salon->idHost, salon->adresseHost, salon->portHost, salon->nbJoueursActuels, salon->nbJoueursMax, chaineIdJoueurs, salon->code);
-	fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+	debugprintf("envoi : #%s#\n", (char*)chaine);
 }
 
 /**
@@ -68,7 +69,7 @@ void serialiserSalon(salon_t* salon, char* chaine) {
  * @param salon Salon résultant
  */
 void deserialiserSalon(char* chaine, salon_t* salon) {
-	fprintf(stderr, "recu : #%s#\n", (char*)chaine);
+	debugprintf("recu : #%s#\n", (char*)chaine);
 	char chaineIdJoueurs[20];
 
 	sscanf(chaine, "%d:%d:%d:%[^:]:%hd:%d:%d:[%[^]]]:%d", &salon->id, &salon->isPrivate, &salon->idHost, salon->adresseHost, &salon->portHost, &salon->nbJoueursActuels, &salon->nbJoueursMax, chaineIdJoueurs, &salon->code);
@@ -79,7 +80,7 @@ void deserialiserSalon(char* chaine, salon_t* salon) {
 		ptr = strchr(ptr, ':') + 1;
 	}
 
-	afficherSalon(*salon);
+	//afficherSalon(*salon);
 }
 
 /**
@@ -146,7 +147,7 @@ void afficherSalon(salon_t salon) {
  */
 void serialiserCreationPartie(creation_partie_t* demande, char* chaine) {
 	sprintf(chaine, "%d:%d:%d:%s:%d", demande->idClient, demande->isPrivate, demande->nbJoueursMax, demande->adresseHost, demande->portHost);
-	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+	//debugprintf("envoi : #%s#\n", (char*)chaine);
 }
 
 /**
@@ -155,7 +156,7 @@ void serialiserCreationPartie(creation_partie_t* demande, char* chaine) {
  * @param demande Demande résultante
  */
 void deserialiserCreationPartie(char* chaine, creation_partie_t* demande) {
-	//fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
+	//debugprintf("Reçu : #%s#\n", (char*)chaine);
 	sscanf(chaine, "%d:%d:%d:%[^:]:%hd", &demande->idClient, &demande->isPrivate, &demande->nbJoueursMax, demande->adresseHost, &demande->portHost);
 }
 
@@ -182,7 +183,7 @@ void envoyerCreationPartie(socket_t socket, creation_partie_t demande) {
  */
 void serialiserRejoindrePartie(rejoindre_partie_t* demande, char* chaine) {
 	sprintf(chaine, "%d:%d:%d", demande->idClient, demande->isPrivate, demande->code);
-	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+	//debugprintf("envoi : #%s#\n", (char*)chaine);
 }
 
 /**
@@ -191,7 +192,7 @@ void serialiserRejoindrePartie(rejoindre_partie_t* demande, char* chaine) {
  * @param demande Demande résultante
  */
 void deserialiserRejoindrePartie(char* chaine, rejoindre_partie_t* demande) {
-	//fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
+	//debugprintf("Reçu : #%s#\n", (char*)chaine);
 	sscanf(chaine, "%d:%d:%d", &demande->idClient, &demande->isPrivate, &demande->code);
 }
 
@@ -218,7 +219,7 @@ void envoyerRejoindrePartie(socket_t socket, rejoindre_partie_t demande) {
  */
 void serialiserClient(client_t* client, char* chaine) {
 	sprintf(chaine, "%d:%s:%d", client->id, client->adresse, client->port);
-	//fprintf(stderr, "envoi : #%s#\n", (char*)chaine);
+	//debugprintf("envoi : #%s#\n", (char*)chaine);
 }
 
 /**
@@ -227,6 +228,6 @@ void serialiserClient(client_t* client, char* chaine) {
  * @param client Client résultant
  */
 void deserialiserClient(char* chaine, client_t* client) {
-	//fprintf(stderr, "Reçu : #%s#\n", (char*)chaine);
+	//debugprintf("Reçu : #%s#\n", (char*)chaine);
 	sscanf(chaine, "%d:%[^:]:%hd", &client->id, client->adresse, &client->port);
 }

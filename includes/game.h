@@ -15,18 +15,20 @@
 #include "affichage.h"
 #include "serialize.h"
 #include "game_requests.h"
+#include <requetes.h>
 
 
 
 void afficherMain(Joueur j);
-int generateCode();
 
-void initPartie(Partie* partie, int nbJoueurs, socket_t* sockets);
-void initPartieClient(Partie* partie, int nbJoueurs);
+void initPartie(Partie* partie, int nbJoueurs, client_t* clients, int idHost);
 int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee);
 
 void afficherMainAvecSelection(Joueur joueur, Carte carteVisible);
 
 void prochainTour(Partie* partie);
+
+int getIndexFromIdClient(int id, client_t* joueurs, int nbJoueurs);
+int getIndexFromIdJoueur(int id, Joueur* joueurs, int nbJoueurs);
 
 #endif // GAME_H

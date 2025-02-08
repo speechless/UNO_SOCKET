@@ -20,9 +20,11 @@ LIBS = -lPSY -lInet
 # Dépendances globales
 DEPS = $(INC_DIR)/inc.h
 
+DEBUG =
+
 # Fichiers sources spécifiques aux cibles
-SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c
-SRC_clientUNO = clientUNO.c requetes.c game.c affichage.c serialize.c game_requests.c player.c generateCards.c
+SRC_serveurUNO = serveurUNO.c requetes.c liste.c es.c common.c
+SRC_clientUNO = clientUNO.c requetes.c game.c affichage.c serialize.c game_requests.c player.c generateCards.c common.c
 
 # Générer les fichiers objets correspondants à chaque exécutable
 OBJ_serveurUNO = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_serveurUNO))
@@ -34,15 +36,16 @@ all: $(addprefix $(BIN_DIR)/, $(TARGETS))
 # Génération des fichiers objets
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(DEPS)
 	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $< $(CFLAGS) -o $@
+	$(CC) -c $< $(CFLAGS) $(DEBUG) -o $@
 
 # Génération des fichier exécutables
 .SECONDEXPANSION:
 $(BIN_DIR)/%: $$(OBJ_$$*) 
 	@mkdir -p $(BIN_DIR)
-	$(CC) $^ $(CFLAGS) $(LIBS) -o $@
+	$(CC) $^ $(CFLAGS) $(DEBUG) $(LIBS) -o $@
 
-
+debug:
+	$(MAKE) DEBUG=-DDEBUG
 
 
 # Nettoyage des fichiers générés

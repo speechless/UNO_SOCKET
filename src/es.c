@@ -3,6 +3,7 @@
  */
 
 #include "es.h"
+#include <string.h>
 
  /**
   * Afficher un élément de type T_Elt
@@ -21,6 +22,8 @@ void afficherElt(T_Elt* e, char* end) {
 void affecterElt(T_Elt* dest, T_Elt* src) {
 	(*dest).id = (*src).id;
 	(*dest).socket = (*src).socket;
+	strcpy(dest->adresse, src->adresse);
+	dest->port = src->port;
 }
 
 /**

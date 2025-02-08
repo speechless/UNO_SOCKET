@@ -37,7 +37,7 @@ void quitterSalon();
 void afficherMenu();
 void lancerPartiePublique(client_t clientLocal);
 void rejoindrePartiePrivee(client_t clientLocal, int code);
-socket_t* initConnection(salon_t salon);
+client_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
 socket_t socketEcouteHebergeur = {-1,};
@@ -60,12 +60,10 @@ int main() {
 
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
-	rejoindre_partie_t demandeRejoindre;
-	int state = 0;
 	int input = 0;
 
 	Partie* partie;
-	socket_t* sockets;
+	client_t* clients;
 
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
@@ -95,9 +93,9 @@ int main() {
 
 
 		while (requete.code != COMMENCER_PARTIE) {
-			printf("Attente de requête\n");
+			debugprintf("Attente de requête\n");
 			recevoir(socketAppel, &requete, (pFct)deserialiserData);
-			printf("Requête reçue\n");
+			debugprintf("Requête reçue\n");
 
 			switch (requete.code) {
 
@@ -111,7 +109,7 @@ int main() {
 					demandeCreation.nbJoueursMax = 2;
 					demandeCreation.idClient = clientLocal.id;
 
-					printf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
+					debugprintf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
 
 					envoyerCreationPartie(socketAppel, demandeCreation);
 					break;
@@ -135,20 +133,19 @@ int main() {
 						creation partie
 					jouer partie
 					*/
-					printf("Démarrage\n");
+					debugprintf("Démarrage\n");
 					if (salon.idHost == clientLocal.id) {
-						printf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);
-						sockets = initConnection(salon);
-						if (sockets == NULL) {
-							perror("Erreur allocation mémoire pour sockets");
-							exit(EXIT_FAILURE);
+						debugprintf("Je suis HOST avec %d joueurs\n", salon.nbJoueursMax);
+						clients = initConnection(salon);
+
+						debugprintf("Je suis sur le port : %d\n", ntohs(socketEcouteHebergeur.adrLoc.sin_port));
+
+						for (int i = 0; i < partie->nbJoueurs; i++) {
+							debugprintf("client connecté sur port %d\n", clients[i].id, clients[i].port);
 						}
+						initPartie(partie, salon.nbJoueursMax, clients, clientLocal.id);
 
-						printf("je suis port : %d\n", ntohs(socketEcouteHebergeur.adrLoc.sin_port));
-
-						initPartie(partie, salon.nbJoueursMax, sockets);
-
-						printf("Création partie faite %d\n", partie->nbJoueurs);
+						debugprintf("Création partie faite avec %d joueurs\n\n", partie->nbJoueurs);
 						/*
 											int test = 8;
 											envoiTest(sockets[0], &test);
@@ -156,17 +153,17 @@ int main() {
 											printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));*/
 
 
-						reqEnvoiPartie(sockets, partie);
-						printf("Envoi partie faite %d\n", partie->nbJoueurs);
+						reqEnvoiPartie(clients, partie);
+						//printf("Envoi partie faite %d\n", partie->nbJoueurs);
 
-						jouerPartieServeur(partie, sockets);
+						jouerPartieServeur(partie, clientLocal.id, clients);
 					}
 					else {
-						printf("Je suis client\n");
-						initPartieClient(partie, salon.nbJoueursMax);
+						debugprintf("Je suis client\n");
+						//initPartieClient(partie, salon.nbJoueursMax);
 
 						socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
-						printf("Connection serveur faite\n");
+						debugprintf("Connection serveur faite\n");
 						/*
 											printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
 											printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
@@ -176,7 +173,7 @@ int main() {
 											printf("Reception test faite %d\n", test);*/
 
 						resEnvoiPartie(socketPartie, partie);
-						printf("Reception partie faite %d\n", clientLocal.id);
+						debugprintf("Reception partie faite %d\n", clientLocal.id);
 
 						jouerPartieClient(partie, clientLocal.id, socketPartie);
 
@@ -194,7 +191,7 @@ int main() {
 	}
 
 
-	free(sockets);
+	free(clients);
 	CHECK(close(socketPartie.fd), "close socket partie");
 
 	return 0;
@@ -204,7 +201,7 @@ void bye() {
 	deconnexionServeurUNO();
 
 	if (socketEcouteHebergeur.fd != -1) {
-		fprintf(stderr, "Fermeture socket d'écoute d'hébergeur de partie\n");
+		debugprintf("Fermeture socket d'écoute d'hébergeur de partie\n");
 		CHECK(close(socketEcouteHebergeur.fd), "close socket hébergeur");
 		CHECK(close(socketPartie.fd), "close socket partie");
 	}
@@ -222,10 +219,10 @@ client_t connexionServeurUNO() {
 	recevoir(socketAppel, &requete, (pFct)deserialiserData);
 	if (requete.code == CLIENT) {
 		deserialiserClient(requete.data, &client);
-		fprintf(stderr, "Je suis le client n°%d, port:%d\n", client.id, client.port);
+		debugprintf("Je suis le client n°%d, port:%d\n", client.id, client.port);
 	}
 	else {
-		printf("Erreur\n");
+		debugprintf("Erreur\n");
 	}
 
 	return client;
@@ -239,36 +236,51 @@ void traiterSignal(int sigNum) {
 	}
 }
 
-socket_t* initConnection(salon_t salon) {
-	socket_t* sockets = malloc((salon.nbJoueursMax) * sizeof(socket_t));
-	if (sockets == NULL) {
-		perror("Erreur allocation mémoire pour sockets");
+client_t* initConnection(salon_t salon) {
+	client_t* clients = malloc((salon.nbJoueursMax) * sizeof(client_t));
+	if (clients == NULL) {
+		perror("Erreur allocation mémoire pour clients");
 		exit(EXIT_FAILURE);
 	}
 
+	clients[0].socket.fd = -1;
+	clients[0].id = salon.idHost;
+	clients[0].port = salon.portHost;
+	strcpy(clients[0].adresse, salon.adresseHost);
+
 	int nbJoueursConnectes = 0;
-	for (int i = 0; i < salon.nbJoueursMax - 1; i++) {
-		sockets[i] = accepterClt(socketEcouteHebergeur);
-		nbJoueursConnectes++;
+	for (int i = 1; i < salon.nbJoueursMax; i++) {
+		if (salon.idClients[i] != salon.idHost) {
+			clients[i].socket = accepterClt(socketEcouteHebergeur);
+			clients[i].id = salon.idClients[i];
+			debugprintf("connecté à id%d\n", clients[i].id);
+			clients[i].port = ntohs(clients[i].socket.adrDist.sin_port);
+			strcpy(clients[i].adresse, inet_ntoa(clients[i].socket.adrDist.sin_addr));
+			nbJoueursConnectes++;
+		}
+
 	}
-	return sockets;
+
+
+
+	return clients;
 }
 
 
 void deconnexionServeurUNO() {
-	fprintf(stderr, "Envoi requête déconnexion au serveur\n");
+	debugprintf("Envoi requête déconnexion au serveur\n");
 
 	basic_data_t requete;
 	requete.code = DECONNEXION;
 	requete.data[0] = '\0';
 	envoyer(socketAppel, &requete, (pFct)serialiserData);
 
-	printf("Fermeture socket appel\n");
+	debugprintf("Fermeture socket appel\n");
 	CHECK(close(socketAppel.fd), "close socket appel");
 }
 
 void quitterSalon() {
-	fprintf(stderr, "Envoi requête quitter salon\n");
+	debugprintf("Envoi requête quitter salon\n");
 
 	basic_data_t requete;
 	requete.code = QUITTER_PARTIE;
