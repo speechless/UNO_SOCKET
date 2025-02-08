@@ -60,7 +60,7 @@ int main() {
 
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
-	int input = 0;
+	int input;
 
 	Partie* partie;
 	client_t* clients;
@@ -70,18 +70,19 @@ int main() {
 	atexit(bye);
 
 
-	// Connexion au hub de jeu
-	clientLocal = connexionServeurUNO();
-
 	while (1) {
 
 		requete.code = -1;
+		input = 0;
 
 		while (input != 1) {
 			afficherMenu();
 			scanf("%d", &input);
 			switch (input) {
 				case 1:
+					// Connexion au hub de jeu
+					clientLocal = connexionServeurUNO();
+
 					// Lancer une partie publique
 					lancerPartiePublique(clientLocal);
 					clearScreen();
@@ -98,6 +99,8 @@ int main() {
 					printf("Entrez le code de la partie privée : ");
 					scanf("%d", &input);
 
+					// Connexion au hub de jeu
+					clientLocal = connexionServeurUNO();
 					rejoindrePartiePrivee(clientLocal, input);
 					break;
 				case 3:
