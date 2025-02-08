@@ -62,8 +62,6 @@ int main() {
 	creation_partie_t demandeCreation;
 	int input = 0;
 
-	Partie* partie;
-	client_t* clients;
 
 	installSignal(SIGINT, traiterSignal);
 	atexit(bye);
@@ -73,26 +71,44 @@ int main() {
 	clientLocal = connexionServeurUNO();
 
 	while (1) {
-		afficherMenu();
-		scanf("%d", &input);
-		switch (input) {
-			case 1:
-				// Lancer une partie publique
-				lancerPartiePublique(clientLocal);
-				break;
-			case 2:
-				// Rejoindre une partie privée
-				printf("Entrez le code de la partie privée : ");
-				scanf("%d", &input);
+		Partie* partie;
+		client_t* clients;
+		while(input != 1){
+			afficherMenu();
+			scanf("%d", &input);
+			switch (input) {
+				case 1:
+					// Lancer une partie publique
+					lancerPartiePublique(clientLocal);
+					clearScreen();
+					setTerm(BLUE);
+					printf("\nEn attente de partie...\n");
+					resetTerm();
+					break;
+				case 2:
+					clearScreen();
+					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
+					break;
 
-				rejoindrePartiePrivee(clientLocal, input);
-				break;
-			case 3:
-				break;
+					// Rejoindre une partie privée
+					printf("Entrez le code de la partie privée : ");
+					scanf("%d", &input);
+
+					rejoindrePartiePrivee(clientLocal, input);
+					break;
+				case 3:
+					clearScreen();
+					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
+					break;
+				case 4:
+					exit(0);
+					break;
+			}
 		}
 
 
 		while (requete.code != COMMENCER_PARTIE) {
+			
 			debugprintf("Attente de requête\n");
 			recevoir(socketAppel, &requete, (pFct)deserialiserData);
 			debugprintf("Requête reçue\n");
@@ -146,38 +162,27 @@ int main() {
 						initPartie(partie, salon.nbJoueursMax, clients, clientLocal.id);
 
 						debugprintf("Création partie faite avec %d joueurs\n\n", partie->nbJoueurs);
-						/*
-											int test = 8;
-											envoiTest(sockets[0], &test);
-											printf("Envoi test faite %d\n", test);
-											printf("envoi à port %d\n", ntohs(sockets[1].adrDist.sin_port));*/
 
 
 						reqEnvoiPartie(clients, partie);
-						//printf("Envoi partie faite %d\n", partie->nbJoueurs);
 
 						jouerPartieServeur(partie, clientLocal.id, clients);
+						free(clients);
+
+
 					}
 					else {
 						debugprintf("Je suis client\n");
-						//initPartieClient(partie, salon.nbJoueursMax);
 
 						socketPartie = connecterClt2Srv(SOCK_STREAM, salon.adresseHost, salon.portHost);
 						debugprintf("Connection serveur faite\n");
-						/*
-											printf("je suis port : %d\n", ntohs(socketPartie.adrLoc.sin_port));
-											printf("connecté à port : %d\n", ntohs(socketPartie.adrDist.sin_port));
-
-											int test;
-											recevoirTest(socketPartie, &test);
-											printf("Reception test faite %d\n", test);*/
 
 						resEnvoiPartie(socketPartie, partie);
 						debugprintf("Reception partie faite %d\n", clientLocal.id);
 
 						jouerPartieClient(partie, clientLocal.id, socketPartie);
 
-
+						CHECK(close(socketPartie.fd), "close socket partie");
 					}
 
 					break;
@@ -189,11 +194,7 @@ int main() {
 
 
 	}
-
-
-	free(clients);
-	CHECK(close(socketPartie.fd), "close socket partie");
-
+	
 	return 0;
 }
 

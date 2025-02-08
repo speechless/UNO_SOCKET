@@ -14,6 +14,10 @@ Carte* genererCartes() {
 	}
 
 	int index = 0;
+	for (int i = 0; i < 8; i++) {
+		//cartes[index++] = (Carte){NOIR, PLUS_QUATRE};
+		cartes[index++] = (Carte){NOIR, CHANGEMENT_COULEUR};
+	}
 
 	// Générer les cartes normales
 	for (Couleur c = ROUGE; c <= VERT; c++) {
@@ -27,12 +31,6 @@ Carte* genererCartes() {
 			}
 		}
 	}
-
-	// Générer les cartes spéciales (NOIR : PLUS_QUATRE et CHANGEMENT_COULEUR)
-	/*for (int i = 0; i < 4; i++) { // 4 exemplaires pour chaque carte spéciale
-		cartes[index++] = (Carte){NOIR, PLUS_QUATRE};
-		cartes[index++] = (Carte){NOIR, CHANGEMENT_COULEUR};
-	}*/
 
 	return cartes; // Retourner le tableau
 }

@@ -116,7 +116,8 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	// Vérifier si la carte est valide (couleur ou valeur égale à la carte visible)
 	if ((carteJouee.Couleur != partie->carteVisible.Couleur
 		&& carteJouee.Valeur != partie->carteVisible.Valeur
-		&& carteJouee.Couleur != NOIR) && !isCarteVide(partie->carteVisible)) {
+		&& carteJouee.Couleur != NOIR) && !isCarteVide(partie->carteVisible) 
+		&& partie->carteVisible.Valeur != CHANGEMENT_COULEUR) {
 		printf("Erreur : La carte jouée n'est pas valide (pas la même couleur ou valeur).\n");
 		return 0;
 	}
@@ -126,7 +127,7 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	partie->carteVisible = carteJouee;
 
 	// Enlever la carte de la main du joueur en décalant les cartes
-	for (int i = indexCarteJouee; i < joueur->tailleMain - 1; i++) {
+	for (int i = indexCarteJouee; i < joueur->tailleMain+1; i++) {
 		joueur->main[i] = joueur->main[i + 1];
 	}
 
@@ -155,6 +156,12 @@ int jouerCarte(Partie* partie, int idJoueur, Carte carteJouee) {
 	if (carteJouee.Valeur == CHANGEMENT_SENS) {
 		printf("Changement de sens\n");
 		partie->sens = -partie->sens;
+	}
+
+	if(carteJouee.Valeur == CHANGEMENT_COULEUR){
+		printf("Changement de couleur\n");
+		prochainTour(partie);
+		
 	}
 
 	afficherCarte(partie->carteVisible);

@@ -9,7 +9,7 @@ void afficherCarte(Carte c) {
 	const char* couleurs[] = {"ROUGE", "BLEU", "JAUNE", "VERT", "NOIR"};
 	const char* valeurs[] = {
 		"ZERO", "UN", "DEUX", "TROIS", "QUATRE", "CINQ", "SIX", "SEPT", "HUIT", "NEUF",
-		"PLUS_DEUX", "PASSE_TOUR", "CHANGEMENT_SENS", "CHANGEMENT_COULEUR", "PLUS_QUATRE"
+		"PLUS_DEUX", "PASSE_TOUR", "CHANGEMENT_SENS", "CHANGEMENT_COULEUR"
 	};
 
 	if (!isCarteVide(c)) {
@@ -38,7 +38,7 @@ void afficherCarte(Carte c) {
 		resetTerm();
 	}
 	else {
-		printf("Carte vide\n");
+		printf("Mettez ce que vous voulez.\n");
 	}
 
 }
@@ -55,7 +55,7 @@ void afficherMainAvecSelection(Joueur joueur, Carte carteVisible) {
 	afficherCarte(carteVisible);
 
 	// Affichage de la main du joueur
-	printf("Main du joueur %d :\n", joueur.idJoueur);
+	printf("\nMain du joueur %d :\n", joueur.idJoueur);
 	for (int i = 0; i < joueur.tailleMain; i++) {
 		afficherCarteMain(joueur.main[i], i);
 	}
