@@ -14,7 +14,9 @@ int jouerPartieClient(Partie* partie, int idJoueur, socket_t socketHost) {
 	   attend que le host envoie un changement
 	*/
 	while (!partie->estFinie) {
+#ifndef DEBUG
 		clearScreen();
+#endif
 		if (partie->currentPlayer != idJoueur) {
 			printf("\nCarte visible : ");
 			afficherCarte(partie->carteVisible);
@@ -72,9 +74,11 @@ int jouerPartieServeur(Partie* partie, int idJoueur, client_t* clients) {
 	*/
 	while (!partie->estFinie) {
 		input = 0;
+#ifndef DEBUG
 		clearScreen();
+#endif
 		if (partie->currentPlayer != idJoueur) {
-			debugprintf("\nCarte visible : ");
+			printf("\nCarte visible : ");
 			afficherCarte(partie->carteVisible);
 
 			afficherMain(partie->joueurs[indexJoueurLocal]);
