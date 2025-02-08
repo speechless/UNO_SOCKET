@@ -63,6 +63,7 @@ void serialiserPartie(Partie* p, char* chaine) {
 	sprintf(buffer, "%d]", p->estFinie);
 	strcat(chaine, buffer);
 
+	debugprintf("######PARTIE SERIALISEE######\n%s\n######################\n", chaine);
 }
 
 
@@ -164,12 +165,16 @@ void deserialiserPartie(char* chaine, Partie* p) {
 		if (*ptr == ',') ptr++; // Passer le délimiteur entre les cartes
 	}
 
-	// Ignorer le caractère ']'
+	// Ignorer le caractère ']' et ':'
 	if (*ptr == ']') ptr++;
+	if (*ptr == ':') ptr++;
+
+	debugprintf("Chaine restante : ######%s#########\n", ptr);
 
 	// Lire les informations de fin de partie
 	p->estFinie = extraireEntier(&ptr); // Partie terminée ?
 
+	debugprintf("Partie finie : %d\n", p->estFinie);
 	// Libérer la copie de la chaîne
 	free(str);
 
