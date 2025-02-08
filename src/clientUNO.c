@@ -191,9 +191,13 @@ int main() {
 						reqEnvoiPartie(clients, partie);
 
 						jouerPartieServeur(partie, clientLocal.id, clients);
+
+						for (int i = 1; i < partie->nbJoueurs; i++) {
+							CHECK(close(clients[i].socket.fd), "close socket client");
+						}
 						free(clients);
 
-
+						CHECK(close(socketEcouteHebergeur.fd), "close socket hébergeur");
 					}
 					else {
 						debugprintf("Je suis client\n");

@@ -14,6 +14,7 @@ void reqEnvoiPartie(client_t* clients, Partie* partie) {
 
 void reqEnvoiPartieClient(socket_t socket, Partie* partie) {
 	envoyer(socket, partie, (pFct)serialiserPartie);
+	debugprintf("partie envoyée à port %d\n", ntohs(socket.adrDist.sin_port));
 }
 
 void envoiTest(socket_t socket, int* test) {
@@ -41,7 +42,9 @@ int deserialiserD(char* chaine, int* data) {
 
 /*Forcement client*/
 void resEnvoiPartie(socket_t socket, Partie* partie) {
+	debugprintf("attente de la partie du port %d (ici port %d)\n", ntohs(socket.adrDist.sin_port), ntohs(socket.adrLoc.sin_port));
 	recevoir(socket, partie, (pFct)deserialiserPartie);
+	debugprintf("partie reçue\n");
 }
 /*
 void reqEnvoiCoupServeur(socket_t* sockets, Partie* partie) {

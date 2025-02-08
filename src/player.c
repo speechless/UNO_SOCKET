@@ -64,7 +64,7 @@ int jouerPartieClient(Partie* partie, int idJoueur, socket_t socketHost) {
 int jouerPartieServeur(Partie* partie, int idJoueur, client_t* clients) {
 	int input;
 
-	debugprintf("idJoueur = %d, idCourant = %d\n", idJoueur, partie->currentPlayer);
+
 	int indexJoueurLocal = getIndexFromIdJoueur(idJoueur, partie->joueurs, partie->nbJoueurs);
 
 	/* Si c'est son tour, affiche la main avec action
@@ -75,6 +75,14 @@ int jouerPartieServeur(Partie* partie, int idJoueur, client_t* clients) {
 	   attend que le host envoie un changement
 	*/
 	while (!partie->estFinie) {
+		debugprintf("idJoueur = %d, idCourant = %d\n", idJoueur, partie->currentPlayer);
+		for (int i = 0; i < partie->nbJoueurs; i++) {
+			debugprintf("client %d indice %d connecté sur port %d\n", clients[i].id, i, clients[i].port);
+		}
+		for (int i = 0; i < partie->nbJoueurs; i++) {
+			debugprintf("joueur %d indice %d\n", partie->joueurs[i].idJoueur, i);
+		}
+
 		input = 0;
 #ifndef DEBUG
 		clearScreen();
