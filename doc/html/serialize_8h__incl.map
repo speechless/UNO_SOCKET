@@ -1,0 +1,18 @@
+<map id="includes/serialize.h" name="includes/serialize.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="36,5,183,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="42,225,108,251"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,33,43,52,28,64,16,80,10,97,8,115,17,151,36,185,57,213,53,216,31,188,12,153,3,115,4,96,11,77,24,61,40,47,74,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="26,79,97,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,33,79,69,75,66,100,30"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="122,79,196,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="120,29,146,66,141,69,116,33"/>
+<area shape="rect" id="Node000005" href="$struct_8h.html" title=" " alt="" coords="221,79,292,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="134,28,221,70,219,75,132,33"/>
+<area shape="rect" id="Node000006" href="$session_8h.html" title=" " alt="" coords="192,152,275,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="255,105,244,140,239,138,250,104"/>
+<area shape="poly" id="edge7_Node000006_Node000002" title=" " alt="" coords="209,180,114,222,112,217,207,175"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="177,225,248,251"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="233,178,222,213,217,211,228,177"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="272,225,368,251"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="249,175,297,214,294,219,246,179"/>
+</map>

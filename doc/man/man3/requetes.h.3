@@ -1,0 +1,295 @@
+.TH "includes/requetes.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/requetes.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <session\&.h>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBclient_t\fP"
+.br
+.ti -1c
+.RI "struct \fBbasic_data_t\fP"
+.br
+.ti -1c
+.RI "struct \fBsalon_t\fP"
+.br
+.ti -1c
+.RI "struct \fBcreation_partie_t\fP"
+.br
+.ti -1c
+.RI "struct \fBrejoindre_partie_t\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_BUFF\fP   1024"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBtype_requete\fP { \fBDECONNEXION\fP, \fBQUITTER_PARTIE\fP, \fBCREATION_PARTIE\fP, \fBREJOINDRE_PARTIE\fP, \fBCOMMENCER_PARTIE\fP, \fBSALON\fP, \fBCLIENT\fP, \fBERREUR\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBserialiserData\fP (\fBbasic_data_t\fP *data, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserData\fP (char *chaine, \fBbasic_data_t\fP *data)"
+.br
+.ti -1c
+.RI "void \fBenvoyerErreur\fP (\fBsocket_t\fP \fBsocket\fP, char *message)"
+.br
+.ti -1c
+.RI "void \fBserialiserSalon\fP (\fBsalon_t\fP *salon, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserSalon\fP (char *chaine, \fBsalon_t\fP *salon)"
+.br
+.ti -1c
+.RI "void \fBinitSalon\fP (\fBsalon_t\fP *salon, int id, int isPrivate, int idHost, char *adresseHost, short portHost, int nbJoueursActuels, int nbJoueursMax)"
+.br
+.ti -1c
+.RI "void \fBenvoyerSalon\fP (\fBsocket_t\fP \fBsocket\fP, \fBsalon_t\fP salon)"
+.br
+.ti -1c
+.RI "void \fBafficherSalon\fP (\fBsalon_t\fP salon)"
+.br
+.ti -1c
+.RI "void \fBserialiserCreationPartie\fP (\fBcreation_partie_t\fP *demande, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserCreationPartie\fP (char *chaine, \fBcreation_partie_t\fP *demande)"
+.br
+.ti -1c
+.RI "void \fBenvoyerCreationPartie\fP (\fBsocket_t\fP \fBsocket\fP, \fBcreation_partie_t\fP demande)"
+.br
+.ti -1c
+.RI "void \fBserialiserRejoindrePartie\fP (\fBrejoindre_partie_t\fP *demande, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserRejoindrePartie\fP (char *chaine, \fBrejoindre_partie_t\fP *demande)"
+.br
+.ti -1c
+.RI "void \fBenvoyerRejoindrePartie\fP (\fBsocket_t\fP \fBsocket\fP, \fBrejoindre_partie_t\fP demande)"
+.br
+.ti -1c
+.RI "void \fBserialiserClient\fP (\fBclient_t\fP *client, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserClient\fP (char *chaine, \fBclient_t\fP *client)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define MAX_BUFF   1024"
+Buffer maximal pour les données 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBtype_requete\fP"
+Type de requête 
+.SH "Function Documentation"
+.PP 
+.SS "void afficherSalon (\fBsalon_t\fP salon)"
+Affiche les informations d'un salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Salon à afficher 
+.RE
+.PP
+
+.SS "void deserialiserClient (char * chaine, \fBclient_t\fP * client)"
+Désérialise un client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères à désérialiser 
+.br
+\fIclient\fP Client résultant 
+.RE
+.PP
+
+.SS "void deserialiserCreationPartie (char * chaine, \fBcreation_partie_t\fP * demande)"
+Désérialise une demande de création de partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères à désérialiser 
+.br
+\fIdemande\fP Demande résultante 
+.RE
+.PP
+
+.SS "void deserialiserData (char * chaine, \fBbasic_data_t\fP * data)"
+Désérialise les données de base 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères à désérialiser 
+.br
+\fIdata\fP Données résultantes 
+.RE
+.PP
+
+.SS "void deserialiserRejoindrePartie (char * chaine, \fBrejoindre_partie_t\fP * demande)"
+Désérialise une demande de rejoindre une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères à désérialiser 
+.br
+\fIdemande\fP Demande résultante 
+.RE
+.PP
+
+.SS "void deserialiserSalon (char * chaine, \fBsalon_t\fP * salon)"
+Désérialise un salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères à désérialiser 
+.br
+\fIsalon\fP Salon résultant 
+.RE
+.PP
+
+.SS "void envoyerCreationPartie (\fBsocket_t\fP socket, \fBcreation_partie_t\fP demande)"
+Envoie une demande de création de partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP Socket à utiliser pour l'envoi 
+.br
+\fIdemande\fP Demande à envoyer 
+.RE
+.PP
+
+.SS "void envoyerErreur (\fBsocket_t\fP socket, char * message)"
+Envoie un message d'erreur 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP Socket à utiliser pour l'envoi 
+.br
+\fImessage\fP Message d'erreur à envoyer 
+.RE
+.PP
+
+.SS "void envoyerRejoindrePartie (\fBsocket_t\fP socket, \fBrejoindre_partie_t\fP demande)"
+Envoie une demande de rejoindre une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP Socket à utiliser pour l'envoi 
+.br
+\fIdemande\fP Demande à envoyer 
+.RE
+.PP
+
+.SS "void envoyerSalon (\fBsocket_t\fP socket, \fBsalon_t\fP salon)"
+Envoie les informations d'un salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP Socket à utiliser pour l'envoi 
+.br
+\fIsalon\fP Salon à envoyer 
+.RE
+.PP
+
+.SS "void initSalon (\fBsalon_t\fP * salon, int id, int isPrivate, int idHost, char * adresseHost, short portHost, int nbJoueursActuels, int nbJoueursMax)"
+Initialise un salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Salon à initialiser 
+.br
+\fIid\fP Identifiant du salon 
+.br
+\fIisPrivate\fP 1 si le salon est privé, 0 sinon 
+.br
+\fIidHost\fP Identifiant de l'hôte du salon 
+.br
+\fIadresseHost\fP Adresse de l'hôte du salon 
+.br
+\fIportHost\fP Port de l'hôte du salon 
+.br
+\fInbJoueursActuels\fP Nombre de joueurs actuels dans le salon 
+.br
+\fInbJoueursMax\fP Nombre de joueurs maximum dans le salon 
+.RE
+.PP
+
+.SS "void serialiserClient (\fBclient_t\fP * client, char * chaine)"
+Sérialise un client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclient\fP Client à sérialiser 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserCreationPartie (\fBcreation_partie_t\fP * demande, char * chaine)"
+Sérialise une demande de création de partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdemande\fP Demande à sérialiser 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserData (\fBbasic_data_t\fP * data, char * chaine)"
+Sérialise les données de base 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdata\fP Données à sérialiser 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserRejoindrePartie (\fBrejoindre_partie_t\fP * demande, char * chaine)"
+Sérialise une demande de rejoindre une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdemande\fP Demande à sérialiser 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserSalon (\fBsalon_t\fP * salon, char * chaine)"
+Sérialise un salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Salon à sérialiser 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,72 @@
+.TH "src/affichage.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/affichage.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'affichage\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBafficherCarte\fP (\fBCarte\fP c)"
+.br
+.ti -1c
+.RI "void \fBafficherCarteMain\fP (\fBCarte\fP c, int index)"
+.br
+.ti -1c
+.RI "void \fBafficherMainAvecSelection\fP (\fBJoueur\fP joueur, \fBCarte\fP carteVisible)"
+.br
+.ti -1c
+.RI "void \fBafficherMain\fP (\fBJoueur\fP j)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void afficherCarte (\fBCarte\fP c)"
+Affiche une carte donnée\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP La carte à afficher\&. 
+.RE
+.PP
+
+.SS "void afficherCarteMain (\fBCarte\fP c, int index)"
+Affiche une carte dans l'affichage de la main du joueur actif\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP La carte à afficher\&. 
+.br
+\fIindex\fP index de la carte dans la main du joueur 
+.RE
+.PP
+
+.SS "void afficherMain (\fBJoueur\fP j)"
+Affiche la main d'un joueur non actif 
+.PP
+\fBParameters\fP
+.RS 4
+\fIj\fP joueur 
+.RE
+.PP
+
+.SS "void afficherMainAvecSelection (\fBJoueur\fP joueur, \fBCarte\fP carteVisible)"
+Fonction pour afficher la main du joueur avec un choix 
+.PP
+\fBParameters\fP
+.RS 4
+\fIjoueur\fP joueur actif 
+.br
+\fIcarteVisible\fP la carte actuellement au dessus de la pile de jeu de la partie 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

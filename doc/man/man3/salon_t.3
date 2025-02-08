@@ -1,0 +1,68 @@
+.TH "salon_t" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+salon_t
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <requetes\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBid\fP"
+.br
+.ti -1c
+.RI "int \fBisPrivate\fP"
+.br
+.ti -1c
+.RI "int \fBidHost\fP"
+.br
+.ti -1c
+.RI "char \fBadresseHost\fP [20]"
+.br
+.ti -1c
+.RI "unsigned short \fBportHost\fP"
+.br
+.ti -1c
+.RI "int \fBnbJoueursActuels\fP"
+.br
+.ti -1c
+.RI "int \fBnbJoueursMax\fP"
+.br
+.ti -1c
+.RI "int \fBidClients\fP [20]"
+.br
+.ti -1c
+.RI "int \fBcode\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Structure représentant un salon pour la mise en relation des joueurs 
+.SH "Member Data Documentation"
+.PP 
+.SS "char salon_t::adresseHost[20]"
+Adresse de l'hôte du salon en notation pointée 
+.SS "int salon_t::code"
+Code du salon s'il est privé, 0 sinon 
+.SS "int salon_t::id"
+Identifiant du salon 
+.SS "int salon_t::idClients[20]"
+Identifiants des clients dans le salon 
+.SS "int salon_t::idHost"
+Identifiant de l'hôte du salon 
+.SS "int salon_t::isPrivate"
+Indicateur de salon privé (1) ou public (0) 
+.SS "int salon_t::nbJoueursActuels"
+Nombre de joueurs actuels dans le salon 
+.SS "int salon_t::nbJoueursMax"
+Nombre de joueurs maximum dans le salon 
+.SS "unsigned short salon_t::portHost"
+Port de l'hôte du salon 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,118 @@
+.TH "includes/libPSY.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/libPSY.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <signal\&.h>\fP
+.br
+\fR#include <sys/wait\&.h>\fP
+.br
+\fR#include <sys/types\&.h>\fP
+.br
+\fR#include <stdarg\&.h>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fB_POSIX_C_SOURCE\fP   200809L"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void(* \fBpFctGenerique\fP) (void *)"
+.br
+.ti -1c
+.RI "typedef void * \fBgenerique\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinstallSignal\fP (int sigNum, void(*handler)(int))"
+.br
+.ti -1c
+.RI "void \fBbloquerSignaux\fP (void)"
+.br
+.ti -1c
+.RI "void \fBdebloquerSignaux\fP (int nbSig,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "pid_t \fBcloner\fP (\fBpFctGenerique\fP pF, \fBgenerique\fP arg)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define _POSIX_C_SOURCE   200809L"
+Pour avoir accès à sigaction, SA_RESTART (et probablement d'autres choses) 
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void* \fBgenerique\fP"
+Définition d'un type générique 
+.SS "typedef void(* pFctGenerique) (void *)"
+Définition d'un type de pointeur de fonction générique 
+.SH "Function Documentation"
+.PP 
+.SS "void bloquerSignaux (void )"
+Bloque tous les signaux sauf SIGKILL et SIGSTOP (impossible à bloquer) 
+.PP
+\fBWarning\fP
+.RS 4
+SIGCHLD est bloqué aussi 
+.RE
+.PP
+
+.SS "pid_t cloner (\fBpFctGenerique\fP pF, \fBgenerique\fP arg)"
+Crée un processus fils 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpF\fP Fonction à exécuter par le fils 
+.br
+\fIarg\fP Argument à passer à la fonction 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pid du fils 
+.RE
+.PP
+
+.SS "void debloquerSignaux (int nbSig,  \&.\&.\&.)"
+Débloque des signaux significatifs 
+.PP
+\fBParameters\fP
+.RS 4
+\fInbSig\fP nombre de signaux à débloquer 
+.br
+\fI\&.\&.\&.\fP liste des signaux à débloquer 
+.RE
+.PP
+
+.SS "void installSignal (int sigNum, void(* handler )(int))"
+Installe un gestionnaire de signal (effectue une action à la réception d'un signal) 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsigNum\fP numéro du signal à gérer 
+.br
+\fIhandler\fP fonction à appeler quand le signal est reçu 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

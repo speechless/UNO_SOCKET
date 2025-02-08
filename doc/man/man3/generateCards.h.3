@@ -1,0 +1,83 @@
+.TH "includes/generateCards.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/generateCards.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <time\&.h>\fP
+.br
+\fR#include 'struct\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBCarte\fP * \fBgenererCartes\fP ()"
+.br
+.ti -1c
+.RI "void \fBmelangerCartes\fP (\fBCarte\fP *cartes, int nbCartes)"
+.br
+.ti -1c
+.RI "void \fBpiocherCarte\fP (\fBPartie\fP *partie, int idJoueur)"
+.br
+.ti -1c
+.RI "int \fBisCarteVide\fP (\fBCarte\fP c)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "\fBCarte\fP * genererCartes ()"
+Génère toutes les cartes possibles dans un tableau alloué dynamiquement\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur vers le tableau alloué contenant toutes les cartes\&. 
+.RE
+.PP
+
+.SS "int isCarteVide (\fBCarte\fP c)"
+Vérifie si une carte est "vide" utile pour le début de partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP carte à vérifier
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+1 si vide sinon 0 
+.RE
+.PP
+
+.SS "void melangerCartes (\fBCarte\fP * cartes, int nbCartes)"
+Melange les cartes 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcartes\fP l'ensemble des cartes à mélanger 
+.br
+\fInbCartes\fP taille de l'ensemble des cartes 
+.RE
+.PP
+
+.SS "void piocherCarte (\fBPartie\fP * partie, int indexJoueur)"
+Fonction pour piocher une carte et l'ajouter à la main d'un joueur\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP La partie contenant la pioche et les joueurs\&. 
+.br
+\fIindexJoueur\fP L'index du joueur qui pioche\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

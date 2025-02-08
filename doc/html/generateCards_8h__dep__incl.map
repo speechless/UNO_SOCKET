@@ -1,0 +1,21 @@
+<map id="includes/generateCards.h" name="includes/generateCards.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="146,5,333,31"/>
+<area shape="rect" id="Node000002" href="$game_8h.html" title=" " alt="" coords="108,79,238,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,43,186,80,182,77,217,39"/>
+<area shape="rect" id="Node000004" href="$player_8h.html" title=" " alt="" coords="223,225,355,251"/>
+<area shape="poly" id="edge11_Node000001_Node000004" title=" " alt="" coords="262,39,298,88,316,119,329,151,330,173,324,194,302,226,298,224,319,192,325,172,324,153,311,121,294,91,257,43"/>
+<area shape="rect" id="Node000003" href="$affichage_8h.html" title=" " alt="" coords="24,152,176,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="146,115,107,154,103,150,142,111"/>
+<area shape="poly" id="edge8_Node000002_Node000004" title=" " alt="" coords="246,106,280,124,307,151,314,170,312,191,298,226,293,224,307,190,308,171,303,153,277,128,244,111"/>
+<area shape="rect" id="Node000005" href="$clientUNO_8c.html" title=" " alt="" coords="30,299,153,324"/>
+<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="96,104,50,122,30,136,14,153,8,172,11,197,19,225,31,249,52,276,76,296,73,300,49,280,27,252,14,227,6,198,3,172,9,151,26,132,47,117,94,99"/>
+<area shape="rect" id="Node000008" href="$game_8c.html" title=" " alt="" coords="200,152,293,177"/>
+<area shape="poly" id="edge10_Node000002_Node000008" title=" " alt="" coords="196,112,236,150,232,154,193,116"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="127,141,166,102,170,106,131,145"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="144,180,259,223,257,228,142,185"/>
+<area shape="rect" id="Node000007" href="$affichage_8c.html" title=" " alt="" coords="42,225,158,251"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="102,191,102,225,97,225,97,191"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="245,258,125,301,123,296,243,253"/>
+<area shape="rect" id="Node000006" href="$player_8c.html" title=" " alt="" coords="241,299,337,324"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="292,264,292,299,286,299,286,264"/>
+</map>

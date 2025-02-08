@@ -1,0 +1,64 @@
+.TH "includes/player.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/player.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'struct\&.h'\fP
+.br
+\fR#include 'enhanceTerminal\&.h'\fP
+.br
+\fR#include 'affichage\&.h'\fP
+.br
+\fR#include 'serialize\&.h'\fP
+.br
+\fR#include 'game_requests\&.h'\fP
+.br
+\fR#include 'game\&.h'\fP
+.br
+\fR#include 'generateCards\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBjouerPartieServeur\fP (\fBPartie\fP *partie, int idJoueur, \fBclient_t\fP *clients)"
+.br
+.ti -1c
+.RI "int \fBjouerPartieClient\fP (\fBPartie\fP *partie, int idJoueur, \fBsocket_t\fP socketHost)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int jouerPartieClient (\fBPartie\fP * partie, int idJoueur, \fBsocket_t\fP socketHost)"
+Déroulement de la partie côté client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP la partie actuelle 
+.br
+\fIidJoueur\fP id du joueur 
+.br
+\fIsocketHost\fP socket avec l'host de la partie 
+.RE
+.PP
+
+.SS "int jouerPartieServeur (\fBPartie\fP * partie, int idJoueur, \fBclient_t\fP * clients)"
+Déroulement de la partie côté host 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP la partie actuelle 
+.br
+\fIidJoueur\fP id du joueur 
+.br
+\fIclients\fP tous les clients qui deviennent les joueurs de la partie 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

@@ -1,0 +1,15 @@
+<map id="includes/common.h" name="includes/common.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="371,5,520,31"/>
+<area shape="rect" id="Node000002" href="$clientUNO_8c.html" title=" " alt="" coords="5,79,128,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="372,36,128,81,127,76,371,31"/>
+<area shape="rect" id="Node000003" href="$game__requests_8c.html" title=" " alt="" coords="153,79,309,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="399,37,266,81,265,76,397,32"/>
+<area shape="rect" id="Node000004" href="$player_8c.html" title=" " alt="" coords="333,79,429,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="428,43,394,80,390,77,424,39"/>
+<area shape="rect" id="Node000005" href="$requetes_8c.html" title=" " alt="" coords="454,79,567,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="467,39,502,77,498,80,463,43"/>
+<area shape="rect" id="Node000006" href="$serialize_8c.html" title=" " alt="" coords="591,79,702,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="492,33,615,76,613,81,490,38"/>
+<area shape="rect" id="Node000007" href="$serveurUNO_8c.html" title=" " alt="" coords="726,79,861,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="515,31,738,76,736,81,514,36"/>
+</map>

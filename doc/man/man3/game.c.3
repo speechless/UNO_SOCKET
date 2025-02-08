@@ -1,0 +1,113 @@
+.TH "src/game.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/game.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'game\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBinitPartie\fP (\fBPartie\fP *partie, int nbJoueurs, \fBclient_t\fP *clients, int idHost)"
+.br
+.ti -1c
+.RI "int \fBjouerCarte\fP (\fBPartie\fP *partie, int idJoueur, \fBCarte\fP carteJouee)"
+.br
+.ti -1c
+.RI "void \fBprochainTour\fP (\fBPartie\fP *partie)"
+.br
+.ti -1c
+.RI "int \fBgetIndexFromIdClient\fP (int id, \fBclient_t\fP *joueurs, int nbJoueurs)"
+.br
+.ti -1c
+.RI "int \fBgetIndexFromIdJoueur\fP (int id, \fBJoueur\fP *joueurs, int nbJoueurs)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int getIndexFromIdClient (int id, \fBclient_t\fP * joueurs, int nbJoueurs)"
+Donne l'index d'un client en fonction de son id 
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP id du joueur 
+.br
+\fIjoueurs\fP tous les joueurs de la partie 
+.br
+\fInbJoueurs\fP nombre de joueur de la partie
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+-1 si pas trouvé sinon son ID 
+.RE
+.PP
+
+.SS "int getIndexFromIdJoueur (int id, \fBJoueur\fP * joueurs, int nbJoueurs)"
+Donne l'index dans la partie d'un joueur en fonction de son id client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIid\fP id du joueur 
+.br
+\fIjoueurs\fP tous les joueurs de la partie 
+.br
+\fInbJoueurs\fP nombre de joueur de la partie
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+-1 si pas trouvé sinon son ID 
+.RE
+.PP
+
+.SS "void initPartie (\fBPartie\fP * partie, int nbJoueurs, \fBclient_t\fP * clients, int idHost)"
+initalise une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP la partie à initialiser 
+.br
+\fInbJoueurs\fP le nombre de joueur de la partie 
+.br
+\fIclients\fP les joueurs 
+.br
+\fIidHost\fP l'host de la partie 
+.RE
+.PP
+
+.SS "int jouerCarte (\fBPartie\fP * partie, int idJoueur, \fBCarte\fP carteJouee)"
+Fonction pour jouer une carte 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP partie actuelle 
+.br
+\fIidJoueur\fP le joueur qui joue la carte 
+.br
+\fIcarteJouee\fP la carte qu'il souhaite jouer
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+renvoie 1 si l'action s'est faite et 0 si erreur 
+.RE
+.PP
+
+.SS "void prochainTour (\fBPartie\fP * partie)"
+Fait passer la partie au tour suivant 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpartie\fP La partie actuelle 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

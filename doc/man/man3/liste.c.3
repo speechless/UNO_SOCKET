@@ -1,0 +1,160 @@
+.TH "src/liste.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/liste.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'liste\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBT_Maille\fP * \fBnewMaille\fP (\fBT_Elt\fP *elt, \fBT_Maille\fP *suivant)"
+.br
+.ti -1c
+.RI "\fBT_Maille\fP * \fBinsererEnTete\fP (\fBT_Elt\fP *elt, \fBT_Maille\fP *liste)"
+.br
+.ti -1c
+.RI "\fBT_Maille\fP * \fBinsererEnFin\fP (\fBT_Elt\fP *elt, \fBT_Maille\fP *liste, \fBT_Maille\fP **mailleInseree)"
+.br
+.ti -1c
+.RI "int \fBappartient\fP (\fBT_Elt\fP elt, \fBT_Maille\fP *liste)"
+.br
+.ti -1c
+.RI "int \fBafficherListe\fP (\fBT_Maille\fP *\fBmaille\fP)"
+.br
+.ti -1c
+.RI "\fBT_Maille\fP * \fBsupprimerElement\fP (\fBT_Elt\fP elt, \fBT_Maille\fP *liste)"
+.br
+.ti -1c
+.RI "int \fBtailleListe\fP (\fBT_Maille\fP *liste)"
+.br
+.ti -1c
+.RI "\fBT_Elt\fP * \fBeltFromIndex\fP (\fBT_Maille\fP *liste, int index)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int afficherListe (\fBT_Maille\fP * maille)"
+Affiche le contenu de la liste chaînée 
+.PP
+\fBParameters\fP
+.RS 4
+\fImaille\fP Pointeur sur la liste à afficher 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 si la liste est vide, 1 sinon 
+.RE
+.PP
+
+.SS "int appartient (\fBT_Elt\fP elt, \fBT_Maille\fP * liste)"
+Vérifie l'appartenence d'un élément dans une liste 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt\fP Elément à chercher 
+.br
+\fIliste\fP Liste dans laquelle chercher 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+1 si l'élément est dans la liste, 0 sinon 
+.RE
+.PP
+
+.SS "\fBT_Elt\fP * eltFromIndex (\fBT_Maille\fP * liste, int index)"
+Cherche un élément de la liste à partir de son index 
+.PP
+\fBParameters\fP
+.RS 4
+\fIliste\fP Liste dans laquelle chercher 
+.br
+\fIindex\fP Index de l'élément à retourner 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur sur l'élément trouvé, NULL si non trouvé 
+.RE
+.PP
+
+.SS "\fBT_Maille\fP * insererEnFin (\fBT_Elt\fP * elt, \fBT_Maille\fP * liste, \fBT_Maille\fP ** mailleInseree)"
+Insère un élément en fin de liste 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt\fP Elément à insérer 
+.br
+\fIliste\fP Liste dans laquelle insérer 
+.br
+\fImailleInseree\fP Pointeur sur la maille insérée 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur sur le début de la liste 
+.RE
+.PP
+
+.SS "\fBT_Maille\fP * insererEnTete (\fBT_Elt\fP * elt, \fBT_Maille\fP * liste)"
+Insère un élément en tête de liste 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt\fP Elément à insérer 
+.br
+\fIliste\fP Liste dans laquelle insérer 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur le le nouveau début de la liste 
+.RE
+.PP
+
+.SS "\fBT_Maille\fP * newMaille (\fBT_Elt\fP * elt, \fBT_Maille\fP * suivant)"
+Crée une nouvelle maille 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt\fP Le premier élément de la maille 
+.br
+\fIsuivant\fP Le pointeur sur la maille suivante 
+.RE
+.PP
+
+.SS "\fBT_Maille\fP * supprimerElement (\fBT_Elt\fP elt, \fBT_Maille\fP * liste)"
+Supprime un élément de la liste 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt\fP Elément à supprimer 
+.br
+\fIliste\fP Liste dans laquelle supprimer l'élément 
+.RE
+.PP
+
+.SS "int tailleListe (\fBT_Maille\fP * liste)"
+Retourne la taille de la liste 
+.PP
+\fBParameters\fP
+.RS 4
+\fIliste\fP : la liste dont on veut connaître la taille 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+La taille de la liste 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

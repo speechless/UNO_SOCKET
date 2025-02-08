@@ -1,0 +1,79 @@
+.TH "includes/struct.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/struct.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'session\&.h'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBCarte\fP"
+.br
+.ti -1c
+.RI "struct \fBJoueur\fP"
+.br
+.ti -1c
+.RI "struct \fBPartie\fP"
+.br
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBNB_COULEURS\fP   4"
+.br
+.ti -1c
+.RI "#define \fBNB_VALEURS\fP   13"
+.br
+.ti -1c
+.RI "#define \fBNB_SPECIALES\fP   1"
+.br
+.ti -1c
+.RI "#define \fBTAILLE_MAIN\fP   5"
+.br
+.ti -1c
+.RI "#define \fBTAILLE_MAIN_MAX\fP   150"
+.br
+.ti -1c
+.RI "#define \fBTOTAL_CARTES\fP   ((\fBNB_COULEURS\fP * \fBNB_VALEURS\fP * 2) + (\fBNB_SPECIALES\fP * 4))"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBCouleur\fP { \fBROUGE\fP, \fBBLEU\fP, \fBJAUNE\fP, \fBVERT\fP, \fBNOIR\fP }"
+.br
+.ti -1c
+.RI "enum \fBValeur\fP { \fBZERO\fP, \fBUN\fP, \fBDEUX\fP, \fBTROIS\fP, \fBQUATRE\fP, \fBCINQ\fP, \fBSIX\fP, \fBSEPT\fP, \fBHUIT\fP, \fBNEUF\fP, \fBPLUS_DEUX\fP, \fBPASSE_TOUR\fP, \fBCHANGEMENT_SENS\fP, \fBCHANGEMENT_COULEUR\fP }"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define NB_COULEURS   4"
+Nombre de couleurs ROUGE, BLEU, JAUNE, VERT (sans NOIR) 
+.SS "#define NB_SPECIALES   1"
+CHANGEMENT_COULEUR 
+.SS "#define NB_VALEURS   13"
+Valeurs de ZERO à CHANGEMENT_SENS (sans PLUS_QUATRE et CHANGEMENT_COULEUR) 
+.SS "#define TAILLE_MAIN   5"
+Taille main de base d'un joueur 
+.SS "#define TAILLE_MAIN_MAX   150"
+Taille maximale main d'un joueur 
+.SS "#define TOTAL_CARTES   ((\fBNB_COULEURS\fP * \fBNB_VALEURS\fP * 2) + (\fBNB_SPECIALES\fP * 4))"
+Cartes normales * 2 + Cartes spéciales 
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBCouleur\fP"
+Couleurs possibles des cartes 
+.SS "enum \fBValeur\fP"
+Valeurs possibles des cartes 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

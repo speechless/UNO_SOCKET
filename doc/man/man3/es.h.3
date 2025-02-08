@@ -1,0 +1,80 @@
+.TH "includes/es.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/es.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <requetes\&.h>\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef \fBclient_t\fP \fBT_Elt\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBafficherElt\fP (\fBT_Elt\fP *e, char *end)"
+.br
+.ti -1c
+.RI "void \fBaffecterElt\fP (\fBT_Elt\fP *dest, \fBT_Elt\fP *src)"
+.br
+.ti -1c
+.RI "int \fBcomparerElt\fP (\fBT_Elt\fP *elt1, \fBT_Elt\fP *elt2)"
+.br
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef \fBclient_t\fP \fBT_Elt\fP"
+Utilisation de la structure \fBclient_t\fP pour les éléments 
+.SH "Function Documentation"
+.PP 
+.SS "void affecterElt (\fBT_Elt\fP * dest, \fBT_Elt\fP * src)"
+Affecter un élément de type \fBT_Elt\fP à un autre 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdest\fP Pointeur vers l'élément de destination 
+.br
+\fIsrc\fP Pointeur vers l'élément source 
+.RE
+.PP
+
+.SS "void afficherElt (\fBT_Elt\fP * e, char * end)"
+Afficher un élément de type \fBT_Elt\fP 
+.PP
+\fBParameters\fP
+.RS 4
+\fIe\fP Pointeur vers l'élément à afficher 
+.br
+\fIend\fP Chaîne de caractères à afficher après l'élément 
+.RE
+.PP
+
+.SS "int comparerElt (\fBT_Elt\fP * elt1, \fBT_Elt\fP * elt2)"
+Compare deux éléments 
+.PP
+\fBParameters\fP
+.RS 4
+\fIelt1\fP Premier élément 
+.br
+\fIelt2\fP Deuxième élément 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+nombre négatif si elt1 < elt2, 0 si elt1 == elt2, nombre positif sinon 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

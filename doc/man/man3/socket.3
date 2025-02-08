@@ -1,0 +1,43 @@
+.TH "socket" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+socket
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <session\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBfd\fP"
+.br
+.ti -1c
+.RI "int \fBmode\fP"
+.br
+.ti -1c
+.RI "struct sockaddr_in \fBadrDist\fP"
+.br
+.ti -1c
+.RI "struct sockaddr_in \fBadrLoc\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Structure représentant une socket 
+.SH "Member Data Documentation"
+.PP 
+.SS "struct sockaddr_in socket::adrDist"
+adressage de la connexion distante 
+.SS "struct sockaddr_in socket::adrLoc"
+adressage de la connexion locale 
+.SS "int socket::fd"
+file decriptor de la socket 
+.SS "int socket::mode"
+mode SOCK_STREAM ou SOCK_DGRAM 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

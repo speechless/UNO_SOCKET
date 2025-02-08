@@ -1,0 +1,80 @@
+.TH "src/game_requests.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/game_requests.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'game_requests\&.h'\fP
+.br
+\fR#include <requetes\&.h>\fP
+.br
+\fR#include <common\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBreqEnvoiPartie\fP (\fBclient_t\fP *clients, \fBPartie\fP *partie)"
+.br
+.ti -1c
+.RI "void \fBreqEnvoiPartieClient\fP (\fBsocket_t\fP \fBsocket\fP, \fBPartie\fP *partie)"
+.br
+.ti -1c
+.RI "void \fBresEnvoiPartie\fP (\fBsocket_t\fP \fBsocket\fP, \fBPartie\fP *partie)"
+.br
+.ti -1c
+.RI "void \fBresEnvoiCoup\fP (\fBsocket_t\fP \fBsocket\fP, \fBPartie\fP *partie)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void reqEnvoiPartie (\fBclient_t\fP * clients, \fBPartie\fP * partie)"
+L'host envoie aux autres jouers la partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclients\fP tous les joueurs de la partie 
+.br
+\fIpartie\fP la partie 
+.RE
+.PP
+
+.SS "void reqEnvoiPartieClient (\fBsocket_t\fP socket, \fBPartie\fP * partie)"
+Un joueur non host envoie la partie actualisée à l'host 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP socket avec l'host 
+.br
+\fIpartie\fP la partie 
+.RE
+.PP
+
+.SS "void resEnvoiCoup (\fBsocket_t\fP socket, \fBPartie\fP * partie)"
+Reçoit d'un joueur la partie actualisée après un coup joué 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP socket avec le joueur 
+.br
+\fIpartie\fP la partie 
+.RE
+.PP
+
+.SS "void resEnvoiPartie (\fBsocket_t\fP socket, \fBPartie\fP * partie)"
+Reçoit d'un joueur la partie actualisée 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsocket\fP socket avec le joueur 
+.br
+\fIpartie\fP la partie 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

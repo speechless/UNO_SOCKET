@@ -1,0 +1,31 @@
+<map id="includes/serialize.h" name="includes/serialize.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="353,5,500,31"/>
+<area shape="rect" id="Node000002" href="$game_8h.html" title=" " alt="" coords="229,152,358,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="380,38,348,56,321,80,310,98,303,117,297,152,291,151,298,116,305,96,317,77,345,52,377,34"/>
+<area shape="rect" id="Node000004" href="$player_8h.html" title=" " alt="" coords="385,299,517,324"/>
+<area shape="poly" id="edge16_Node000001_Node000004" title=" " alt="" coords="480,33,521,51,565,76,605,109,622,129,636,151,643,178,637,203,621,226,599,246,542,279,487,301,485,296,540,274,595,242,617,222,632,201,637,178,631,153,618,132,601,113,562,80,519,55,477,38"/>
+<area shape="rect" id="Node000005" href="$clientUNO_8c.html" title=" " alt="" coords="20,372,143,397"/>
+<area shape="poly" id="edge17_Node000001_Node000005" title=" " alt="" coords="340,34,236,53,127,81,80,98,42,118,17,140,10,151,8,164,8,239,15,279,32,316,53,347,72,370,68,373,49,351,27,319,10,281,3,240,3,163,5,150,13,137,39,114,78,93,126,76,235,47,339,28"/>
+<area shape="rect" id="Node000009" href="$game__requests_8h.html" title=" " alt="" coords="331,79,523,104"/>
+<area shape="poly" id="edge11_Node000001_Node000009" title=" " alt="" coords="429,44,429,79,424,79,424,44"/>
+<area shape="rect" id="Node000011" href="$serialize_8c.html" title=" " alt="" coords="697,79,807,104"/>
+<area shape="poly" id="edge18_Node000001_Node000011" title=" " alt="" coords="493,31,700,76,699,81,492,36"/>
+<area shape="rect" id="Node000003" href="$affichage_8h.html" title=" " alt="" coords="144,225,296,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="266,188,227,227,223,223,262,184"/>
+<area shape="poly" id="edge8_Node000002_Node000004" title=" " alt="" coords="357,179,395,197,427,224,439,242,447,262,453,298,448,299,442,264,434,244,423,227,392,202,355,184"/>
+<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="217,182,172,199,152,212,134,227,110,263,95,304,87,343,84,372,79,371,82,342,90,303,105,261,130,224,149,207,170,195,215,177"/>
+<area shape="rect" id="Node000008" href="$game_8c.html" title=" " alt="" coords="320,225,413,251"/>
+<area shape="poly" id="edge10_Node000002_Node000008" title=" " alt="" coords="317,185,357,223,353,227,313,189"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="247,214,286,176,290,180,251,218"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="271,252,414,296,413,301,270,257"/>
+<area shape="rect" id="Node000007" href="$affichage_8c.html" title=" " alt="" coords="162,299,278,324"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="223,264,223,299,217,299,217,264"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="378,329,142,375,141,369,377,324"/>
+<area shape="rect" id="Node000006" href="$player_8c.html" title=" " alt="" coords="403,372,499,397"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="453,338,453,372,448,372,448,338"/>
+<area shape="poly" id="edge12_Node000009_Node000002" title=" " alt="" coords="395,113,316,154,314,149,392,108"/>
+<area shape="poly" id="edge13_Node000009_Node000004" title=" " alt="" coords="435,117,445,167,453,225,454,298,449,298,448,226,440,168,430,118"/>
+<area shape="poly" id="edge14_Node000009_Node000005" title=" " alt="" coords="332,109,275,125,215,149,159,182,134,203,113,227,94,264,84,305,82,343,83,371,77,372,76,343,79,304,89,262,108,224,131,199,156,178,213,144,273,120,331,104"/>
+<area shape="rect" id="Node000010" href="$game__requests_8c.html" title=" " alt="" coords="465,152,621,177"/>
+<area shape="poly" id="edge15_Node000009_Node000010" title=" " alt="" coords="458,109,525,149,522,154,455,113"/>
+</map>

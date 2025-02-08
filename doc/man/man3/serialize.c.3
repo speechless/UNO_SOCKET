@@ -1,0 +1,118 @@
+.TH "src/serialize.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/serialize.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'serialize\&.h'\fP
+.br
+\fR#include <common\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBserialiserPartie\fP (\fBPartie\fP *p, char *chaine)"
+.br
+.ti -1c
+.RI "int \fBextraireEntier\fP (char **str)"
+.br
+.ti -1c
+.RI "\fBCarte\fP \fBextraireCarte\fP (char **str)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserPartie\fP (char *chaine, \fBPartie\fP *p)"
+.br
+.ti -1c
+.RI "void \fBserialiserCoup\fP (\fBPartie\fP p, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserCoup\fP (char *chaine, \fBPartie\fP *p)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBSTATUS_CODE_SERIA_PARTIE\fP = 200"
+.br
+.ti -1c
+.RI "int \fBSTATUS_CODE_SERIA_COUP\fP = 300"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void deserialiserCoup (char * chaine, \fBPartie\fP * p)"
+Désérialise la mise à jour d'une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères résultante 
+.br
+\fIp\fP \fBPartie\fP en cours 
+.RE
+.PP
+
+.SS "void deserialiserPartie (char * chaine, \fBPartie\fP * p)"
+Sérialise une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "\fBCarte\fP extraireCarte (char ** str)"
+Fonction pour extraire une carte d'une chaîne 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP Pointeur vers chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "int extraireEntier (char ** str)"
+Fonction pour extraire un entier d'une chaîne 
+.PP
+\fBParameters\fP
+.RS 4
+\fIstr\fP Pointeur vers chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserCoup (\fBPartie\fP p, char * chaine)"
+Sérialise la mise à jour d'une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserPartie (\fBPartie\fP * p, char * chaine)"
+Sérialise une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "int STATUS_CODE_SERIA_COUP = 300"
+Code d'une requete de serialisation de coup 
+.SS "int STATUS_CODE_SERIA_PARTIE = 200"
+Code d'une requete de serialisation de partie 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

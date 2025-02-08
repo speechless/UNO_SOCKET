@@ -1,0 +1,48 @@
+.TH "creation_partie_t" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+creation_partie_t
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <requetes\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBidClient\fP"
+.br
+.ti -1c
+.RI "int \fBisPrivate\fP"
+.br
+.ti -1c
+.RI "int \fBnbJoueursMax\fP"
+.br
+.ti -1c
+.RI "char \fBadresseHost\fP [20]"
+.br
+.ti -1c
+.RI "unsigned short \fBportHost\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Structure contenant les informations pour la création d'une partie 
+.SH "Member Data Documentation"
+.PP 
+.SS "char creation_partie_t::adresseHost[20]"
+Adresse de l'hôte en notation pointée 
+.SS "int creation_partie_t::idClient"
+Identifiant du client 
+.SS "int creation_partie_t::isPrivate"
+Indicateur de partie privée (1) ou publique (0) 
+.SS "int creation_partie_t::nbJoueursMax"
+Nombre de joueurs maximum 
+.SS "unsigned short creation_partie_t::portHost"
+Port de l'hôte 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

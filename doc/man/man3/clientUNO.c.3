@@ -1,0 +1,176 @@
+.TH "src/clientUNO.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/clientUNO.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <session\&.h>\fP
+.br
+\fR#include <data\&.h>\fP
+.br
+\fR#include <enhanceTerminal\&.h>\fP
+.br
+\fR#include <libPSY\&.h>\fP
+.br
+\fR#include <common\&.h>\fP
+.br
+\fR#include <unistd\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+\fR#include <inc\&.h>\fP
+.br
+\fR#include <requetes\&.h>\fP
+.br
+\fR#include <struct\&.h>\fP
+.br
+\fR#include <game\&.h>\fP
+.br
+\fR#include <player\&.h>\fP
+.br
+\fR#include <game_requests\&.h>\fP
+.br
+\fR#include <serialize\&.h>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBADRESSE_SVC\fP   '127\&.0\&.0\&.1'"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBtraiterSignal\fP (int sigNum)"
+.br
+.ti -1c
+.RI "void \fBbye\fP ()"
+.br
+.ti -1c
+.RI "void \fBdeconnexionServeurUNO\fP ()"
+.br
+.ti -1c
+.RI "\fBclient_t\fP \fBconnexionServeurUNO\fP ()"
+.br
+.ti -1c
+.RI "void \fBquitterSalon\fP ()"
+.br
+.ti -1c
+.RI "void \fBafficherMenu\fP ()"
+.br
+.ti -1c
+.RI "void \fBlancerPartiePublique\fP (\fBclient_t\fP clientLocal)"
+.br
+.ti -1c
+.RI "void \fBrejoindrePartiePrivee\fP (\fBclient_t\fP clientLocal, int code)"
+.br
+.ti -1c
+.RI "void \fBcreerPartiePrivee\fP (\fBclient_t\fP clientLocal, int nbJoueursMax)"
+.br
+.ti -1c
+.RI "\fBclient_t\fP * \fBinitConnection\fP (\fBsalon_t\fP salon)"
+.br
+.ti -1c
+.RI "int \fBmain\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBsocket_t\fP \fBsocketAppel\fP"
+.br
+.ti -1c
+.RI "\fBsocket_t\fP \fBsocketEcouteHebergeur\fP = {\-1,}"
+.br
+.ti -1c
+.RI "\fBsocket_t\fP \fBsocketPartie\fP"
+.br
+.ti -1c
+.RI "int \fBconnecte\fP = 0"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void afficherMenu ()"
+Affiche le menu 
+.SS "void bye (void )"
+Fonction à exécuter lors de la fermeture du programme
+
+.PP
+Fonction appelée à la fin du programme Ferme la socket d'écoute ainsi que les sockets de dialogue 
+.SS "\fBclient_t\fP connexionServeurUNO ()"
+Connecte un client au serveur
+
+.PP
+\fBReturns\fP
+.RS 4
+l'objet client 
+.RE
+.PP
+
+.SS "void creerPartiePrivee (\fBclient_t\fP clientLocal, int nbJoueursMax)"
+Créé une partie privée 
+.SS "void deconnexionServeurUNO ()"
+Déconnecte le client du serveur 
+.SS "\fBclient_t\fP * initConnection (\fBsalon_t\fP salon)"
+Initialise la connection avec un salon du serveur 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP le salo du serveur
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+l'objet client 
+.RE
+.PP
+
+.SS "void lancerPartiePublique (\fBclient_t\fP clientLocal)"
+Rejoint une partie publique 
+.SS "int main ()"
+Programme principal du client 
+.SS "void quitterSalon ()"
+Le client quitte son salon actuel 
+.SS "void rejoindrePartiePrivee (\fBclient_t\fP clientLocal, int code)"
+Rejoint une partie privée 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclientLocal\fP le client 
+.br
+\fIcode\fP le code d'entrée de la partie 
+.RE
+.PP
+
+.SS "void traiterSignal (int sigNum)"
+Neutralise le ^C afin d'avoir une fermeture propre du programme
+
+.PP
+Fonction appelée pour traiter le signal SIGINT 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsigNum\fP Numéro du signal à traiter 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "int connecte = 0"
+Etat de connexion au serveur principal 
+.SS "\fBsocket_t\fP socketAppel"
+Socket utilisée pour se connecter au serveur principal 
+.SS "\fBsocket_t\fP socketEcouteHebergeur = {\-1,}"
+Socket d'écoute en tant qu'hébergeur de la partie 
+.SS "\fBsocket_t\fP socketPartie"
+Socket utilisée pour se connecter au serveur hébergeur de la partie 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

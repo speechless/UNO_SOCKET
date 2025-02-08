@@ -1,0 +1,18 @@
+<map id="includes/affichage.h" name="includes/affichage.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="109,5,261,31"/>
+<area shape="rect" id="Node000002" href="$game_8h.html" title=" " alt="" coords="121,79,250,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="179,44,181,78,176,79,174,45"/>
+<area shape="rect" id="Node000003" href="$player_8h.html" title=" " alt="" coords="17,152,149,177"/>
+<area shape="poly" id="edge8_Node000001_Node000003" title=" " alt="" coords="154,40,131,58,112,80,94,118,87,153,81,151,89,117,107,77,128,54,151,36"/>
+<area shape="rect" id="Node000007" href="$affichage_8c.html" title=" " alt="" coords="274,79,390,104"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="222,34,309,76,307,81,220,39"/>
+<area shape="poly" id="edge2_Node000002_Node000001" title=" " alt="" coords="191,65,190,31,195,31,197,65"/>
+<area shape="poly" id="edge3_Node000002_Node000003" title=" " alt="" coords="159,114,101,154,98,150,156,110"/>
+<area shape="rect" id="Node000004" href="$clientUNO_8c.html" title=" " alt="" coords="125,225,248,251"/>
+<area shape="poly" id="edge6_Node000002_Node000004" title=" " alt="" coords="188,118,189,225,184,225,183,118"/>
+<area shape="rect" id="Node000006" href="$game_8c.html" title=" " alt="" coords="224,152,317,177"/>
+<area shape="poly" id="edge7_Node000002_Node000006" title=" " alt="" coords="211,110,258,150,255,154,208,115"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="112,183,171,223,168,227,109,187"/>
+<area shape="rect" id="Node000005" href="$player_8c.html" title=" " alt="" coords="5,225,101,251"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="75,191,61,226,56,224,70,189"/>
+</map>

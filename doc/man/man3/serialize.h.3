@@ -1,0 +1,82 @@
+.TH "includes/serialize.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/serialize.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+\fR#include <stdarg\&.h>\fP
+.br
+\fR#include 'struct\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBserialiserPartie\fP (\fBPartie\fP *p, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserPartie\fP (char *chaine, \fBPartie\fP *p)"
+.br
+.ti -1c
+.RI "void \fBserialiserCoup\fP (\fBPartie\fP p, char *chaine)"
+.br
+.ti -1c
+.RI "void \fBdeserialiserCoup\fP (char *chaine, \fBPartie\fP *p)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "void deserialiserCoup (char * chaine, \fBPartie\fP * p)"
+Désérialise la mise à jour d'une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIchaine\fP Chaîne de caractères résultante 
+.br
+\fIp\fP \fBPartie\fP en cours 
+.RE
+.PP
+
+.SS "void deserialiserPartie (char * chaine, \fBPartie\fP * p)"
+Sérialise une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserCoup (\fBPartie\fP p, char * chaine)"
+Sérialise la mise à jour d'une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SS "void serialiserPartie (\fBPartie\fP * p, char * chaine)"
+Sérialise une partie 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP \fBPartie\fP en cours 
+.br
+\fIchaine\fP Chaîne de caractères résultante 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

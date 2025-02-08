@@ -1,0 +1,43 @@
+.TH "client_t" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+client_t
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <requetes\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBid\fP"
+.br
+.ti -1c
+.RI "\fBsocket_t\fP \fBsocket\fP"
+.br
+.ti -1c
+.RI "char \fBadresse\fP [20]"
+.br
+.ti -1c
+.RI "unsigned short \fBport\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Structure représentant un client 
+.SH "Member Data Documentation"
+.PP 
+.SS "char client_t::adresse[20]"
+Adresse du client en notation pointée 
+.SS "int client_t::id"
+Identifiant du client 
+.SS "unsigned short client_t::port"
+Port du client 
+.SS "\fBsocket_t\fP client_t::socket"
+Socket du client 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

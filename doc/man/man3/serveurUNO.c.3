@@ -1,0 +1,341 @@
+.TH "src/serveurUNO.c" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/serveurUNO.c
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <pthread\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+\fR#include <time\&.h>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+\fR#include <arpa/inet\&.h>\fP
+.br
+\fR#include <sys/socket\&.h>\fP
+.br
+\fR#include <session\&.h>\fP
+.br
+\fR#include <data\&.h>\fP
+.br
+\fR#include <libPSY\&.h>\fP
+.br
+\fR#include <common\&.h>\fP
+.br
+\fR#include <inc\&.h>\fP
+.br
+\fR#include <requetes\&.h>\fP
+.br
+\fR#include <liste\&.h>\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBNB_SALONS_MAX\fP   10"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBgererConnexion\fP ()"
+.br
+.ti -1c
+.RI "void \fBdialogueClt\fP (\fBclient_t\fP *client)"
+.br
+.ti -1c
+.RI "void \fBtraiterSignal\fP (int sig)"
+.br
+.ti -1c
+.RI "void \fBbye\fP (void)"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP * \fBgetSalonPublic\fP ()"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP * \fBcreerSalonPublic\fP (int nbJoueursMax, char *adresseHost, unsigned short portHost, int idHost)"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP * \fBcreerSalonPrive\fP (int nbJoueursMax, char *adresseHost, unsigned short portHost, int idHost, int code)"
+.br
+.ti -1c
+.RI "void \fBgererCreationPartie\fP (\fBcreation_partie_t\fP demande, \fBclient_t\fP client)"
+.br
+.ti -1c
+.RI "void \fBgererRejoindrePartie\fP (\fBrejoindre_partie_t\fP demande)"
+.br
+.ti -1c
+.RI "void \fBajouterJoueurSalon\fP (\fBsalon_t\fP *salon, int idClient)"
+.br
+.RI "Ajoute un joueur à un salon et gère l'état du salon\&. "
+.ti -1c
+.RI "void \fBretirerJoueurSalon\fP (\fBsalon_t\fP *salon, int idClient)"
+.br
+.RI "Retire un joueur d'un salon et gère l'état du salon\&. "
+.ti -1c
+.RI "\fBclient_t\fP \fBgetClient\fP (int idClient)"
+.br
+.ti -1c
+.RI "void \fBsupprimerSalon\fP (\fBsalon_t\fP *salon)"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP * \fBgetSalonClient\fP (int idClient)"
+.br
+.ti -1c
+.RI "int \fBgenerateCode\fP ()"
+.br
+.ti -1c
+.RI "int \fBmain\fP ()"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP * \fBgetSalonPrive\fP (int code)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBsocket_t\fP \fBse\fP"
+.br
+.ti -1c
+.RI "\fBT_Maille\fP * \fBlisteClients\fP = NULL"
+.br
+.ti -1c
+.RI "int \fBnextClientId\fP = 1"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBmutexListeClients\fP = PTHREAD_MUTEX_INITIALIZER"
+.br
+.ti -1c
+.RI "pthread_t \fBTIDClient\fP"
+.br
+.ti -1c
+.RI "\fBsalon_t\fP \fBsalons\fP [\fBNB_SALONS_MAX\fP]"
+.br
+.ti -1c
+.RI "int \fBnextSalonId\fP = 1"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBmutexListeSalons\fP = PTHREAD_MUTEX_INITIALIZER"
+.br
+.ti -1c
+.RI "int \fBcodes\fP [100] = {\-1}"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBmutexListeCodes\fP = PTHREAD_MUTEX_INITIALIZER"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define NB_SALONS_MAX   10"
+Nombre maximum de salons 
+.SH "Function Documentation"
+.PP 
+.SS "void ajouterJoueurSalon (\fBsalon_t\fP * salon, int idClient)"
+
+.PP
+Ajoute un joueur à un salon et gère l'état du salon\&. Cette fonction ajoute un joueur à un salon en mettant à jour la liste des joueurs et en envoyant l'état actualisé du salon à tous les joueurs présents\&. Si le salon atteint le nombre maximum de joueurs, la partie est démarrée et un signal de démarrage est envoyé à tous les joueurs\&. Le salon est ensuite supprimé\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Pointeur vers la structure du salon\&. 
+.br
+\fIidClient\fP Identifiant du client à ajouter au salon\&. 
+.RE
+.PP
+
+.SS "void bye ()"
+Fonction appelée à la fin du programme Ferme la socket d'écoute ainsi que les sockets de dialogue 
+.SS "\fBsalon_t\fP * creerSalonPrive (int nbJoueursMax, char * adresseHost, unsigned short portHost, int idHost, int code)"
+Créer un salon de type privé 
+.PP
+\fBParameters\fP
+.RS 4
+\fInbJoueursMax\fP Nombre maximal de joueurs dans la partie 
+.br
+\fIadresseHost\fP Adresse IP de l'hébergeur de la partie en notation pointée x\&.x\&.x\&.x 
+.br
+\fIportHost\fP Port de l'hébergeur de la partie 
+.br
+\fIidHost\fP Id du client hébergeur de la partie 
+.br
+\fIcode\fP Code qui sera à rentrer par les joueurs pour rejoindre la partie 
+.RE
+.PP
+
+.SS "\fBsalon_t\fP * creerSalonPublic (int nbJoueursMax, char * adresseHost, unsigned short portHost, int idHost)"
+Créer un salon de type public 
+.PP
+\fBParameters\fP
+.RS 4
+\fInbJoueursMax\fP Nombre maximal de joueurs dans la partie 
+.br
+\fIadresseHost\fP Adresse IP de l'hébergeur de la partie en notation pointée x\&.x\&.x\&.x 
+.br
+\fIportHost\fP Port de l'hébergeur de la partie 
+.br
+\fIidHost\fP Id du client hébergeur de la partie 
+.RE
+.PP
+
+.SS "void dialogueClt (\fBclient_t\fP * client)"
+Fonction exécutée par les threads de service Reçoit toutes les requêtes d'un client et s'occupe de les gérer 
+.PP
+\fBParameters\fP
+.RS 4
+\fIclient\fP Pointeur sur la case du client à servir dans la liste chainée 
+.RE
+.PP
+
+.SS "int generateCode ()"
+Génère un code et le place dans le tableau des codes 
+.PP
+\fBReturns\fP
+.RS 4
+Le code généré ou -1 tableau plein 
+.RE
+.PP
+
+.SS "void gererConnexion ()"
+S'occupe d'accepter une connexion entrante d'un client, de lui envoyer son id et de créer un thread de service 
+.SS "void gererCreationPartie (\fBcreation_partie_t\fP demande, \fBclient_t\fP client)"
+Gère la création d'une partie privée ou publique\&. Envoie au client un message d'erreur si un problème est survenu S'il n'y a pas de problème le client est automatiquement ajouté au salon 
+.PP
+\fBParameters\fP
+.RS 4
+\fIdemande\fP Paramètres pour la création de la partie 
+.br
+\fIclient\fP Client à l'initiative de la création 
+.RE
+.PP
+
+.SS "void gererRejoindrePartie (\fBrejoindre_partie_t\fP demande)"
+Gère la demande d'un client pour rejoindre une partie publique ou privée\&.
+
+.PP
+Si la partie est publique, le client est ajouté à un salon public existant ou invité à créer une nouvelle partie si aucun salon n'existe\&. Si la partie est privée, le client est ajouté au salon privé correspondant au code fourni ou reçoit un message d'erreur si le code est incorrect ou si le salon est plein\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIdemande\fP Structure contenant les informations de la demande de rejoindre une partie\&. 
+.RE
+.PP
+
+.SS "\fBclient_t\fP getClient (int idClient)"
+Cherche les informations d'un client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIidClient\fP Id du client à chercher 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Une structure \fBclient_t\fP contenant les informations du client, un client vide si non trouvé 
+.RE
+.PP
+
+.SS "\fBsalon_t\fP * getSalonClient (int idClient)"
+Cherche le salon dans lequel se trouve un client 
+.PP
+\fBParameters\fP
+.RS 4
+\fIidClient\fP Id du client à chercher 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur sur le salon dans lequel se trouve le client, NULL si non trouvé 
+.RE
+.PP
+
+.SS "\fBsalon_t\fP * getSalonPrive (int code)"
+Cherche un salon privé à partir d'un code 
+.PP
+\fBParameters\fP
+.RS 4
+\fIcode\fP Le code associé au salon 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur sur un salon privé avec le code correspondant et non plein, NULL si aucun n'est trouvé 
+.RE
+.PP
+
+.SS "\fBsalon_t\fP * getSalonPublic ()"
+Cherche un salon public disponible 
+.PP
+\fBReturns\fP
+.RS 4
+Un pointeur sur un salon public existant et non plein, NULL si aucun n'est trouvé 
+.RE
+.PP
+
+.SS "int main ()"
+Fonction principale qui permet la mise en relation des clients 
+.SS "void retirerJoueurSalon (\fBsalon_t\fP * salon, int idClient)"
+
+.PP
+Retire un joueur d'un salon et gère l'état du salon\&. Cette fonction retire un joueur d'un salon en mettant à jour la liste des joueurs et en envoyant l'état actualisé du salon à tous les joueurs présents\&. Si le salon devient vide après le retrait du joueur, le salon est supprimé\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Pointeur vers la structure du salon\&. 
+.br
+\fIidClient\fP Identifiant du client à retirer du salon\&. 
+.RE
+.PP
+
+.SS "void supprimerSalon (\fBsalon_t\fP * salon)"
+Supprime un salon et rend disponible son code 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsalon\fP Pointeur sur le salon à supprimer 
+.RE
+.PP
+
+.SS "void traiterSignal (int sigNum)"
+Fonction appelée pour traiter le signal SIGINT 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsigNum\fP Numéro du signal à traiter 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "int codes[100] = {\-1}"
+Codes des salons privés (-1 si non attribué) 
+.SS "\fBT_Maille\fP* listeClients = NULL"
+Liste chainee des clients connectés 
+.SS "pthread_mutex_t mutexListeClients = PTHREAD_MUTEX_INITIALIZER"
+Mutex pour synchroniser l'accès à la liste des clients 
+.SS "pthread_mutex_t mutexListeCodes = PTHREAD_MUTEX_INITIALIZER"
+Mutex pour synchroniser l'accès à la liste des codes 
+.SS "pthread_mutex_t mutexListeSalons = PTHREAD_MUTEX_INITIALIZER"
+Mutex pour synchroniser l'accès à la liste des salons 
+.SS "int nextClientId = 1"
+ID pour le prochain client 
+.SS "int nextSalonId = 1"
+ID pour le prochain salon 
+.SS "\fBsalon_t\fP salons[\fBNB_SALONS_MAX\fP]"
+Tableau de salons 
+.SS "\fBsocket_t\fP se"
+Socket d'écoute du serveur 
+.SS "pthread_t TIDClient"
+ID du thread pour gérer les connexions des clients 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

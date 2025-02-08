@@ -1,0 +1,68 @@
+.TH "Partie" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Partie
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <struct\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBnbJoueurs\fP"
+.br
+.ti -1c
+.RI "int \fBcurrentPlayer\fP"
+.br
+.ti -1c
+.RI "int \fBsens\fP"
+.br
+.ti -1c
+.RI "\fBJoueur\fP \fBjoueurs\fP [4]"
+.br
+.ti -1c
+.RI "\fBCarte\fP \fBcarteVisible\fP"
+.br
+.ti -1c
+.RI "int \fBnbCartesPioche\fP"
+.br
+.ti -1c
+.RI "\fBCarte\fP * \fBpioche\fP"
+.br
+.ti -1c
+.RI "int \fBestFinie\fP"
+.br
+.ti -1c
+.RI "int \fBidHost\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+\fBPartie\fP 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBCarte\fP Partie::carteVisible"
+\fBCarte\fP visible, celle qui a été la dernière placée 
+.SS "int Partie::currentPlayer"
+Nombre de joueurs actuel 
+.SS "int Partie::estFinie"
+1 si la partie est finie, 0 sinon 
+.SS "int Partie::idHost"
+Identifiant de l'hôte de la partie 
+.SS "\fBJoueur\fP Partie::joueurs[4]"
+Joueurs présents dans la partie (index 0 est l'hébergeur) 
+.SS "int Partie::nbCartesPioche"
+Nombre de cartes dans la pioche 
+.SS "int Partie::nbJoueurs"
+Nombre de joueurs max dans la partie 
+.SS "\fBCarte\fP* Partie::pioche"
+Pioche de cartes 
+.SS "int Partie::sens"
+Sens pour déterminer le prochain joueur (-1 ou 1) 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

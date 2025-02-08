@@ -1,0 +1,152 @@
+.TH "includes/session.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/session.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <netinet/in\&.h>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBsocket\fP"
+.br
+.in -1c
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fBsocket\fP \fBsocket_t\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsocket_t\fP \fBcreerSocket\fP (int mode)"
+.br
+.RI "Création d'une socket de type DGRAM/STREAM\&. "
+.ti -1c
+.RI "\fBsocket_t\fP \fBcreerSocketAdr\fP (int mode, char *adrIP, unsigned short port)"
+.br
+.RI "Création d'une socket adressée de type DGRAM/STREAM\&. "
+.ti -1c
+.RI "\fBsocket_t\fP \fBcreerSocketEcoute\fP (char *adrIP, unsigned short port)"
+.br
+.RI "Création d'une socket d'écoute avec l'adressage fourni en paramètres\&. "
+.ti -1c
+.RI "\fBsocket_t\fP \fBaccepterClt\fP (const \fBsocket_t\fP sockEcoute)"
+.br
+.RI "Accepte la demande de connexion d'un client\&. "
+.ti -1c
+.RI "\fBsocket_t\fP \fBconnecterClt2Srv\fP (int mode, char *adrIP, unsigned short port)"
+.br
+.RI "Création d'une socket d'appel et connexion au serveur dont l'adressage est fourni en paramètre\&. "
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef struct \fBsocket\fP \fBsocket_t\fP"
+Définition du type de données \fBsocket_t\fP 
+.SH "Function Documentation"
+.PP 
+.SS "\fBsocket_t\fP accepterClt (const \fBsocket_t\fP sockEcoute)"
+
+.PP
+Accepte la demande de connexion d'un client\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsockEcoute\fP Socket d'écoute sur laquelle accepter la connexion 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Socket de dialogue créée 
+.RE
+.PP
+
+.SS "\fBsocket_t\fP connecterClt2Srv (int mode, char * adrIP, unsigned short port)"
+
+.PP
+Création d'une socket d'appel et connexion au serveur dont l'adressage est fourni en paramètre\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImode\fP Mode d'ouverture de la socket DGRAM/STREAM 
+.br
+\fIadrIP\fP Adresse IP à laquelle se connecter 
+.br
+\fIport\fP Port sur lequel se connecter 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Socket d'appel créée 
+.RE
+.PP
+
+.SS "\fBsocket_t\fP creerSocket (int mode)"
+
+.PP
+Création d'une socket de type DGRAM/STREAM\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImode\fP Mode d'ouverture de la socket DGRAM/STREAM 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Socket créée 
+.RE
+.PP
+
+.SS "\fBsocket_t\fP creerSocketAdr (int mode, char * adrIP, unsigned short port)"
+
+.PP
+Création d'une socket adressée de type DGRAM/STREAM\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fImode\fP Mode d'ouverture de la socket DGRAM/STREAM 
+.br
+\fIadrIP\fP Adresse IP de la socket 
+.br
+\fIport\fP Port sur lequel ouvrir la socket 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Socket créée 
+.RE
+.PP
+
+.SS "\fBsocket_t\fP creerSocketEcoute (char * adrIP, unsigned short port)"
+
+.PP
+Création d'une socket d'écoute avec l'adressage fourni en paramètres\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIadrIP\fP Adresse IP d'écoute 
+.br
+\fIport\fP Port sur lequel écouter 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Socket d'écoute créée 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

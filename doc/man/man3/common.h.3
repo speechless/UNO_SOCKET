@@ -1,0 +1,67 @@
+.TH "includes/common.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/common.h
+.SH SYNOPSIS
+.br
+.PP
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCHECK\fP(sts,  msg)"
+.br
+.ti -1c
+.RI "#define \fBCHECK_ZERO\fP(sts,  msg)"
+.br
+.ti -1c
+.RI "#define \fBPAUSE\fP(msg)"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBdebugprintf\fP (char *format,\&.\&.\&.)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define CHECK( sts,  msg)"
+\fBValue:\fP
+.nf
+if ((sts) == \-1) {perror(msg);exit(\-1);}
+.PP
+.fi
+Vérifier la bonne exécution des fonctions POSIX 
+.SS "#define CHECK_ZERO( sts,  msg)"
+\fBValue:\fP
+.nf
+if ((sts) != 0) { fprintf(stderr, "pb lib thread %s\\tligne %d", msg, __LINE__); exit(EXIT_FAILURE); }
+.PP
+.fi
+Vérifier la bonne exécution des fonctions de thread 
+.SS "#define PAUSE( msg)"
+\fBValue:\fP
+.nf
+printf("%s [Entrée pour continuer]\\n", msg); getchar();
+.PP
+.fi
+Met en pause le programme et attend une entrée de l'utilisateur 
+.SH "Function Documentation"
+.PP 
+.SS "void debugprintf (char * format,  \&.\&.\&.)"
+Affiche un message de débogage 
+.PP
+\fBParameters\fP
+.RS 4
+\fIformat\fP Format du message 
+.br
+\fI\&.\&.\&.\fP Arguments du message 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

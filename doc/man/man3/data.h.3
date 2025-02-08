@@ -1,0 +1,86 @@
+.TH "includes/data.h" 3 "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/data.h
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'session\&.h'\fP
+.br
+
+.SS "Typedefs"
+
+.in +1c
+.ti -1c
+.RI "typedef void * \fBgeneric\fP"
+.br
+.ti -1c
+.RI "typedef void(* \fBpFct\fP) (\fBgeneric\fP, \fBgeneric\fP)"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBenvoyer\fP (\fBsocket_t\fP sock, \fBgeneric\fP quoi, \fBpFct\fP serial,\&.\&.\&.)"
+.br
+.RI "Envoyer des données sur une socket\&. "
+.ti -1c
+.RI "void \fBrecevoir\fP (\fBsocket_t\fP sock, \fBgeneric\fP quoi, \fBpFct\fP deserial)"
+.br
+.RI "Recevoir des données depuis une socket\&. "
+.in -1c
+.SH "Typedef Documentation"
+.PP 
+.SS "typedef void* \fBgeneric\fP"
+Définition du type de données generic 
+.SS "typedef void(* pFct) (\fBgeneric\fP, \fBgeneric\fP)"
+Définition d'un pointeur de fonction avec deux arguments generic 
+.SH "Function Documentation"
+.PP 
+.SS "void envoyer (\fBsocket_t\fP sock, \fBgeneric\fP quoi, \fBpFct\fP serial,  \&.\&.\&.)"
+
+.PP
+Envoyer des données sur une socket\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsock\fP Socket sur laquelle envoyer les données 
+.br
+\fIquoi\fP Pointeur sur les données à envoyer 
+.br
+\fIserial\fP Fonction de sérialisation à utiliser 
+.br
+\fI\&.\&.\&.\fP Paramètres supplémentaire si mode DGRAM (adrIP(str) puis port(short)) 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Si quoi est une chaine de caractères alors serial sera NULL 
+.RE
+.PP
+
+.SS "void recevoir (\fBsocket_t\fP sock, \fBgeneric\fP quoi, \fBpFct\fP deserial)"
+
+.PP
+Recevoir des données depuis une socket\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIsock\fP Socket sur laquelle recevoir les données 
+.br
+\fIquoi\fP Pointeur sur l'endroit où recevoir les données 
+.br
+\fIdeserial\fP Fonction de désérialisation à utiliser 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Si les données reçues sont sous forme de chaine de caractère, alors deserial sera NULL 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.
