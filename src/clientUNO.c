@@ -102,8 +102,6 @@ int main() {
 					break;
 				case 2:
 					clearScreen();
-					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
-					//break;
 
 					// Rejoindre une partie privée
 					printf("Entrez le code de la partie privée : ");
@@ -113,8 +111,6 @@ int main() {
 					break;
 				case 3:
 					clearScreen();
-					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
-					//break;
 
 					printf("Entrez le nombre de joueurs requis pour lancer : ");
 					scanf("%d", &nbJoueursPrive);
