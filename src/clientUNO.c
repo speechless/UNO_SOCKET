@@ -72,7 +72,9 @@ int main() {
 	// Connexion au hub de jeu
 	clientLocal = connexionServeurUNO();
 
-	while (1) {
+	while (input != 4) {
+		requete.code = -1;
+
 		afficherMenu();
 		scanf("%d", &input);
 		switch (input) {
@@ -88,6 +90,11 @@ int main() {
 				rejoindrePartiePrivee(clientLocal, input);
 				break;
 			case 3:
+				break;
+
+			case 4:
+				// Quitter
+				return EXIT_SUCCESS;
 				break;
 		}
 
