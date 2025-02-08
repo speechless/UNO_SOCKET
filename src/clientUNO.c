@@ -37,11 +37,13 @@ void quitterSalon();
 void afficherMenu();
 void lancerPartiePublique(client_t clientLocal);
 void rejoindrePartiePrivee(client_t clientLocal, int code);
+void creerPartiePrivee(client_t clientLocal, int nbJoueursMax);
 client_t* initConnection(salon_t salon);
 
 socket_t socketAppel;
 socket_t socketEcouteHebergeur = {-1,};
 socket_t socketPartie;
+int connecte = 0;
 
 /**
  * states :
@@ -61,6 +63,8 @@ int main() {
 	basic_data_t requete = {-1, ""};
 	creation_partie_t demandeCreation;
 	int input;
+	int codePrive;
+	int nbJoueursPrive;
 
 	Partie* partie;
 	client_t* clients;
@@ -75,7 +79,13 @@ int main() {
 		requete.code = -1;
 		input = 0;
 
-		while (input != 1) {
+		if (!connecte) {
+			// Connexion au hub de jeu
+			clientLocal = connexionServeurUNO();
+			connecte = 1;
+		}
+
+		while (input != 1 && input != 2 && input != 3) {
 			afficherMenu();
 			scanf("%d", &input);
 			switch (input) {
@@ -93,19 +103,23 @@ int main() {
 				case 2:
 					clearScreen();
 					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
-					break;
+					//break;
 
 					// Rejoindre une partie privée
 					printf("Entrez le code de la partie privée : ");
-					scanf("%d", &input);
+					scanf("%d", &codePrive);
 
-					// Connexion au hub de jeu
-					clientLocal = connexionServeurUNO();
-					rejoindrePartiePrivee(clientLocal, input);
+					rejoindrePartiePrivee(clientLocal, codePrive);
 					break;
 				case 3:
 					clearScreen();
 					printf("Cette fonctionnalité n'est pas encore implémentée.\n");
+					//break;
+
+					printf("Entrez le nombre de joueurs requis pour lancer : ");
+					scanf("%d", &nbJoueursPrive);
+
+					creerPartiePrivee(clientLocal, nbJoueursPrive);
 					break;
 				case 4:
 					exit(0);
@@ -114,7 +128,7 @@ int main() {
 		}
 
 
-		while (requete.code != COMMENCER_PARTIE) {
+		while (requete.code != COMMENCER_PARTIE && requete.code != ERREUR) {
 
 			debugprintf("Attente de requête\n");
 			recevoir(socketAppel, &requete, (pFct)deserialiserData);
@@ -141,7 +155,14 @@ int main() {
 					// Réception des informations d'un salon
 				case SALON:
 					deserialiserSalon(requete.data, &salon);
+					if (salon.isPrivate) {
+						printf("Code du salon : %d\n", salon.code);
+					}
 					break;
+				case ERREUR:
+					printf("Une erreur est survenue : %s\n", requete.data);
+					break;
+
 				case COMMENCER_PARTIE:
 					partie = malloc(sizeof(Partie));
 
@@ -285,6 +306,7 @@ void deconnexionServeurUNO() {
 
 	debugprintf("Fermeture socket appel\n");
 	CHECK(close(socketAppel.fd), "close socket appel");
+	connecte = 0;
 }
 
 void quitterSalon() {
@@ -309,6 +331,22 @@ void rejoindrePartiePrivee(client_t clientLocal, int code) {
 	demandeRejoindre.isPrivate = 1;
 	demandeRejoindre.code = code;
 	envoyerRejoindrePartie(socketAppel, demandeRejoindre);
+}
+
+void creerPartiePrivee(client_t clientLocal, int nbJoueursMax) {
+	creation_partie_t demandeCreation;
+
+	socketEcouteHebergeur = creerSocketEcoute("127.0.0.1", 0);
+
+	demandeCreation.isPrivate = 1;
+	strcpy(demandeCreation.adresseHost, "127.0.0.1");
+	demandeCreation.portHost = ntohs(socketEcouteHebergeur.adrLoc.sin_port);
+	demandeCreation.nbJoueursMax = nbJoueursMax;
+	demandeCreation.idClient = clientLocal.id;
+
+	debugprintf("Création d'un serveur de jeu sur le port %d\n", demandeCreation.portHost);
+
+	envoyerCreationPartie(socketAppel, demandeCreation);
 }
 
 /**
